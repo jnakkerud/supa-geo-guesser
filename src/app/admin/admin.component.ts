@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgModule } from '@angular/core';
 import { MaterialModule } from '../material.module';
-import { FlickrService, PhotoSize } from '../core/flickr-service/flickr.service';
+import { FlickrService } from '../core/flickr-service/flickr.service';
 
 @Component({
     selector: 'admin',

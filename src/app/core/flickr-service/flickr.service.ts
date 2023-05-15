@@ -59,9 +59,6 @@ export class FlickrService {
 
     }
 
-    getGalleryPhotos() {
-
-    }
 
     getLocation(id: string): Promise<PhotoLatLong> {
         const url: URL = flickrUrl('flickr.photos.geo.getLocation');
