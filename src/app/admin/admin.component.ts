@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgModule } from '@angular/core';
 import { MaterialModule } from '../material.module';
+import { FlickrService, PhotoSize } from '../core/flickr-service/flickr.service';
 
 @Component({
     selector: 'admin',
@@ -8,7 +9,16 @@ import { MaterialModule } from '../material.module';
 })
 
 export class AdminComponent {
-    constructor() { }
+    constructor(private flickrService: FlickrService) { }
+
+
+    test() {
+        console.log('start test');
+        this.flickrService.getImageUrl('52793526908', PhotoSize.Large1600).then(result => {
+            console.log(result.href)
+        });
+    }
+
 }
 
 @NgModule({
