@@ -14,8 +14,8 @@ export class AdminComponent {
 
     test() {
         console.log('start test');
-        this.flickrService.getImageUrl('52793526908', PhotoSize.Large1600).then(result => {
-            console.log(result.href)
+        this.flickrService.getLocation('52793526908').then(result => {
+            console.log(result)
         });
     }
 

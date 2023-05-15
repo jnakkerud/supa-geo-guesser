@@ -20,7 +20,12 @@ export enum PhotoSize {
     Medium = 'Medium',
     Large = 'Large',
     Large1600 = 'Large 1600'
-  }
+}
+
+export interface PhotoLatLong {
+    latitude: string;
+    longitude: string;    
+}
 
 @Injectable({providedIn: 'root'})
 export class FlickrService {
@@ -36,7 +41,8 @@ export class FlickrService {
             this.httpClient.jsonp(url.href, 'jsoncallback')
                 .subscribe((res: any) => {
                     if (res.stat !== 'ok') {
-                        reject('Error calling service');
+                        console.error(res);
+                        reject(`Error calling service: ${res.message}`);
                     }
 
                     const sizeSource: PhotoSource[] = res.sizes.size;
@@ -57,7 +63,25 @@ export class FlickrService {
 
     }
 
-    getLocation(id: string) {
+    getLocation(id: string): Promise<PhotoLatLong> {
+        const url: URL = flickrUrl('flickr.photos.geo.getLocation');
+        url.searchParams.append('photo_id', id);
+
+        return new Promise<PhotoLatLong>((resolve, reject) => {
+            this.httpClient.jsonp(url.href, 'jsoncallback')
+                .subscribe((res: any) => {
+                    if (res.stat !== 'ok') {
+                        console.error(res);
+                        reject(`Error calling service: ${res.message}`);
+                    }
+
+                    // Note the Country, etc is returned
+                    console.log(res);
+
+                    resolve({latitude: res.photo.location.latitude, longitude: res.photo.location.longitude})
+                }
+            );
+        });
 
     }
 }
