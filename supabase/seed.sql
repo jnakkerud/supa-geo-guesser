@@ -21,11 +21,11 @@ create index image_geo_index
   on public.images
   using GIST (location);
 
-create or replace function images_in_theme(id bigint)
+create or replace function images_in_theme(themeid bigint)
 returns setof record
 language sql
 as $$
-  select id, theme_id as themeId, source_type as sourceType, source, st_astext(location) as location, description
+  select id, theme_id, source_type, source, st_astext(location) as location, description
   from public.image
-  where theme_id = id;
+  where theme_id = themeid;
 $$;

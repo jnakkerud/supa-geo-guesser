@@ -30,13 +30,14 @@ export class ThemeService {
     }
 
     public async insert(theme:  Partial<Theme>): Promise<Theme[] |  Error> {
+        console.log('Inserting theme', theme);
         const { data, error } = await this.supabaseService.supabase
         .from('theme')
         .insert([
           { name: theme.name, updated_at: new Date(), description: theme.description }
-        ])
+        ]).select();
 
-        handleError('Insert Theme', error);
+        handleError('Insert Theme Error', error);
         let result: Theme[] = Object.assign([] as Theme[], data);
         return new Promise((resolve) => {resolve(result)});
     }
