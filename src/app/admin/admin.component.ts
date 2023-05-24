@@ -1,18 +1,38 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgModule } from '@angular/core';
+import {  FormControl, FormGroup, ReactiveFormsModule, Validators  } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { FlickrService } from '../core/flickr-service/flickr.service';
-import { ThemeService } from '../core/theme-service/theme-service';
+import { Theme, ThemeService } from '../core/theme-service/theme-service';
 import { ImageService, SourceType } from '../core/image-service/image-service';
 
 @Component({
     selector: 'admin',
-    templateUrl: './admin.component.html'
+    templateUrl: './admin.component.html',
+    styleUrls: ['admin.component.scss'],
 })
 
 export class AdminComponent {
+
+    adminTheme: FormGroup = new FormGroup({
+        name: new FormControl<string>('', [Validators.required]),
+        description: new FormControl<string>('')
+    });
+
     constructor(private flickrService: FlickrService, private themeService: ThemeService, private imageService: ImageService) { }
 
+    onSubmit() {
+        // console.log(this.adminTheme.value)
+        const theme: Partial<Theme>  = {
+            name: this.adminTheme.value.name
+        }
+
+        if (!!this.adminTheme.value.description) {
+            theme.description = this.adminTheme.value.description;
+        }
+        
+        this.themeService.insert(theme).then(r => console.log('Theme created', r));
+    }
 
     test() {
         console.log('start test');
@@ -36,7 +56,7 @@ export class AdminComponent {
 
 @NgModule({
     imports: [
-        CommonModule, MaterialModule],
+        CommonModule, ReactiveFormsModule, MaterialModule],
     exports: [AdminComponent],
     declarations: [AdminComponent],
   })

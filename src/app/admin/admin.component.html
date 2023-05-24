@@ -1,4 +1,13 @@
 <div>
-    <span>Hello admin</span>
-    <button mat-button color="primary" (click)="test()">Primary</button>
+    <form [formGroup]="adminTheme" (ngSubmit)="onSubmit()" class="admin-form">
+        <mat-form-field>
+            <mat-label>Theme name</mat-label>
+            <input matInput formControlName="name">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Theme description</mat-label>
+            <textarea matInput formControlName="description"></textarea>
+        </mat-form-field>
+        <button type="submit" mat-raised-button color="accent">Create</button>
+    </form>
 </div>
