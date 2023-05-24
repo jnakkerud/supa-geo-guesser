@@ -1,4 +1,13 @@
-<div>
+<div class="center">
+    <h4>Select theme to add images</h4>
+    <mat-form-field>
+        <mat-label>Themes</mat-label>
+        <mat-select [(value)]="selectedTheme" (selectionChange)="onSelectedTheme()">
+            <mat-option *ngFor="let theme of themes |  async" [value]="theme">
+                {{theme.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
     <form [formGroup]="adminTheme" (ngSubmit)="onSubmit()" class="admin-form">
         <mat-form-field>
             <mat-label>Theme name</mat-label>

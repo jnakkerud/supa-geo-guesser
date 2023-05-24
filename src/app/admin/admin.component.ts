@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule } from '@angular/core';
-import {  FormControl, FormGroup, ReactiveFormsModule, Validators  } from '@angular/forms';
+import { Component, NgModule, OnInit } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MaterialModule } from '../material.module';
-import { FlickrService } from '../core/flickr-service/flickr.service';
 import { Theme, ThemeService } from '../core/theme-service/theme-service';
-import { ImageService, SourceType } from '../core/image-service/image-service';
+import { EditImageComponent } from './edit-image/edit-image.component';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'admin',
@@ -12,17 +12,28 @@ import { ImageService, SourceType } from '../core/image-service/image-service';
     styleUrls: ['admin.component.scss'],
 })
 
-export class AdminComponent {
+export class AdminComponent implements OnInit {
+
+    themes!: Promise<Theme[]>;
+    selectedTheme!: Theme;
 
     adminTheme: FormGroup = new FormGroup({
         name: new FormControl<string>('', [Validators.required]),
         description: new FormControl<string>('')
     });
 
-    constructor(private flickrService: FlickrService, private themeService: ThemeService, private imageService: ImageService) { }
+    constructor(private router: Router, private themeService: ThemeService) { }
+
+    ngOnInit(): void {
+        this.themes = this.themeService.themes();
+    }
+
+    onSelectedTheme() {
+        console.log(this.selectedTheme);
+        this.router.navigate(['/edit-image', { id: this.selectedTheme.id }]);
+    }
 
     onSubmit() {
-        // console.log(this.adminTheme.value)
         const theme: Partial<Theme>  = {
             name: this.adminTheme.value.name
         }
@@ -49,7 +60,7 @@ export class AdminComponent {
             location: {latitude: 48.211727, longitude: 16.365630}
         }]).then(r => console.log(r));*/
 
-        this.imageService.images(2).then(r => console.log(r));
+        //this.imageService.images(2).then(r => console.log(r));
     }
 
 }
@@ -57,7 +68,7 @@ export class AdminComponent {
 @NgModule({
     imports: [
         CommonModule, ReactiveFormsModule, MaterialModule],
-    exports: [AdminComponent],
-    declarations: [AdminComponent],
+    exports: [AdminComponent, EditImageComponent],
+    declarations: [AdminComponent, EditImageComponent],
   })
 export class AdminModule {}
