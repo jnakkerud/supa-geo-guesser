@@ -11,7 +11,7 @@ create table image (
     theme_id bigint not null references public.theme,
     updated_at timestamp with time zone,
     source_type source_type_enum not null,
-    source text not null,
+    source jsonb not null,
     location geography(POINT) not null,
     description text
 );

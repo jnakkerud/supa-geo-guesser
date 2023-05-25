@@ -6,7 +6,7 @@ export interface Image {
     id: number;
     themeId: number;
     sourceType: SourceType;
-    source: string;
+    source: any;
     location: LongLat;
     description?: string;
 }
@@ -50,7 +50,7 @@ export class ImageService {
                     id: item.id,
                     themeId: item.theme_id,
                     sourceType: item.source_type,
-                    source: item.source,
+                    source: item.source, 
                     location: pointToLongLat(item.location),
                     description: item.description                 
                 }
@@ -69,7 +69,7 @@ export class ImageService {
                 theme_id: image.themeId,
                 updated_at: updateTime,
                 source_type: image.sourceType,
-                source: image.source,
+                source: image.source, 
                 location: `POINT(${image.location?.longitude} ${image.location?.latitude})`,
                 description: image.description
             }
@@ -84,4 +84,6 @@ export class ImageService {
         return new Promise((resolve) => {resolve(result)});
     }
     
+    // TODO getImageUrl: SafeUrl or ?? https://angular.io/guide/image-directive#configuring-an-image-loader-for-ngoptimizedimage
+    // https://angular.io/guide/image-directive
 }

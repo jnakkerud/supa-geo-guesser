@@ -1,3 +1,23 @@
 <div>
-    Hello edit image
+    <form [formGroup]="editImage" (ngSubmit)="onSubmit()" class="edit-image-form">
+        <mat-form-field class="edit-image-full-width">
+            <mat-label>Source</mat-label>
+            <input matInput formControlName="source">
+        </mat-form-field>
+        <table class="example-full-width" cellspacing="0"><tr>
+            <td><mat-form-field class="edit-image-full-width">
+              <mat-label>Longitude</mat-label>
+              <input matInput formControlName="longitude">
+            </mat-form-field></td>
+            <td><mat-form-field class="edit-image-full-width">
+              <mat-label>Latitude</mat-label>
+              <input matInput formControlName="latitude">
+            </mat-form-field></td>
+          </tr></table>
+        <mat-form-field class="edit-image-full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description"></textarea>
+        </mat-form-field>
+        <button type="submit" mat-raised-button color="accent">Create</button>
+    </form>
 </div>

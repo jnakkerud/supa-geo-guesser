@@ -27,6 +27,10 @@ export interface PhotoLatLong {
     longitude: string;    
 }
 
+export interface FlickrImageSource {
+    id: string;
+}
+
 @Injectable({providedIn: 'root'})
 export class FlickrService {
     
