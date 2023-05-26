@@ -20,4 +20,11 @@
         </mat-form-field>
         <button type="submit" mat-raised-button color="accent">Create</button>
     </form>
+    <div *ngFor="let image of (images | async)">
+        <mat-card class="edit-card">
+            <mat-card-title>{{image.source}}</mat-card-title>
+            <img mat-card-image [ngSrc]="imgSmallSource(image)" width="320" height="240" alt="No Image">
+            <mat-card-content>{{image.description}}</mat-card-content>
+        </mat-card>
+    </div>
 </div>

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Image, ImageService, SourceType } from '../../core/image-service/image-service';
+import { Image, ImageService, ImageSize, SourceType } from '../../core/image-service/image-service';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { of } from 'rxjs/internal/observable/of';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FlickrImageSource } from 'src/app/core/flickr-service/flickr.service';
 
+// TODO move to ImageService
 export function convertSource(sourceType: SourceType, source: string): any {
     switch (sourceType) {
         case SourceType.FLICKR:
@@ -27,7 +28,6 @@ export class EditImageComponent implements OnInit {
     themeId!: number;
     images!: Promise<Image[]>;
 
-    // TODO add longitude/latitude
     editImage: FormGroup = new FormGroup({
         source: new FormControl<string>('', [Validators.required]),
         longitude: new FormControl<number>(0, [Validators.required]),
@@ -63,7 +63,14 @@ export class EditImageComponent implements OnInit {
         if (!!this.editImage.value.description) {
             image.description = this.editImage.value.description;
         }        
-        this.imageService.insert([image]).then(i => console.log('Images saved', i));
+        this.imageService.insert([image]).then(i => {
+            console.log('Images saved', i)
+            // clear form
+            this.editImage.reset();
+        });
     }
 
+    imgSmallSource(image: Image): string {
+        return this.imageService.getImageUrl(image, ImageSize.SMALL);
+    }
 }

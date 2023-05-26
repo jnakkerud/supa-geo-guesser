@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgModule, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgOptimizedImage } from '@angular/common'
 import { MaterialModule } from '../material.module';
 import { Theme, ThemeService } from '../core/theme-service/theme-service';
 import { EditImageComponent } from './edit-image/edit-image.component';
@@ -67,7 +68,7 @@ export class AdminComponent implements OnInit {
 
 @NgModule({
     imports: [
-        CommonModule, ReactiveFormsModule, MaterialModule],
+        CommonModule, ReactiveFormsModule, MaterialModule, NgOptimizedImage],
     exports: [AdminComponent, EditImageComponent],
     declarations: [AdminComponent, EditImageComponent],
   })

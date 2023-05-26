@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SupabaseService } from '../supabase-service/supabase-service';
 import { handleError } from '../utils';
+import { FlickrService } from '../flickr-service/flickr.service';
 
 export interface Image {
     id: number;
@@ -22,6 +23,12 @@ export enum SourceType {
     FLICKR = 'flickr'
 }
 
+export enum ImageSize {
+    SMALL,
+    MEDIUM,
+    LARGE
+}
+
 export function pointToLongLat(point: string): LongLat | null {
     const regex = /\((-?\d+.?\d+) (-?\d+.?\d+)\)/;
     const found = point.match(regex);
@@ -36,7 +43,7 @@ export function pointToLongLat(point: string): LongLat | null {
 
 @Injectable({providedIn: 'root'})
 export class ImageService {
-    constructor(private supabaseService: SupabaseService) { }
+    constructor(private supabaseService: SupabaseService, private flickrService: FlickrService) { }
  
     public async images(themeId: number): Promise<Image[]> {
         const { data, error } = await this.supabaseService.supabase.rpc('images_in_theme',
@@ -84,6 +91,10 @@ export class ImageService {
         return new Promise((resolve) => {resolve(result)});
     }
     
-    // TODO getImageUrl: SafeUrl or ?? https://angular.io/guide/image-directive#configuring-an-image-loader-for-ngoptimizedimage
-    // https://angular.io/guide/image-directive
+    public getImageUrl(image: Image, size: ImageSize): string {
+        if (image.sourceType == SourceType.FLICKR) {
+            return this.flickrService.getImageUrl(image, size);
+        }
+        return 'https://live.staticflickr.com/65535/52793526908_c11769cd0c_n.jpg';
+    }
 }
