@@ -4,19 +4,7 @@ import { Image, ImageService, ImageSize, SourceType } from '../../core/image-ser
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { of } from 'rxjs/internal/observable/of';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { FlickrImageSource } from 'src/app/core/flickr-service/flickr.service';
-
-// TODO move to ImageService
-export function convertSource(sourceType: SourceType, source: string): any {
-    switch (sourceType) {
-        case SourceType.FLICKR:
-            return {
-                id: source
-            } as FlickrImageSource
-        default:
-            break;
-    }
-}
+import { FlickrPhotoInfo } from 'src/app/core/flickr-service/flickr.service';
 
 @Component({
     selector: 'edit-image',
@@ -30,6 +18,7 @@ export class EditImageComponent implements OnInit {
 
     editImage: FormGroup = new FormGroup({
         source: new FormControl<string>('', [Validators.required]),
+        convertedSource: new FormControl<any>({}),
         longitude: new FormControl<number>(0, [Validators.required]),
         latitude: new FormControl<number>(0, [Validators.required]),
         description: new FormControl<string>('')
@@ -57,7 +46,7 @@ export class EditImageComponent implements OnInit {
                 longitude: this.editImage.value.longitude,
                 latitude: this.editImage.value.latitude
             },
-            source: convertSource(sourceType, this.editImage.value.source)
+            source: this.editImage.value.convertedSource
         }
 
         if (!!this.editImage.value.description) {
@@ -67,6 +56,20 @@ export class EditImageComponent implements OnInit {
             console.log('Images saved', i)
             // clear form
             this.editImage.reset();
+        });
+    }
+
+    imageInfo(): void {
+        this.imageService.getImageInfo(SourceType.FLICKR, this.editImage.value.source).then(r =>  {
+            const flickrResult: FlickrPhotoInfo = r as FlickrPhotoInfo;
+            let { longitude, latitude, ...imageSource } = r;
+            this.editImage.patchValue(
+                {
+                    longitude: longitude,
+                    latitude: latitude,
+                    convertedSource:  imageSource
+                }
+            )
         });
     }
 

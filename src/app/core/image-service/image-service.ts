@@ -95,6 +95,24 @@ export class ImageService {
         if (image.sourceType == SourceType.FLICKR) {
             return this.flickrService.getImageUrl(image, size);
         }
+        // TODO generic url
         return 'https://live.staticflickr.com/65535/52793526908_c11769cd0c_n.jpg';
+    }
+
+    /**
+     * Get info about an image.  
+     * 
+     * @param sourceType 
+     * @param source 
+     * @returns Info Object
+     */
+    public async getImageInfo(sourceType: SourceType, source: string ): Promise<any> {
+        if (sourceType == SourceType.FLICKR) {
+            const result = await this.flickrService.getInfo(source);
+            return new Promise((resolve) => {resolve(result)});
+        }
+
+        // default return 
+        return new Promise((resolve) => {resolve({source: source})});
     }
 }

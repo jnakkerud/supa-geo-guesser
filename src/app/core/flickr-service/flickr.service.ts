@@ -1,40 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { flickrConfig } from '../../app-config';
-import { ImageLoaderConfig } from '@angular/common';
 import { ImageSize, Image } from '../image-service/image-service';
 
 function flickrUrl(methodName: string): URL {
     return new URL(`https://www.flickr.com/services/rest/?method=${methodName}&api_key=${flickrConfig.apiKey}&format=json`);
 }
-
-/*export interface PhotoSource {
-    height: number;
-    width: number;
-    label: string;
-    media: string;
-    source: string;
-    url: string;
-}*/
-
-/*export enum PhotoSize {
-    Small = 'Small',
-    Medium = 'Medium',
-    Large = 'Large',
-    Large1600 = 'Large 1600'
-}
-
-export interface PhotoLatLong {
-    latitude: string;
-    longitude: string;    
-}*/
-
 export interface FlickrImageSource {
     id: string;
     secret: string;
     serverId: string;
 }
 
+export interface FlickrPhotoInfo extends FlickrImageSource {
+    //description: string; TODO get description?
+    longitude?: number;
+    latitude?: number;
+}
 
 export function sizeSuffix(size: ImageSize): string {
     switch (size) {
@@ -52,6 +34,41 @@ export class FlickrService {
     
     constructor(private httpClient: HttpClient) { }
     
+    getInfo(id: string): Promise<FlickrPhotoInfo> {
+        const url: URL = flickrUrl('flickr.photos.getInfo');
+        url.searchParams.append('photo_id', id);
+
+        return new Promise<FlickrPhotoInfo>((resolve, reject) => {
+            this.httpClient.jsonp(url.href, 'jsoncallback')
+                .subscribe((res: any) => {
+                    if (res.stat !== 'ok') {
+                        console.error(res);
+                        reject(`Error calling service: ${res.message}`);
+                    }
+
+                    const photo = res.photo;
+                    console.log(photo);
+
+                    const result: FlickrPhotoInfo = {
+                        id: photo.id,
+                        secret: photo.secret,
+                        serverId: photo.server
+                    }
+
+                    if (photo.location && photo.location?.longitude) {
+                        result.longitude = photo.location?.longitude;
+                        result.latitude = photo.location?.latitude;
+                    }
+
+                    // TODO description
+
+                    resolve(result)
+                }
+            );
+        });
+    }
+
+
     /*getImageUrl(id: string, photoSize: PhotoSize): Promise<URL> {
 
         const url: URL = flickrUrl('flickr.photos.getSizes');
@@ -78,9 +95,6 @@ export class FlickrService {
         });
 
     }*/
-
-    // TODO getSource to replace getLocation
-    // 
 
     /*getLocation(id: string): Promise<PhotoLatLong> {
         const url: URL = flickrUrl('flickr.photos.geo.getLocation');

@@ -3,6 +3,9 @@
         <mat-form-field class="edit-image-full-width">
             <mat-label>Source</mat-label>
             <input matInput formControlName="source">
+            <button mat-icon-button matSuffix (click)="imageInfo()" type="button">
+                <mat-icon>transform</mat-icon>
+              </button>
         </mat-form-field>
         <table class="example-full-width" cellspacing="0"><tr>
             <td><mat-form-field class="edit-image-full-width">
