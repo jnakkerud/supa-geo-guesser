@@ -1,3 +1,20 @@
+
+.edit-container {
+    display: flex;
+    justify-content: center;
+    margin: 1.5em;
+    width: 850px;
+
+    @media (max-width: 720px) {
+        width: 100%;
+    }    
+}
+
+.button-row {
+    display: flex;
+    justify-content: flex-end;  
+}
+
 .edit-image-form {
     min-width: 150px;
     max-width: 500px;
@@ -13,5 +30,18 @@
   }
 
   .edit-card {
-    max-width: 320px;
+    display: inline-block;
+    margin: 16px;
+    vertical-align: top;
+    //width: 320px;
+  }
+
+  .image-list {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 16px;
+  
+    /*@media (max-width: $small-breakpoint-width) {
+      justify-content: center;
+    }*/
   }

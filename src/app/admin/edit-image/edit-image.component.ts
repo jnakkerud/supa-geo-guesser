@@ -56,6 +56,8 @@ export class EditImageComponent implements OnInit {
             console.log('Images saved', i)
             // clear form
             this.editImage.reset();
+            // refetch images
+            this.images = this.imageService.images(this.themeId);
         });
     }
 
