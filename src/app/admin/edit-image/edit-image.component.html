@@ -1,36 +1,45 @@
 <div>
     <div class="edit-container">
-    <form [formGroup]="editImage" (ngSubmit)="onSubmit()" class="edit-image-form">
-        <mat-form-field class="edit-image-full-width">
-            <mat-label>Source</mat-label>
-            <input matInput formControlName="source">
-            <button mat-icon-button matSuffix (click)="imageInfo()" type="button">
-                <mat-icon>transform</mat-icon>
-              </button>
-        </mat-form-field>
-        <table class="example-full-width" cellspacing="0"><tr>
-            <td><mat-form-field class="edit-image-full-width">
-              <mat-label>Longitude</mat-label>
-              <input matInput formControlName="longitude">
-            </mat-form-field></td>
-            <td><mat-form-field class="edit-image-full-width">
-              <mat-label>Latitude</mat-label>
-              <input matInput formControlName="latitude">
-            </mat-form-field></td>
-          </tr></table>
-        <mat-form-field class="edit-image-full-width">
-            <mat-label>Description</mat-label>
-            <textarea matInput formControlName="description"></textarea>
-        </mat-form-field>
-        <button type="submit" mat-raised-button color="accent">Create</button>
-    </form>
+        <form [formGroup]="editImage" (ngSubmit)="onSubmit()" class="edit-image-form">
+            <mat-form-field class="edit-image-full-width">
+                <mat-label>Source</mat-label>
+                <input matInput formControlName="source">
+                <button mat-icon-button matSuffix (click)="imageInfo()" type="button">
+                    <mat-icon>transform</mat-icon>
+                </button>
+            </mat-form-field>
+            <table class="example-full-width" cellspacing="0">
+                <tr>
+                    <td><mat-form-field class="edit-image-full-width">
+                            <mat-label>Longitude</mat-label>
+                            <input matInput formControlName="longitude">
+                        </mat-form-field></td>
+                    <td><mat-form-field class="edit-image-full-width">
+                            <mat-label>Latitude</mat-label>
+                            <input matInput formControlName="latitude">
+                        </mat-form-field></td>
+                </tr>
+            </table>
+            <mat-form-field class="edit-image-full-width">
+                <mat-label>Description</mat-label>
+                <textarea matInput formControlName="description"></textarea>
+            </mat-form-field>
+            <button type="submit" mat-raised-button color="accent">Create</button>
+        </form>
     </div>
-    <div class="image-list">
-        <div *ngFor="let image of (images | async)">
-        <mat-card class="edit-card">
-            <img mat-card-image [ngSrc]="imgSmallSource(image)" width="320" height="240" alt="No Image">
-            <mat-card-content>{{image.description}}</mat-card-content>
-        </mat-card>
-    </div>
-    </div>
+    <mat-tab-group>
+        <mat-tab label="Image List">
+            <div class="image-list">
+                <div *ngFor="let image of (images | async)">
+                    <mat-card class="edit-card">
+                        <img mat-card-image [ngSrc]="imgSmallSource(image)" width="320" height="240" alt="No Image">
+                        <mat-card-content>{{image.description}}</mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="Map">
+            <span>Add map here</span>
+        </mat-tab>
+    </mat-tab-group>
 </div>

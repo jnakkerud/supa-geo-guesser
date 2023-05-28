@@ -6,6 +6,7 @@ import { MatFormFieldModule}  from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 
 const modules: any[] = [
     MatButtonModule,
@@ -13,7 +14,8 @@ const modules: any[] = [
     MatFormFieldModule,
     MatSelectModule,
     MatCardModule,
-    MatIconModule
+    MatIconModule,
+    MatTabsModule
 ];
 
 @NgModule({
