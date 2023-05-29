@@ -30,7 +30,7 @@
     <mat-tab-group>
         <mat-tab label="Image List">
             <div class="image-list">
-                <div *ngFor="let image of (images | async)">
+                <div *ngFor="let image of images">
                     <mat-card class="edit-card">
                         <img mat-card-image [ngSrc]="imgSmallSource(image)" width="320" height="240" alt="No Image">
                         <mat-card-content>{{image.description}}</mat-card-content>
@@ -39,7 +39,9 @@
             </div>
         </mat-tab>
         <mat-tab label="Map">
-            <span>Add map here</span>
+            <ng-template matTabContent>
+                <div class="edit-map-container" leaflet [leafletOptions]="mapOptions" [leafletLayers]="markers"></div>
+            </ng-template>
         </mat-tab>
     </mat-tab-group>
 </div>

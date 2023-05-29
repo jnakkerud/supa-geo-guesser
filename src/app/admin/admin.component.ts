@@ -6,6 +6,7 @@ import { MaterialModule } from '../material.module';
 import { Theme, ThemeService } from '../core/theme-service/theme-service';
 import { EditImageComponent } from './edit-image/edit-image.component';
 import { Router } from '@angular/router';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 @Component({
     selector: 'admin',
@@ -68,7 +69,7 @@ export class AdminComponent implements OnInit {
 
 @NgModule({
     imports: [
-        CommonModule, ReactiveFormsModule, MaterialModule, NgOptimizedImage],
+        CommonModule, ReactiveFormsModule, MaterialModule, NgOptimizedImage, LeafletModule],
     exports: [AdminComponent, EditImageComponent],
     declarations: [AdminComponent, EditImageComponent],
   })

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Image, ImageService, ImageSize, SourceType } from '../../core/image-service/image-service';
+import { Image, ImageService, ImageSize, SourceType, LongLat } from '../../core/image-service/image-service';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { of } from 'rxjs/internal/observable/of';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FlickrPhotoInfo } from 'src/app/core/flickr-service/flickr.service';
+import { tileLayer, latLng, Layer, marker, icon } from 'leaflet';
 
 @Component({
     selector: 'edit-image',
@@ -14,7 +15,19 @@ import { FlickrPhotoInfo } from 'src/app/core/flickr-service/flickr.service';
 export class EditImageComponent implements OnInit {
 
     themeId!: number;
-    images!: Promise<Image[]>;
+    images!: Image[];
+
+    mapOptions = {
+        layers:[tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            opacity: 0.7,
+            maxZoom: 19,
+            detectRetina: true,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          })],
+          zoom:1,
+          center:latLng(0,0)
+    }; 
+    markers: Layer[] = [];
 
     editImage: FormGroup = new FormGroup({
         source: new FormControl<string>('', [Validators.required]),
@@ -33,9 +46,36 @@ export class EditImageComponent implements OnInit {
             )
         ).subscribe((id) => {
             this.themeId = Number(id);
-            this.images = this.imageService.images(this.themeId);
+            this.imageService.images(this.themeId).then(r => {
+                this.images = r;
+                this.addMarkers();
+            });
         });
     }
+
+    addMarkers(): void {
+        this.images.forEach(i => {
+            console.log(i);
+            this.addMarker(i.location);
+        });
+    }
+
+    addMarker(location: LongLat): void {
+		const newMarker = marker(
+			[ location.latitude, location.longitude ],
+			{
+				icon: icon({
+					iconSize: [ 25, 41 ],
+					iconAnchor: [ 13, 41 ],
+					iconUrl: 'assets/leaflet/marker-icon.png',
+					iconRetinaUrl: 'assets/leaflet/marker-icon-2x.png',
+					shadowUrl: 'assets/leaflet/marker-shadow.png'
+				})
+			}
+		);
+
+		this.markers.push(newMarker);
+	}
 
     onSubmit() {
         const sourceType = SourceType.FLICKR;
@@ -57,7 +97,10 @@ export class EditImageComponent implements OnInit {
             // clear form
             this.editImage.reset();
             // refetch images
-            this.images = this.imageService.images(this.themeId);
+            this.imageService.images(this.themeId).then(r => {
+                this.images = r;
+                // TODO reset map markers
+            });
         });
     }
 
