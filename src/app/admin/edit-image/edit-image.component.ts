@@ -48,14 +48,13 @@ export class EditImageComponent implements OnInit {
             this.themeId = Number(id);
             this.imageService.images(this.themeId).then(r => {
                 this.images = r;
-                this.addMarkers();
+                this.addMapMarkers(this.images);
             });
         });
     }
 
-    addMarkers(): void {
-        this.images.forEach(i => {
-            console.log(i);
+    addMapMarkers(imgs: Image[]): void {
+        imgs.forEach(i => {
             this.addMarker(i.location);
         });
     }
@@ -96,10 +95,14 @@ export class EditImageComponent implements OnInit {
             console.log('Images saved', i)
             // clear form
             this.editImage.reset();
-            // refetch images
+            // add markers
+            // ! Note that result image from supabase call is returned with
+            // null location, so we add it here
+            const img: Image =  Object.assign({} as Image, image);
+            this.addMapMarkers([img]);
+            // refetch image              
             this.imageService.images(this.themeId).then(r => {
                 this.images = r;
-                // TODO reset map markers
             });
         });
     }

@@ -41,6 +41,20 @@ export function pointToLongLat(point: string): LongLat | null {
     return null;
 }
 
+export function mapResultToImage(data: any): Image[] {
+    const result: Image[] = data.map((item: any) => {
+        return {
+            id: item.id,
+            themeId: item.theme_id,
+            sourceType: item.source_type,
+            source: item.source, 
+            location: pointToLongLat(item.location),
+            description: item.description                 
+        }
+    });
+    return result;
+}
+
 @Injectable({providedIn: 'root'})
 export class ImageService {
     constructor(private supabaseService: SupabaseService, private flickrService: FlickrService) { }
@@ -52,17 +66,7 @@ export class ImageService {
    
         try {
             handleError('', error);
-            const result: Image[] = data.map((item: any) => {
-                return {
-                    id: item.id,
-                    themeId: item.theme_id,
-                    sourceType: item.source_type,
-                    source: item.source, 
-                    location: pointToLongLat(item.location),
-                    description: item.description                 
-                }
-            });
-
+            const result = mapResultToImage(data);
             return new Promise((resolve) => {resolve(result)});                
         } catch (error) {
             return new Promise((resolve) => {resolve([])});                
@@ -87,7 +91,7 @@ export class ImageService {
         .insert(insertAry).select();
 
         handleError('Insert Image', error);
-        let result: Image[] = Object.assign([] as Image[], data);
+        const result = mapResultToImage(data);
         return new Promise((resolve) => {resolve(result)});
     }
     
