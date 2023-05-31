@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
 import { AdminModule } from './admin/admin.component';
+import { ThemeModule } from './theme/theme.component';
 
 @NgModule({
     declarations: [
@@ -20,7 +21,8 @@ import { AdminModule } from './admin/admin.component';
         HttpClientJsonpModule,
         BrowserAnimationsModule,
         MaterialModule,
-        AdminModule
+        AdminModule,
+        ThemeModule
     ],
     providers: [],
     bootstrap: [AppComponent]
