@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ImageService, Image } from '../../core/image-service/image-service';
+import { ImageService, Image, ImageSize } from '../../core/image-service/image-service';
 
 function shuffle(array: Image[]): Image[] {
     // tslint:disable-next-line: one-variable-per-declaration
@@ -30,6 +30,9 @@ function shuffle(array: Image[]): Image[] {
 export class ThemeComponent implements OnInit {
 
     themeId!: number;
+    images!: Image[];
+    selectedImage!: Image;
+    selectedIndex = 0;
 
     constructor(private route: ActivatedRoute, private imageService: ImageService) { }
 
@@ -38,11 +41,15 @@ export class ThemeComponent implements OnInit {
             this.themeId = Number(p['id']);
             // get images
             this.imageService.images(this.themeId).then(i => {
-
+                this.images = shuffle(i);
+                this.selectedImage = this.images[this.selectedIndex];
             });
-            // Shuffle: https://github.com/jnakkerud/ng-slides/blob/master/src/app/image-slider/image-slider.component.ts
-            // Show first
         });        
      }
+
+     imgLargeSource(image: Image): string {
+        return this.imageService.getImageUrl(image, ImageSize.LARGE);
+    }
+
 }
 

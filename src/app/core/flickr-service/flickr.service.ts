@@ -25,7 +25,7 @@ export function sizeSuffix(size: ImageSize): string {
         case ImageSize.MEDIUM:
             return 'c';
         case ImageSize.LARGE:
-            return 'h';
+            return 'b';
     }
 }
 

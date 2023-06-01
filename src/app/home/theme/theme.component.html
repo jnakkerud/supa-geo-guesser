@@ -1,3 +1,5 @@
 <div>
-    <span>{{themeId}}</span>
+    <div *ngIf="selectedImage">
+        <img [ngSrc]="imgLargeSource(selectedImage)" width="1024" height="768" alt="No Image">
+    </div>
 </div>
