@@ -13,7 +13,6 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     templateUrl: './admin.component.html',
     styleUrls: ['admin.component.scss'],
 })
-
 export class AdminComponent implements OnInit {
 
     themes!: Promise<Theme[]>;

@@ -1,0 +1,11 @@
+<div class="center">
+    <h4>Select theme to start game</h4>
+    <mat-form-field>
+        <mat-label>Themes</mat-label>
+        <mat-select [(value)]="selectedTheme" (selectionChange)="onSelectedTheme()">
+            <mat-option *ngFor="let theme of themes |  async" [value]="theme">
+                {{theme.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
