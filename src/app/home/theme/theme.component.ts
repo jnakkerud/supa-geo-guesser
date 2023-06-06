@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService, Image, ImageSize } from '../../core/image-service/image-service';
 import { FormControl } from '@angular/forms';
-import { Observable, map, startWith } from 'rxjs';
+import { Observable, debounceTime, startWith, switchMap } from 'rxjs';
+import { PlaceService, PlaceSuggestion } from 'src/app/core/place-service/place.service';
 
 function shuffle(array: Image[]): Image[] {
     // tslint:disable-next-line: one-variable-per-declaration
@@ -37,14 +38,10 @@ export class ThemeComponent implements OnInit {
     selectedImage!: Image;
     selectedIndex = 0;
 
-    geoControl = new FormControl('');
-    options: string[] = ['One', 'Two', 'Three'];
-    filteredOptions!: Observable<string[]>;
-    
+    placeControl = new FormControl('');
+    suggestions!: Observable<PlaceSuggestion[]>;
 
-    // TODO Add Service, use as template: https://www.geoapify.com/location-autocomplete-with-angular
-
-    constructor(private route: ActivatedRoute, private imageService: ImageService) { }
+    constructor(private route: ActivatedRoute, private imageService: ImageService, private placeService: PlaceService) { }
 
     ngOnInit() {
         this.route.params.subscribe(p => {
@@ -56,20 +53,19 @@ export class ThemeComponent implements OnInit {
             });
         });
 
-        this.filteredOptions = this.geoControl.valueChanges.pipe(
+        this.suggestions = this.placeControl.valueChanges.pipe(
             startWith(''),
-            map(value => this._filter(value || '')),
+            debounceTime(300),
+            switchMap(value => {
+                // When text field length is 2 char or less,
+                // return empty array to hide the drop down.
+                if (value?.length! <= 2) return [];
+                return this.placeService.search(value || '');
+            }),
         );        
-     }
+    }
 
     imgSource(image: Image): string {
         return this.imageService.getImageUrl(image, ImageSize.MEDIUM);
     }
-
-    private _filter(value: string): string[] {
-        const filterValue = value.toLowerCase();
-
-        return this.options.filter(option => option.toLowerCase().includes(filterValue));
-    }
-
 }
