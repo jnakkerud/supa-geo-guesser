@@ -7,6 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 const modules: any[] = [
     MatButtonModule,
@@ -15,7 +16,8 @@ const modules: any[] = [
     MatSelectModule,
     MatCardModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
+    MatAutocompleteModule
 ];
 
 @NgModule({
