@@ -1,50 +1,46 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { geoapifyConfig } from '../../app-config';
+import { LongLat } from '../image-service/image-service';
 
 export interface PlaceSuggestion {
     description: string;
     placeId: string;
+    countryCode: string;
+    city: string;
+    state: string;
+    location: LongLat;
 }
-
-const DATA: PlaceSuggestion[] = [
-    {
-        description: 'Los Angeles',
-        placeId: ''
-    },
-    {
-        description: 'Berkeley',
-        placeId: ''
-    },
-    {
-        description: 'Albany',
-        placeId: ''
-    },
-    {
-        description: 'San Francisco',
-        placeId: ''
-    },
-    {
-        description: 'San Diego',
-        placeId: ''
-    }
-]
-
-
-// https://developers.google.com/maps/documentation/places/web-service/autocomplete
 
 @Injectable({providedIn: 'root'})
 export class PlaceService {
     
     constructor(private httpClient: HttpClient) { }
     
-    // TODO implement
-    public search(place: string): Promise<PlaceSuggestion[]> {
+    // https://apidocs.geoapify.com/docs/geocoding/address-autocomplete/#autocomplete
+    public search(searchTerm: string): Promise<PlaceSuggestion[]> {
 
-        const result = DATA.filter(v => v.description.startsWith(place));
+        const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${searchTerm}&apiKey=${geoapifyConfig.apiKey}`;
+        return new Promise<PlaceSuggestion[]>((resolve) => {
+            this.httpClient.get(url)
+            .subscribe((res: any) => {
+                const features: any[] = Object.assign([], res.features);
+                const result: PlaceSuggestion[] = features.map(f => {
+                    return {
+                        description: f.properties.formatted,
+                        placeId: f.properties.place_id,
+                        city: f.properties.city || '',
+                        countryCode: f.properties.country_code,
+                        state: f.properties.state || '',
+                        location: {latitude: f.properties.lat, longitude: f.properties.lon}
+                    }
+                });
+                console.log(result);
 
-        return new Promise((resolve) => {resolve(result)});
+                resolve(result);
+            });        
+        });
     }
 
-    // TODO
-    // getPlaceDetail(placeId: string): Promise<PlaceDetail>
+    // TODO reverse geo, separate service: https://nominatim.org/release-docs/latest/api/Reverse/
 }

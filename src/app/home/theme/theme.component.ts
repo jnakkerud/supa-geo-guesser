@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService, Image, ImageSize } from '../../core/image-service/image-service';
 import { FormControl } from '@angular/forms';
-import { Observable, debounceTime, startWith, switchMap } from 'rxjs';
+import { Observable, debounceTime, filter, startWith, switchMap } from 'rxjs';
 import { PlaceService, PlaceSuggestion } from 'src/app/core/place-service/place.service';
 
 function shuffle(array: Image[]): Image[] {
@@ -40,6 +40,7 @@ export class ThemeComponent implements OnInit {
 
     placeControl = new FormControl('');
     suggestions!: Observable<PlaceSuggestion[]>;
+    selected!: PlaceSuggestion;
 
     constructor(private route: ActivatedRoute, private imageService: ImageService, private placeService: PlaceService) { }
 
@@ -56,13 +57,23 @@ export class ThemeComponent implements OnInit {
         this.suggestions = this.placeControl.valueChanges.pipe(
             startWith(''),
             debounceTime(300),
+            filter(value => typeof value === 'string'),
             switchMap(value => {
                 // When text field length is 2 char or less,
-                // return empty array to hide the drop down.
+                // return empty array to hide the drop down.                
                 if (value?.length! <= 2) return [];
                 return this.placeService.search(value || '');
             }),
         );        
+    }
+
+    displayFn(suggestion: PlaceSuggestion): string {
+        return suggestion && suggestion.description ? suggestion.description : '';
+    }    
+
+    onSelection(selection: PlaceSuggestion) {
+        this.selected = selection;
+        // TODO calculate score, lock the control
     }
 
     imgSource(image: Image): string {
