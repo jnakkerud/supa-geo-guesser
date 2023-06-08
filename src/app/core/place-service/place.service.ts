@@ -41,6 +41,4 @@ export class PlaceService {
             });        
         });
     }
-
-    // TODO reverse geo, separate service: https://nominatim.org/release-docs/latest/api/Reverse/
 }

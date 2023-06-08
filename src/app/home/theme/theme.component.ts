@@ -4,6 +4,7 @@ import { ImageService, Image, ImageSize } from '../../core/image-service/image-s
 import { FormControl } from '@angular/forms';
 import { Observable, debounceTime, filter, startWith, switchMap } from 'rxjs';
 import { PlaceService, PlaceSuggestion } from 'src/app/core/place-service/place.service';
+import { GeoAddress, GeoService } from 'src/app/core/geo-service/geo.service';
 
 function shuffle(array: Image[]): Image[] {
     // tslint:disable-next-line: one-variable-per-declaration
@@ -38,11 +39,14 @@ export class ThemeComponent implements OnInit {
     selectedImage!: Image;
     selectedIndex = 0;
 
+    imageAddress!: GeoAddress;
+
+    // TODO make PlaceLookupComponent
     placeControl = new FormControl('');
     suggestions!: Observable<PlaceSuggestion[]>;
     selected!: PlaceSuggestion;
 
-    constructor(private route: ActivatedRoute, private imageService: ImageService, private placeService: PlaceService) { }
+    constructor(private route: ActivatedRoute, private imageService: ImageService, private placeService: PlaceService, private geoService: GeoService) { }
 
     ngOnInit() {
         this.route.params.subscribe(p => {
@@ -51,6 +55,7 @@ export class ThemeComponent implements OnInit {
             this.imageService.images(this.themeId).then(i => {
                 this.images = shuffle(i);
                 this.selectedImage = this.images[this.selectedIndex];
+                this.initImageAddress();
             });
         });
 
@@ -65,6 +70,13 @@ export class ThemeComponent implements OnInit {
                 return this.placeService.search(value || '');
             }),
         );        
+    }
+
+    initImageAddress(): void {
+        this.geoService.lookup(this.selectedImage.location).then(res => {
+            console.log('Image Address', res);
+            this.imageAddress = res;
+        });
     }
 
     displayFn(suggestion: PlaceSuggestion): string {
