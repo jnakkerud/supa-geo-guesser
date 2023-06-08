@@ -3,7 +3,7 @@ import { Component, NgModule, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { ThemeComponent } from './theme/theme.component';
-import { Theme, ThemeService } from '../core/theme-service/theme-service';
+import { Theme, ThemeService } from '../core/theme-service/theme.service';
 import { Router } from '@angular/router';
 
 @Component({

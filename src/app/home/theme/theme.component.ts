@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ImageService, Image, ImageSize } from '../../core/image-service/image-service';
+import { ImageService, Image, ImageSize } from '../../core/image-service/image.service';
 import { FormControl } from '@angular/forms';
 import { Observable, debounceTime, filter, startWith, switchMap } from 'rxjs';
 import { PlaceService, PlaceSuggestion } from 'src/app/core/place-service/place.service';

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { LongLat } from '../image-service/image-service';
+import { LongLat } from '../image-service/image.service';
 
 export interface GeoAddress {
     placeId: string;

@@ -3,7 +3,7 @@ import { Component, NgModule, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgOptimizedImage } from '@angular/common'
 import { MaterialModule } from '../material.module';
-import { Theme, ThemeService } from '../core/theme-service/theme-service';
+import { Theme, ThemeService } from '../core/theme-service/theme.service';
 import { EditImageComponent } from './edit-image/edit-image.component';
 import { Router } from '@angular/router';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';

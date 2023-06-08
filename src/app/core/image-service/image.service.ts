@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SupabaseService } from '../supabase-service/supabase-service';
+import { SupabaseService } from '../supabase-service/supabase.service';
 import { handleError } from '../utils';
 import { FlickrService } from '../flickr-service/flickr.service';
 

@@ -1,6 +1,6 @@
 <div>
     <div *ngIf="selectedImage">
-        <img [ngSrc]="imgSource(selectedImage)" width="800" height="600" alt="No Image">
+        <img [ngSrc]="imgSource(selectedImage)" width="800" height="600" alt="No Image" [priority]="true">
     </div>
     <div>
         <form class="geo-form">

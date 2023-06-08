@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { flickrConfig } from '../../app-config';
-import { ImageSize, Image } from '../image-service/image-service';
+import { ImageSize, Image } from '../image-service/image.service';
 
 function flickrUrl(methodName: string): URL {
     return new URL(`https://www.flickr.com/services/rest/?method=${methodName}&api_key=${flickrConfig.apiKey}&format=json`);

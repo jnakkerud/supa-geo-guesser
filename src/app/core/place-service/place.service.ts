@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { geoapifyConfig } from '../../app-config';
-import { LongLat } from '../image-service/image-service';
+import { LongLat } from '../image-service/image.service';
 
 export interface PlaceSuggestion {
     description: string;
