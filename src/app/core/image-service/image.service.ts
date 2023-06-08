@@ -2,19 +2,15 @@ import { Injectable } from '@angular/core';
 import { SupabaseService } from '../supabase-service/supabase.service';
 import { handleError } from '../utils';
 import { FlickrService } from '../flickr-service/flickr.service';
+import { LatLon } from '../lat-lon';
 
 export interface Image {
     id: number;
     themeId: number;
     sourceType: SourceType;
     source: any;
-    location: LongLat;
+    location: LatLon;
     description?: string;
-}
-
-export interface LongLat {
-    longitude: number;
-    latitude: number;
 }
 
 export enum SourceType {
@@ -29,7 +25,7 @@ export enum ImageSize {
     LARGE
 }
 
-export function pointToLongLat(point: string): LongLat | null {
+export function pointToLongLat(point: string): LatLon | null {
     const regex = /\((-?\d+.?\d+) (-?\d+.?\d+)\)/;
     const found = point.match(regex);
     if (found) {

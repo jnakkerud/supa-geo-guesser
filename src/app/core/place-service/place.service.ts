@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { geoapifyConfig } from '../../app-config';
-import { LongLat } from '../image-service/image.service';
+import { LatLon } from "../lat-lon";
 
 export interface PlaceSuggestion {
     description: string;
@@ -9,7 +9,7 @@ export interface PlaceSuggestion {
     countryCode: string;
     city: string;
     state: string;
-    location: LongLat;
+    location: LatLon;
 }
 
 @Injectable({providedIn: 'root'})

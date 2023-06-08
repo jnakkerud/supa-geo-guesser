@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Image, ImageService, ImageSize, SourceType, LongLat } from '../../core/image-service/image.service';
+import { Image, ImageService, ImageSize, SourceType } from '../../core/image-service/image.service';
+import { LatLon } from "src/app/core/lat-lon";
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { of } from 'rxjs/internal/observable/of';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -59,7 +60,7 @@ export class EditImageComponent implements OnInit {
         });
     }
 
-    addMarker(location: LongLat): void {
+    addMarker(location: LatLon): void {
 		const newMarker = marker(
 			[ location.latitude, location.longitude ],
 			{
