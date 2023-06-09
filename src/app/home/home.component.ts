@@ -5,13 +5,13 @@ import { MaterialModule } from '../material.module';
 import { ThemeComponent } from './theme/theme.component';
 import { Theme, ThemeService } from '../core/theme-service/theme.service';
 import { Router } from '@angular/router';
+import { SharedModule } from '../shared/shared.module';
 
 @Component({
     selector: 'home',
     templateUrl: './home.component.html',
     styleUrls: ['home.component.scss']
 })
-
 export class HomeComponent implements OnInit {
     
     themes!: Promise<Theme[]>;
@@ -31,7 +31,7 @@ export class HomeComponent implements OnInit {
 
 @NgModule({
     imports: [
-        CommonModule, ReactiveFormsModule, MaterialModule, NgOptimizedImage],
+        CommonModule, ReactiveFormsModule, MaterialModule, NgOptimizedImage, SharedModule],
     exports: [HomeComponent, ThemeComponent],
     declarations: [HomeComponent, ThemeComponent],
   })

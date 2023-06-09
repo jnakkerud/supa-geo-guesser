@@ -2,18 +2,9 @@
     <div *ngIf="selectedImage">
         <img [ngSrc]="imgSource(selectedImage)" width="800" height="600" alt="No Image" [priority]="true">
     </div>
-    <div>
-        <form class="geo-form">
-            <mat-form-field class="geo-full-width">
-                <mat-label>Places</mat-label>
-                <input type="text" placeholder="Enter location" matInput [formControl]="placeControl"
-                    [matAutocomplete]="auto">
-                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelection($event.option.value)">
-                    <mat-option *ngFor="let option of suggestions | async" [value]="option">
-                        {{option.description}}
-                    </mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
-        </form>
-    </div>
+    <place-suggestion-list (selectionChange)="onPlaceSuggestionSelection($event)">
+        <place-suggestion></place-suggestion>
+        <place-suggestion></place-suggestion>
+        <place-suggestion></place-suggestion>
+    </place-suggestion-list>
 </div>

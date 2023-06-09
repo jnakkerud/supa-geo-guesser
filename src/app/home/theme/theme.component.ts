@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService, Image, ImageSize } from '../../core/image-service/image.service';
-import { FormControl } from '@angular/forms';
-import { Observable, debounceTime, filter, startWith, switchMap } from 'rxjs';
-import { PlaceService, PlaceSuggestion } from 'src/app/core/place-service/place.service';
+import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
 import { GeoAddress, GeoService } from 'src/app/core/geo-service/geo.service';
+import { PlaceSuggestionListChange } from 'src/app/shared/place-suggestion/place-suggestion-list.component';
 
 function shuffle(array: Image[]): Image[] {
     // tslint:disable-next-line: one-variable-per-declaration
@@ -41,12 +40,10 @@ export class ThemeComponent implements OnInit {
 
     imageAddress!: GeoAddress;
 
-    // TODO make PlaceLookupComponent
-    placeControl = new FormControl('');
-    suggestions!: Observable<PlaceSuggestion[]>;
-    selected!: PlaceSuggestion;
-
-    constructor(private route: ActivatedRoute, private imageService: ImageService, private placeService: PlaceService, private geoService: GeoService) { }
+    constructor(
+        private route: ActivatedRoute, 
+        private imageService: ImageService,
+        private geoService: GeoService) { }
 
     ngOnInit() {
         this.route.params.subscribe(p => {
@@ -58,18 +55,6 @@ export class ThemeComponent implements OnInit {
                 this.initImageAddress();
             });
         });
-
-        this.suggestions = this.placeControl.valueChanges.pipe(
-            startWith(''),
-            debounceTime(300),
-            filter(value => typeof value === 'string'),
-            switchMap(value => {
-                // When text field length is 2 char or less,
-                // return empty array to hide the drop down.                
-                if (value?.length! <= 2) return [];
-                return this.placeService.search(value || '');
-            }),
-        );        
     }
 
     initImageAddress(): void {
@@ -79,13 +64,17 @@ export class ThemeComponent implements OnInit {
         });
     }
 
-    displayFn(suggestion: PlaceSuggestion): string {
-        return suggestion && suggestion.description ? suggestion.description : '';
-    }    
+    onPlaceSuggestionSelection(event: PlaceSuggestionListChange) {
+        console.log(event);
+    }
 
-    onSelection(selection: PlaceSuggestion) {
-        this.selected = selection;
-        // TODO calculate score, lock the control
+    score(selection: PlaceSuggestion) {
+        // this.selected = selection;
+
+
+        // TODO PlaceSelectionList: https://github.com/angular/components/blob/main/src/material/list/selection-list.ts
+
+        // TODO calculate score, return score to control, lock control
     }
 
     imgSource(image: Image): string {
