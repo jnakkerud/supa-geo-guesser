@@ -1,11 +1,17 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChildren, EventEmitter, Output, QueryList, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ContentChildren, EventEmitter, Output, QueryList, ViewEncapsulation } from '@angular/core';
 import { PlaceSuggestionComponent } from './place-suggestion.component';
+import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
 
 export class PlaceSuggestionListChange {
     constructor(
-      //public source: MatSelectionList,
-      public placeSuggestion: PlaceSuggestionComponent
+      public source: PlaceSuggestionListComponent,
+      public placeSuggestionComponent: PlaceSuggestionComponent,
+      public index: number
     ) {}
+
+    get placeSuggestion(): PlaceSuggestion {
+        return this.placeSuggestionComponent.selected;
+    }
 }
 
 @Component({
@@ -17,33 +23,36 @@ export class PlaceSuggestionListChange {
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaceSuggestionListComponent implements AfterViewInit {
+export class PlaceSuggestionListComponent {
  
     @ContentChildren(PlaceSuggestionComponent, {descendants: true}) items!: QueryList<PlaceSuggestionComponent>;
 
     @Output() selectionChange: EventEmitter<PlaceSuggestionListChange> = new EventEmitter<PlaceSuggestionListChange>();    
     
-    constructor() { }
-
-    ngAfterViewInit() { 
-        // bind parent
-        this.items.forEach(item => {
-            item.parent = this;
-        });
-    }
-
-    makeSelectionFunc(): (value: PlaceSuggestionComponent) => void  {
-        const change = this.selectionChange;
-        return (value) => {
-            console.log(change)
-            change.emit(new PlaceSuggestionListChange(value));
-        }
-    }
-
     onSelectionChange(suggestionComponent: PlaceSuggestionComponent): void {
-        // Find the index
-        // Get the suggestion
-        // Fire off the event
-        this.selectionChange.emit(new PlaceSuggestionListChange(suggestionComponent));
+        // user has selected as place
+        const index = this.findIndex(suggestionComponent);
+        this.selectionChange.emit(new PlaceSuggestionListChange(this, suggestionComponent, index));
     }
+
+    nextSuggestion(index: number): void {
+        // toggle current suggestion as inactive
+        const activeSuggestion = this.items.find(item => item.activated);
+        if (activeSuggestion) activeSuggestion.activated = false;
+
+        // move to next suggestion an make active
+        const nextSuggestion = this.items.toArray()[(index+1)%this.items.length];
+        nextSuggestion.activated = true;
+    }
+
+    private findIndex(suggestionComponent: PlaceSuggestionComponent): number {
+        let result = -1;
+        this.items.forEach((item, index) => {
+            if (item.id === suggestionComponent.id) {
+                result = index;
+            }
+        });
+        return result;
+    }
+
 }

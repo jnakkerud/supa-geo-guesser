@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, debounceTime, filter, startWith, switchMap } from 'rxjs';
 import { PlaceService, PlaceSuggestion } from 'src/app/core/place-service/place.service';
 import { PlaceSuggestionListComponent } from './place-suggestion-list.component';
+import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 
+// Counter used to set a unique id and name for a selectable item 
+let nextId = 0;
 @Component({
     selector: 'place-suggestion',
     templateUrl: 'place-suggestion.component.html',
@@ -15,9 +18,27 @@ export class PlaceSuggestionComponent implements OnInit {
     suggestions!: Observable<PlaceSuggestion[]>;
     selected!: PlaceSuggestion;
     
-    parent!: PlaceSuggestionListComponent;
+    // An ID to identify this suggestion as unique
+    id = `${nextId++}`;
 
-    constructor(private placeService: PlaceService,) { }
+    parent: PlaceSuggestionListComponent = inject(PlaceSuggestionListComponent);
+
+    @Input()
+    get activated(): boolean {
+        return this._activated;
+    }
+    set activated(value: BooleanInput) {
+        const newValue = coerceBooleanProperty(value);
+
+        if (newValue !== this._activated) {
+            this._activated = newValue;
+            // Toggle disabled
+            this._activated ? this.placeControl.enable() : this.placeControl.disable();
+        }
+    }
+    private _activated = true;
+
+    constructor(private placeService: PlaceService) { }
 
     ngOnInit() { 
         this.suggestions = this.placeControl.valueChanges.pipe(
@@ -37,6 +58,7 @@ export class PlaceSuggestionComponent implements OnInit {
         return suggestion?.description || '';
     }
     
+    // Called from AutoComplete
     onSelection(selection: PlaceSuggestion) {
         this.selected = selection;
         this.parent.onSelectionChange(this);

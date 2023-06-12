@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService, Image, ImageSize } from '../../core/image-service/image.service';
-import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
-import { GeoAddress, GeoService } from 'src/app/core/geo-service/geo.service';
 import { PlaceSuggestionListChange } from 'src/app/shared/place-suggestion/place-suggestion-list.component';
+import { Score, ScoreCard, ScoreService } from 'src/app/core/score-service/score.service';
 
 function shuffle(array: Image[]): Image[] {
     // tslint:disable-next-line: one-variable-per-declaration
@@ -28,22 +27,23 @@ function shuffle(array: Image[]): Image[] {
 @Component({
     selector: 'theme',
     templateUrl: './theme.component.html',
-    styleUrls: ['theme.component.scss']
+    styleUrls: ['theme.component.scss'],
+    providers: [ScoreService]
 })
-
 export class ThemeComponent implements OnInit {
 
     themeId!: number;
     images!: Image[];
     selectedImage!: Image;
-    selectedIndex = 0;
+    selectedImageIndex = 0;
 
-    imageAddress!: GeoAddress;
+    scoreCard!: ScoreCard;    
+    scores: Score[] = [];
 
     constructor(
         private route: ActivatedRoute, 
         private imageService: ImageService,
-        private geoService: GeoService) { }
+        private scoreService: ScoreService) { }
 
     ngOnInit() {
         this.route.params.subscribe(p => {
@@ -51,30 +51,27 @@ export class ThemeComponent implements OnInit {
             // get images
             this.imageService.images(this.themeId).then(i => {
                 this.images = shuffle(i);
-                this.selectedImage = this.images[this.selectedIndex];
-                this.initImageAddress();
+                this.setImage(this.images[this.selectedImageIndex]);
             });
         });
     }
 
-    initImageAddress(): void {
-        this.geoService.lookup(this.selectedImage.location).then(res => {
-            console.log('Image Address', res);
-            this.imageAddress = res;
-        });
+    setImage(image: Image): void {
+        this.selectedImage = image;
+        this.scoreCard = this.scoreService.createScoreCard(this.selectedImage);
+        this.scores = this.scoreCard.scores;
     }
 
+    /**
+     * User has selected a place
+     *  1) score
+     *  2) Update the place suggestion with score
+     *  3) Move to next: suggestion/image tally score for game 
+     */
     onPlaceSuggestionSelection(event: PlaceSuggestionListChange) {
-        console.log(event);
-    }
-
-    score(selection: PlaceSuggestion) {
-        // this.selected = selection;
-
-
-        // TODO PlaceSelectionList: https://github.com/angular/components/blob/main/src/material/list/selection-list.ts
-
-        // TODO calculate score, return score to control, lock control
+        this.scoreService.score(this.scores[event.index], event.placeSuggestion);
+        // TODO if continue game, next image or game over
+        event.source.nextSuggestion(event.index);
     }
 
     imgSource(image: Image): string {
