@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ImageService, Image, ImageSize } from '../../core/image-service/image.service';
 import { PlaceSuggestionListChange, PlaceSuggestionListComponent } from 'src/app/shared/place-suggestion/place-suggestion-list.component';
 import { Score, ScoreCard, ScoreService } from 'src/app/core/score-service/score.service';
-import { tileLayer, latLng, Layer } from 'leaflet';
+import { tileLayer, latLng, Layer, icon, marker } from 'leaflet';
 import { LatLon } from 'src/app/core/lat-lon';
 
 function shuffle(array: Image[]): Image[] {
@@ -105,6 +105,24 @@ export class ThemeComponent implements OnInit {
             );
         }
 
-        // TODO add marker to map
+        this.addMarker(latLon);
     }
+
+    // TODO duplicate ... consider shared service
+    addMarker(location: LatLon): void {
+		const newMarker = marker(
+			[ location.latitude, location.longitude ],
+			{
+				icon: icon({
+					iconSize: [ 25, 41 ],
+					iconAnchor: [ 13, 41 ],
+					iconUrl: 'assets/leaflet/marker-icon.png',
+					iconRetinaUrl: 'assets/leaflet/marker-icon-2x.png',
+					shadowUrl: 'assets/leaflet/marker-shadow.png'
+				})
+			}
+		);
+
+		this.markers.push(newMarker);
+	}    
 }
