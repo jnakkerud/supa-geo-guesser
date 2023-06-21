@@ -1,9 +1,10 @@
-<div>
+<div class="container">
     <div *ngIf="selectedImage">
         <img [ngSrc]="imgSource(selectedImage)" width="800" height="600" alt="No Image" [priority]="true">
     </div>
-    <place-suggestion-list (selectionChange)="onPlaceSuggestionSelection($event)">
+    <place-suggestion-list #placeSuggestionList (selectionChange)="onPlaceSuggestionSelection($event)">
         <place-suggestion *ngFor="let score of scores; index as i; first as isFirst" [activated]="isFirst">            
         </place-suggestion>
     </place-suggestion-list>
+    <div class="map-container" leaflet [leafletOptions]="mapOptions" [leafletLayers]="markers" (leafletClick)="mapClicked($event)"></div>
 </div>

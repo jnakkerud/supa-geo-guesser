@@ -9,7 +9,7 @@ export class PlaceSuggestionListChange {
       public index: number
     ) {}
 
-    get placeSuggestion(): PlaceSuggestion {
+    get placeSuggestion(): Partial<PlaceSuggestion> {
         return this.placeSuggestionComponent.selected;
     }
 }
@@ -37,12 +37,16 @@ export class PlaceSuggestionListComponent {
 
     nextSuggestion(index: number): void {
         // toggle current suggestion as inactive
-        const activeSuggestion = this.items.find(item => item.activated);
+        const activeSuggestion = this.activePlaceSuggestionComponent();
         if (activeSuggestion) activeSuggestion.activated = false;
 
         // move to next suggestion an make active
         const nextSuggestion = this.items.toArray()[(index+1)%this.items.length];
         nextSuggestion.activated = true;
+    }
+
+    activePlaceSuggestionComponent(): PlaceSuggestionComponent | undefined {
+        return this.items.find(item => item.activated);
     }
 
     private findIndex(suggestionComponent: PlaceSuggestionComponent): number {

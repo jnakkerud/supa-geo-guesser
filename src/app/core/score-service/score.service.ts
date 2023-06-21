@@ -35,7 +35,7 @@ export class ScoreService {
         return scoreCard;
     }
 
-    score(score: Score, placeSuggestion: PlaceSuggestion): Score {
+    score(score: Score, placeSuggestion: Partial<PlaceSuggestion>): Score {
         // TODO 
         return score;
     }

@@ -14,9 +14,9 @@ let nextId = 0;
 })
 export class PlaceSuggestionComponent implements OnInit {
 
-    placeControl = new FormControl('');
+    placeControl = new FormControl<any>('');
     suggestions!: Observable<PlaceSuggestion[]>;
-    selected!: PlaceSuggestion;
+    selected!: Partial<PlaceSuggestion>;
     
     // An ID to identify this suggestion as unique
     id = `${nextId++}`;
@@ -59,8 +59,13 @@ export class PlaceSuggestionComponent implements OnInit {
     }
     
     // Called from AutoComplete
-    onSelection(selection: PlaceSuggestion) {
+    onSelection(selection: Partial<PlaceSuggestion>) {
         this.selected = selection;
         this.parent.onSelectionChange(this);
-    }    
+    }
+
+    setSuggestion(suggestion: Partial<PlaceSuggestion>) {
+        this.placeControl.patchValue(suggestion);
+        this.onSelection(suggestion);
+    }
 }

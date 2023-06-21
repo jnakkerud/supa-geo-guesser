@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService, Image, ImageSize } from '../../core/image-service/image.service';
-import { PlaceSuggestionListChange } from 'src/app/shared/place-suggestion/place-suggestion-list.component';
+import { PlaceSuggestionListChange, PlaceSuggestionListComponent } from 'src/app/shared/place-suggestion/place-suggestion-list.component';
 import { Score, ScoreCard, ScoreService } from 'src/app/core/score-service/score.service';
+import { tileLayer, latLng, Layer } from 'leaflet';
+import { LatLon } from 'src/app/core/lat-lon';
 
 function shuffle(array: Image[]): Image[] {
     // tslint:disable-next-line: one-variable-per-declaration
@@ -23,7 +25,6 @@ function shuffle(array: Image[]): Image[] {
 
     return array;
 }
-
 @Component({
     selector: 'theme',
     templateUrl: './theme.component.html',
@@ -39,6 +40,20 @@ export class ThemeComponent implements OnInit {
 
     scoreCard!: ScoreCard;    
     scores: Score[] = [];
+
+    mapOptions = {
+        layers:[tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            opacity: 0.7,
+            maxZoom: 19,
+            detectRetina: true,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          })],
+          zoom:2,
+          center:latLng(0,0)
+    }; 
+    markers: Layer[] = [];
+
+    @ViewChild(PlaceSuggestionListComponent) placeSuggestionList!: PlaceSuggestionListComponent;
 
     constructor(
         private route: ActivatedRoute, 
@@ -76,5 +91,20 @@ export class ThemeComponent implements OnInit {
 
     imgSource(image: Image): string {
         return this.imageService.getImageUrl(image, ImageSize.MEDIUM);
+    }
+
+    mapClicked(event: any) {
+        const latLon: LatLon = {latitude: event.latlng.lat, longitude: event.latlng.lng}
+        const active = this.placeSuggestionList.activePlaceSuggestionComponent();
+        if (active) {
+            active.setSuggestion(
+                {
+                    description: `${latLon.latitude} , ${latLon.longitude}`,
+                    location: latLon
+                }
+            );
+        }
+
+        // TODO add marker to map
     }
 }
