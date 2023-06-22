@@ -39,8 +39,8 @@
             </div>
         </mat-tab>
         <mat-tab label="Map">
-            <ng-template matTabContent>
-                <div class="edit-map-container" leaflet [leafletOptions]="mapOptions" [leafletLayers]="markers"></div>
+            <ng-template class="edit-map-container" matTabContent>
+                <image-map [images]="images"></image-map>
             </ng-template>
         </mat-tab>
     </mat-tab-group>

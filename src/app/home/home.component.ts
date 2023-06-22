@@ -6,7 +6,6 @@ import { ThemeComponent } from './theme/theme.component';
 import { Theme, ThemeService } from '../core/theme-service/theme.service';
 import { Router } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 @Component({
     selector: 'home',
@@ -36,8 +35,7 @@ export class HomeComponent implements OnInit {
         ReactiveFormsModule, 
         MaterialModule, 
         NgOptimizedImage, 
-        SharedModule,
-        LeafletModule],
+        SharedModule],
     exports: [HomeComponent, ThemeComponent],
     declarations: [HomeComponent, ThemeComponent],
   })

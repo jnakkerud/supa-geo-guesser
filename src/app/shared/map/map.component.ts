@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { tileLayer, latLng, Layer, icon, marker } from 'leaflet';
 import { LatLon } from 'src/app/core/lat-lon';
 import { PlaceSuggestionListComponent } from '../place-suggestion/place-suggestion-list.component';
+import { Image } from '../../core/image-service/image.service';
 
 const DEFAULT_HEIGHT = '300px';
 const DEFAULT_WIDTH = '100%';
@@ -12,13 +13,15 @@ const DEFAULT_WIDTH = '100%';
     template: `<div [style.width]="width" [style.height]="height" leaflet [leafletOptions]="mapOptions" [leafletLayers]="markers" (leafletClick)="mapClickedHandler($event)"></div>`,
     encapsulation: ViewEncapsulation.None,
 })
-export class MapComponent {
+export class MapComponent implements OnInit {
 
     @Input() height: string | number | null = DEFAULT_HEIGHT;
 
     @Input() width: string | number | null = DEFAULT_WIDTH;
 
     @Input() placeSuggestionList!: PlaceSuggestionListComponent;
+
+    @Input() images!: Image[];
 
     mapOptions = {
         layers:[tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -31,6 +34,19 @@ export class MapComponent {
           center:latLng(0,0)
     }; 
     markers: Layer[] = [];
+
+    // TODO ngOnChanges
+    ngOnInit(): void {
+        if (this.images) {
+            this.addImages(this.images);
+        }
+    }
+
+    addImages(images: Image[]) {
+        images.forEach(i => {
+            this.addMarker(i.location);
+        });        
+    }
 
     addMarker(location: LatLon): void {
 		const newMarker = marker(
