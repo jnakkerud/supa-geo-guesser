@@ -21,7 +21,8 @@ export class PlaceSuggestionListChange {
     </div>`,
     styleUrls: ['place-suggestion-list.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    exportAs: 'placeSuggestionList'
 })
 export class PlaceSuggestionListComponent {
  
@@ -59,4 +60,12 @@ export class PlaceSuggestionListComponent {
         return result;
     }
 
+    setPlaceSuggestion(placeSuggestion: Partial<PlaceSuggestion>) {
+        const activeComponent = this.activePlaceSuggestionComponent();
+        if (activeComponent) {
+            const location = placeSuggestion.location;
+            placeSuggestion.description = placeSuggestion.description || `${location?.latitude} , ${location?.longitude}`
+            activeComponent.setSuggestion(placeSuggestion);           
+        }
+    }
 }
