@@ -13,7 +13,7 @@ const DEFAULT_WIDTH = '100%';
     template: `<div [style.width]="width" [style.height]="height" leaflet [leafletOptions]="mapOptions" [leafletLayers]="markers" (leafletClick)="mapClickedHandler($event)"></div>`,
     encapsulation: ViewEncapsulation.None,
 })
-export class MapComponent {
+export class ImageMapComponent {
 
     @Input() height: string | number | null = DEFAULT_HEIGHT;
 
