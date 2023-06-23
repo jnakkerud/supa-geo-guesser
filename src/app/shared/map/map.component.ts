@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
 import { tileLayer, latLng, Layer, icon, marker } from 'leaflet';
 import { LatLon } from 'src/app/core/lat-lon';
 import { PlaceSuggestionListComponent } from '../place-suggestion/place-suggestion-list.component';
@@ -13,7 +13,7 @@ const DEFAULT_WIDTH = '100%';
     template: `<div [style.width]="width" [style.height]="height" leaflet [leafletOptions]="mapOptions" [leafletLayers]="markers" (leafletClick)="mapClickedHandler($event)"></div>`,
     encapsulation: ViewEncapsulation.None,
 })
-export class MapComponent implements OnInit {
+export class MapComponent {
 
     @Input() height: string | number | null = DEFAULT_HEIGHT;
 
@@ -21,7 +21,17 @@ export class MapComponent implements OnInit {
 
     @Input() placeSuggestionList!: PlaceSuggestionListComponent;
 
-    @Input() images!: Image[];
+    @Input() get images(): Image[] {
+        return this._images;
+    }
+    set images(value: Image[]) {
+        if (this._images) {
+            this.removeImageMarkers();
+        }
+        this._images = value;
+        this.addImageMarkers();
+    }
+    _images!: Image[];
 
     mapOptions = {
         layers:[tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -34,14 +44,7 @@ export class MapComponent implements OnInit {
           center:latLng(0,0)
     }; 
     markers: Layer[] = [];
-
-    // TODO ngOnChanges
-    ngOnInit(): void {
-        if (this.images) {
-            this.addImages(this.images);
-        }
-    }
-
+ 
     addImages(images: Image[]) {
         images.forEach(i => {
             this.addMarker(i.location);
@@ -75,5 +78,18 @@ export class MapComponent implements OnInit {
             );
             this.addMarker(latLon);
         }
-    }    
+    }
+    
+    private removeImageMarkers(): void {
+        if (this.markers) {
+            this.markers.forEach(m => {
+                m.remove();
+            });
+        }
+    }
+
+    private addImageMarkers(): void {
+        this.addImages(this.images);
+    }
+    
 }
