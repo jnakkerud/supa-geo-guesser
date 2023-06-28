@@ -1,9 +1,9 @@
-<div class="container">
-    <div *ngIf="selectedImage">
+<div *ngIf="selectedImage" class="container">
+    <div>
         <img [ngSrc]="imgSource(selectedImage)" width="800" height="600" alt="No Image" [priority]="true">
     </div>
     <place-suggestion-list #placeSuggestion="placeSuggestionList" (selectionChange)="onPlaceSuggestionSelection($event)">
-        <place-suggestion *ngFor="let score of scores; index as i; first as isFirst" [activated]="isFirst">            
+        <place-suggestion *ngFor="let score of scoreCard.scores; index as i; first as isFirst" [activated]="isFirst">            
         </place-suggestion>
     </place-suggestion-list>
     <image-map class="map-container" [placeSuggestionList]="placeSuggestion"></image-map>

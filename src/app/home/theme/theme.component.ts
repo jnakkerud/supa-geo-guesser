@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService, Image, ImageSize } from '../../core/image-service/image.service';
 import { PlaceSuggestionListChange } from 'src/app/shared/place-suggestion/place-suggestion-list.component';
-import { Score, ScoreCard, ScoreService } from 'src/app/core/score-service/score.service';
+import { ScoreCard, ScoreService } from 'src/app/core/score-service/score.service';
 
 function shuffle(array: Image[]): Image[] {
     // tslint:disable-next-line: one-variable-per-declaration
@@ -37,7 +37,6 @@ export class ThemeComponent implements OnInit {
     selectedImageIndex = 0;
 
     scoreCard!: ScoreCard;    
-    scores: Score[] = [];
 
     constructor(
         private route: ActivatedRoute, 
@@ -50,6 +49,7 @@ export class ThemeComponent implements OnInit {
             // get images
             this.imageService.images(this.themeId).then(i => {
                 this.images = shuffle(i);
+                this.scoreService.initialize(this.images);
                 this.setImage(this.images[this.selectedImageIndex]);
             });
         });
@@ -57,8 +57,7 @@ export class ThemeComponent implements OnInit {
 
     setImage(image: Image): void {
         this.selectedImage = image;
-        this.scoreCard = this.scoreService.createScoreCard(this.selectedImage);
-        this.scores = this.scoreCard.scores;
+        this.scoreCard = this.scoreService.getScoreCard(this.selectedImage);
     }
 
     /**
@@ -68,7 +67,7 @@ export class ThemeComponent implements OnInit {
      *  3) Move to next: suggestion/image tally score for game 
      */
     onPlaceSuggestionSelection(event: PlaceSuggestionListChange) {
-        this.scoreService.score(this.scores[event.index], event.placeSuggestion);
+        this.scoreService.score(this.scoreCard, event.index, event.placeSuggestion);
         // TODO if continue game, next image or game over
         event.source.nextSuggestion(event.index);
     }
