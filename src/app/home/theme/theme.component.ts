@@ -67,7 +67,9 @@ export class ThemeComponent implements OnInit {
      *  3) Move to next: suggestion/image tally score for game 
      */
     onPlaceSuggestionSelection(event: PlaceSuggestionListChange) {
-        this.scoreService.score(this.scoreCard, event.index, event.placeSuggestion);
+        this.scoreService.score(this.scoreCard, event.index, event.placeSuggestion).then(s => {
+            console.log(s)
+        });
         // TODO if continue game, next image or game over
         event.source.nextSuggestion(event.index);
     }

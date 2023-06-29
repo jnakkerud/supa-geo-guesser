@@ -24,9 +24,9 @@ export class GeoService {
                 const result: GeoAddress = {
                     placeId: res.place_id,
                     description: res.display_name,
-                    countryCode: res.address.country_code,
-                    state: res.address?.state,
-                    locality: res.address?.city ?? res.address?.town ?? res.address?.village
+                    countryCode: res.address?.country_code ?? '',
+                    state: res.address?.state ?? '',
+                    locality: res.address?.city ?? res.address?.town ?? res.address?.village ?? ''
                 } 
                 resolve(result);
             });        
