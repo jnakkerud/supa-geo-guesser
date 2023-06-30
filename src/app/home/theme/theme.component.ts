@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService, Image, ImageSize } from '../../core/image-service/image.service';
 import { PlaceSuggestionListChange } from 'src/app/shared/place-suggestion/place-suggestion-list.component';
 import { ScoreCard, ScoreService } from 'src/app/core/score-service/score.service';
+import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component';
 
 function shuffle(array: Image[]): Image[] {
     // tslint:disable-next-line: one-variable-per-declaration
@@ -38,6 +39,8 @@ export class ThemeComponent implements OnInit {
 
     scoreCard!: ScoreCard;    
 
+    @ViewChild(ImageMapComponent) imageMap!: ImageMapComponent;
+
     constructor(
         private route: ActivatedRoute, 
         private imageService: ImageService,
@@ -67,6 +70,11 @@ export class ThemeComponent implements OnInit {
      *  3) Move to next: suggestion/image tally score for game 
      */
     onPlaceSuggestionSelection(event: PlaceSuggestionListChange) {
+        // add marker to map
+        if (event.placeSuggestion.location) {
+            this.imageMap.addMarker(event.placeSuggestion.location);
+        }
+        
         this.scoreService.score(this.scoreCard, event.index, event.placeSuggestion).then(s => {
             console.log(s)
         });

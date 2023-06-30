@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
-import { tileLayer, latLng, Layer, icon, marker } from 'leaflet';
+import { tileLayer, latLng, Layer, icon, marker, Map, Marker } from 'leaflet';
 import { LatLon } from 'src/app/core/lat-lon';
 import { PlaceSuggestionListComponent } from '../place-suggestion/place-suggestion-list.component';
 import { Image } from '../../core/image-service/image.service';
@@ -10,7 +10,7 @@ const DEFAULT_WIDTH = '100%';
 @Component({
     selector: 'image-map',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    template: `<div [style.width]="width" [style.height]="height" leaflet [leafletOptions]="mapOptions" [leafletLayers]="markers" (leafletClick)="mapClickedHandler($event)"></div>`,
+    template: `<div id="map" [style.width]="width" [style.height]="height" leaflet [leafletOptions]="mapOptions" [leafletLayers]="markers" (leafletMapReady)="onMapReady($event)" (leafletClick)="mapClickedHandler($event)"></div>`,
     encapsulation: ViewEncapsulation.None,
 })
 export class ImageMapComponent {
@@ -45,27 +45,16 @@ export class ImageMapComponent {
     }; 
     markers: Layer[] = [];
  
-    addImages(images: Image[]) {
-        images.forEach(i => {
-            this.addMarker(i.location);
-        });        
+    map!: Map;
+
+    onMapReady(map: Map) {
+        this.map = map;
     }
 
+    // Add markers from other components
     addMarker(location: LatLon): void {
-		const newMarker = marker(
-			[ location.latitude, location.longitude ],
-			{
-				icon: icon({
-					iconSize: [ 25, 41 ],
-					iconAnchor: [ 13, 41 ],
-					iconUrl: 'assets/leaflet/marker-icon.png',
-					iconRetinaUrl: 'assets/leaflet/marker-icon-2x.png',
-					shadowUrl: 'assets/leaflet/marker-shadow.png'
-				})
-			}
-		);
-
-		this.markers.push(newMarker);
+        const newMarker = this.createStandardMarker(location);
+        newMarker.addTo(this.map);
 	} 
 
     mapClickedHandler(event: any) {
@@ -76,7 +65,6 @@ export class ImageMapComponent {
                     location: latLon
                 }
             );
-            this.addMarker(latLon);
         }
     }
     
@@ -89,7 +77,25 @@ export class ImageMapComponent {
     }
 
     private addImageMarkers(): void {
-        this.addImages(this.images);
+        this.images.forEach(i => {
+            const newMarker = this.createStandardMarker(i.location);
+            this.markers.push(newMarker);
+        });   
     }
     
+    private createStandardMarker(location: LatLon): Marker<any> {
+		const newMarker = marker(
+			[ location.latitude, location.longitude ],
+			{
+				icon: icon({
+					iconSize: [ 25, 41 ],
+					iconAnchor: [ 13, 41 ],
+					iconUrl: 'assets/leaflet/marker-icon.png',
+					iconRetinaUrl: 'assets/leaflet/marker-icon-2x.png',
+					shadowUrl: 'assets/leaflet/marker-shadow.png'
+				})
+			}
+		);
+        return newMarker;
+    }
 }
