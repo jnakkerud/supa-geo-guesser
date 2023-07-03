@@ -82,7 +82,7 @@ export class PlaceSuggestionComponent implements OnInit {
         this.onSelection(suggestion);
     }
 
-    displaceScore(score: Score): void {
+    displayScore(score: Score): void {
         switch (score.score) {
             case COUNTRY_SCORE:
                 this.scoreMessage = {
@@ -116,7 +116,7 @@ export class PlaceSuggestionComponent implements OnInit {
                 this.scoreMessage = {
                     icon: 'cancel',
                     iconColor: 'warn',
-                    message: `Wrong guess, location is ${score.distance} away`
+                    message: `Wrong guess, location is ${score.distance} KM away`
                 };             
         }
 

@@ -1,10 +1,16 @@
 <div *ngIf="selectedImage" class="container">
     <div>
-        <img [ngSrc]="imgSource(selectedImage)" width="800" height="600" alt="No Image" [priority]="true">
+        <img [src]="imgSource(selectedImage)" width="800" height="600" alt="No Image">
     </div>
     <place-suggestion-list class="place-list" #placeSuggestion="placeSuggestionList" (selectionChange)="onPlaceSuggestionSelection($event)">
         <place-suggestion *ngFor="let score of scoreCard.scores; index as i; first as isFirst" [activated]="isFirst">            
         </place-suggestion>
     </place-suggestion-list>
+    <ng-container *ngIf="showNextButtons">
+        <div class="button-row">
+            <button mat-button color="accent" (click)="nextImage()">Next Image</button>
+            <a mat-button routerLink="/">Cancel</a>
+        </div>
+    </ng-container>
     <image-map class="map-container" [placeSuggestionList]="placeSuggestion"></image-map>
 </div>

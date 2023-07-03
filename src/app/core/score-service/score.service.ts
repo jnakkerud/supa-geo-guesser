@@ -4,7 +4,7 @@ import { GeoAddress, GeoService } from '../geo-service/geo.service';
 import { PlaceSuggestion } from '../place-service/place.service';
 import { calculateDistanceInKm } from '../utils';
 
-const TRY_NUMBER = 3;
+export const TRY_NUMBER = 3;
 
 // scores, See GeoAddress
 export const COUNTRY_SCORE = 1;

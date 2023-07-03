@@ -68,4 +68,10 @@ export class PlaceSuggestionListComponent {
             activeComponent.setSuggestion(placeSuggestion);           
         }
     }
+
+    setEnabled(enable: boolean): void {
+        this.items.forEach(item => {
+            item.activated = enable;
+        });
+    }
 }

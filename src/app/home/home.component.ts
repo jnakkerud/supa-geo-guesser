@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, NgModule, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
@@ -6,6 +6,7 @@ import { ThemeComponent } from './theme/theme.component';
 import { Theme, ThemeService } from '../core/theme-service/theme.service';
 import { Router } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
+import { RouterModule } from '@angular/router';
 
 @Component({
     selector: 'home',
@@ -34,7 +35,7 @@ export class HomeComponent implements OnInit {
         CommonModule, 
         ReactiveFormsModule, 
         MaterialModule, 
-        NgOptimizedImage, 
+        RouterModule,
         SharedModule],
     exports: [HomeComponent, ThemeComponent],
     declarations: [HomeComponent, ThemeComponent],

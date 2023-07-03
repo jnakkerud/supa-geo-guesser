@@ -21,3 +21,12 @@
 .place-list {
     width: 400px;
 }
+
+.button-row {
+    display: table-cell;
+    max-width: 600px;
+}
+  
+.button-row .mat-mdc-button-base {
+    margin: 8px 8px 8px 0;
+}
