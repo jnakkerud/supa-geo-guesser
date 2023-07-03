@@ -76,7 +76,7 @@ export class ThemeComponent implements OnInit {
         }
         
         this.scoreService.score(this.scoreCard, event.index, event.placeSuggestion).then(s => {
-            console.log(s)
+            event.placeSuggestionComponent.displaceScore(s);
         });
         // TODO if continue game, next image or game over
         event.source.nextSuggestion(event.index);

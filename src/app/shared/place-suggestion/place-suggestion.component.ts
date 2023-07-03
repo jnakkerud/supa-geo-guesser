@@ -4,6 +4,16 @@ import { Observable, debounceTime, filter, startWith, switchMap } from 'rxjs';
 import { PlaceService, PlaceSuggestion } from 'src/app/core/place-service/place.service';
 import { PlaceSuggestionListComponent } from './place-suggestion-list.component';
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
+import { BONUS, COUNTRY_SCORE, LOCALITY_SCORE, STATE_SCORE, Score } from 'src/app/core/score-service/score.service';
+import { ThemePalette } from '@angular/material/core';
+
+type MessageIcon = 'cancel' | 'check_circle' | 'do_not_disturb_on';
+
+interface ScoreMessage {
+    message: string;
+    icon: MessageIcon;
+    iconColor: ThemePalette | '';
+}
 
 // Counter used to set a unique id and name for a selectable item 
 let nextId = 0;
@@ -22,6 +32,9 @@ export class PlaceSuggestionComponent implements OnInit {
     id = `${nextId++}`;
 
     parent: PlaceSuggestionListComponent = inject(PlaceSuggestionListComponent);
+
+    // Score messaging
+    scoreMessage!: ScoreMessage;
 
     @Input()
     get activated(): boolean {
@@ -67,5 +80,49 @@ export class PlaceSuggestionComponent implements OnInit {
     setSuggestion(suggestion: Partial<PlaceSuggestion>) {
         this.placeControl.patchValue(suggestion);
         this.onSelection(suggestion);
+    }
+
+    displaceScore(score: Score): void {
+        switch (score.score) {
+            case COUNTRY_SCORE:
+                this.scoreMessage = {
+                    icon: 'do_not_disturb_on',
+                    iconColor: '',
+                    message: 'Location is in the correct country'
+                };             
+                break;
+            case STATE_SCORE:
+                this.scoreMessage = {
+                    icon: 'do_not_disturb_on',
+                    iconColor: '',
+                    message: 'Location is in the correct state/province'
+                };             
+                break;
+            case LOCALITY_SCORE:
+                this.scoreMessage = {
+                    icon: 'check_circle',
+                    iconColor: 'accent',
+                    message: 'Location is correct!'
+                };             
+                break;
+            case BONUS:
+                this.scoreMessage = {
+                    icon: 'check_circle',
+                    iconColor: 'accent',
+                    message: 'Location is correct on the first try!'
+                };             
+                break;
+            default:
+                this.scoreMessage = {
+                    icon: 'cancel',
+                    iconColor: 'warn',
+                    message: `Wrong guess, location is ${score.distance} away`
+                };             
+        }
+
+    }
+
+    get message(): string {
+        return this.scoreMessage?.message || '';
     }
 }

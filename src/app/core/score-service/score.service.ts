@@ -7,10 +7,10 @@ import { calculateDistanceInKm } from '../utils';
 const TRY_NUMBER = 3;
 
 // scores, See GeoAddress
-const COUNTRY_SCORE = 1;
-const STATE_SCORE = 2;
-const LOCALITY_SCORE = 3; // or within 5 KM
-const BONUS = 5; // first try is correct
+export const COUNTRY_SCORE = 1;
+export const STATE_SCORE = 2;
+export const LOCALITY_SCORE = 3; // or within 5 KM
+export const BONUS = 5; // first try is correct
 
 function geoAddressValue(geoAddress: GeoAddress, property: keyof GeoAddress): any {
     return geoAddress[property];

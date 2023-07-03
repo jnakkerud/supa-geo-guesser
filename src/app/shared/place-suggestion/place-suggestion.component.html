@@ -1,12 +1,14 @@
 <form class="suggestion-form">
     <mat-form-field class="suggestion-full-width">
-        <mat-label>Places</mat-label>
-        <input type="text" placeholder="Enter location" matInput [formControl]="placeControl"
+        <mat-label>Guess Location</mat-label>
+        <input type="text" matInput [formControl]="placeControl"
             [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelection($event.option.value)">
             <mat-option *ngFor="let option of suggestions | async" [value]="option">
                 {{option.description}}
             </mat-option>
         </mat-autocomplete>
+        <mat-icon *ngIf="scoreMessage" matSuffix [color]="scoreMessage.iconColor">{{scoreMessage.icon}}</mat-icon>
+        <mat-hint>{{message}}</mat-hint>
     </mat-form-field>
 </form>
