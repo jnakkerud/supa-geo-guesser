@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService, Image, ImageSize } from '../../core/image-service/image.service';
-import { PlaceSuggestionListChange } from 'src/app/shared/place-suggestion/place-suggestion-list.component';
+import { PlaceSuggestionListChange, PlaceSuggestionListComponent } from 'src/app/shared/place-suggestion/place-suggestion-list.component';
 import { LOCALITY_SCORE, ScoreCard, ScoreService, TRY_NUMBER } from 'src/app/core/score-service/score.service';
 import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component';
+import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
 
 function shuffle(array: Image[]): Image[] {
     // tslint:disable-next-line: one-variable-per-declaration
@@ -41,6 +42,7 @@ export class ThemeComponent implements OnInit {
     showNextButtons!: boolean;
 
     @ViewChild(ImageMapComponent) imageMap!: ImageMapComponent;
+    @ViewChild(PlaceSuggestionListComponent) placeSuggestionList!: PlaceSuggestionListComponent;
 
     constructor(
         private route: ActivatedRoute, 
@@ -73,25 +75,28 @@ export class ThemeComponent implements OnInit {
      *  3) Move to next: suggestion/image tally score for game 
      */
     onPlaceSuggestionSelection(event: PlaceSuggestionListChange) {
+        const placeSuggestion: Partial<PlaceSuggestion> = event.placeSuggestion;
+        const tryIndex = event.index;
+
         // add marker to map
-        if (event.placeSuggestion.location) {
-            this.imageMap.addMarker(event.placeSuggestion.location);
+        if (placeSuggestion.location) {
+            this.imageMap.addMarker(placeSuggestion.location);
         }
         
-        this.scoreService.score(this.scoreCard, event.index, event.placeSuggestion).then(s => {
+        this.scoreService.score(this.scoreCard, tryIndex, placeSuggestion).then(s => {
             event.placeSuggestionComponent.displayScore(s);
-            if (s.score >= LOCALITY_SCORE || event.index == (TRY_NUMBER-1)) {
+            if (s.score >= LOCALITY_SCORE || tryIndex == (TRY_NUMBER-1)) {
                 // Show next | cancel buttons
                 this.showNextButtons = true;
                 // Disable current suggestions
-                event.source.setEnabled(false);
+                this.placeSuggestionList.setEnabled(false);
 
                 // TODO show actual location on map?
             } else if (this.selectedImageIndex == (this.images.length-1)) {
                 // TODO game over, show results
             } else {
                 // move to the next suggestion for the current image
-                event.source.nextSuggestion(event.index);
+                this.placeSuggestionList.nextSuggestion(tryIndex);
             }
         });
     }
