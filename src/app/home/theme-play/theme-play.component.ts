@@ -25,13 +25,14 @@ function shuffle(array: Image[]): Image[] {
 
     return array;
 }
+
 @Component({
-    selector: 'theme',
-    templateUrl: './theme.component.html',
-    styleUrls: ['theme.component.scss'],
+    selector: 'theme-play',
+    templateUrl: './theme-play.component.html',
+    styleUrls: ['theme-play.component.scss'],
     providers: [ScoreService]
 })
-export class ThemeComponent implements OnInit {
+export class ThemePlayComponent implements OnInit {
 
     themeId!: number;
     images!: Image[];
@@ -50,6 +51,7 @@ export class ThemeComponent implements OnInit {
         private scoreService: ScoreService) { }
 
     ngOnInit() {
+        // TODO init game: ScoreService rename to GameService
         this.route.params.subscribe(p => {
             this.themeId = Number(p['id']);
             // get images
@@ -84,14 +86,14 @@ export class ThemeComponent implements OnInit {
         }
         
         this.scoreService.score(this.scoreCard, tryIndex, placeSuggestion).then(s => {
-            event.placeSuggestionComponent.displayScore(s);
+            event.placeSuggestionComponent.displayScore(s); // TODO better way for component to react to score change? Signals?
             if (s.score >= LOCALITY_SCORE || tryIndex == (TRY_NUMBER-1)) {
+                // TODO show summary: Score + ??
+
                 // Show next | cancel buttons
                 this.showNextButtons = true;
                 // Disable current suggestions
                 this.placeSuggestionList.setEnabled(false);
-
-                // TODO show actual location on map?
             } else if (this.selectedImageIndex == (this.images.length-1)) {
                 // TODO game over, show results
             } else {

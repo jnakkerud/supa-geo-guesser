@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, NgModule, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
-import { ThemeComponent } from './theme/theme.component';
+import { ThemePlayComponent } from './theme-play/theme-play.component';
 import { Theme, ThemeService } from '../core/theme-service/theme.service';
 import { Router } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
         MaterialModule, 
         RouterModule,
         SharedModule],
-    exports: [HomeComponent, ThemeComponent],
-    declarations: [HomeComponent, ThemeComponent],
+    exports: [HomeComponent, ThemePlayComponent],
+    declarations: [HomeComponent, ThemePlayComponent],
   })
 export class HomeModule {}
