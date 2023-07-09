@@ -6,11 +6,22 @@
         <place-suggestion *ngFor="let score of scoreCard.scores; index as i; first as isFirst" [activated]="isFirst">            
         </place-suggestion>
     </place-suggestion-list>
-    <ng-container *ngIf="showNextButtons">
-        <div class="button-row">
-            <button mat-button color="accent" (click)="nextImage()">Next Image</button>
-            <a mat-button routerLink="/">Cancel</a>
-        </div>
+    <ng-container [ngSwitch]="playStatus">
+        <ng-container *ngSwitchCase="'next_image'">
+            <span>Score: {{score}}</span>
+            <div class="button-row">
+                <button mat-button color="accent" (click)="nextImage()">Next Image</button>
+                <a mat-button routerLink="/">Cancel</a>
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'play_end'">
+            <span>Total Score: {{totalResult.score}}</span>
+            <div class="button-row">
+                <a mat-button [routerLink]="['/result', totalResult.id]">Score Details</a>
+                <a mat-button color="accent" routerLink="/">New Game</a>
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchDefault></ng-container>
     </ng-container>
     <image-map class="map-container" [placeSuggestionList]="placeSuggestion"></image-map>
 </div>

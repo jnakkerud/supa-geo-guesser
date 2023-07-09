@@ -5,6 +5,7 @@ import { PlaceSuggestionListChange, PlaceSuggestionListComponent } from 'src/app
 import { LOCALITY_SCORE, ScoreCard, ScoreService, TRY_NUMBER } from 'src/app/core/score-service/score.service';
 import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component';
 import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
+import { TotalResult } from 'src/app/core/results-service/results.service';
 
 function shuffle(array: Image[]): Image[] {
     // tslint:disable-next-line: one-variable-per-declaration
@@ -26,6 +27,8 @@ function shuffle(array: Image[]): Image[] {
     return array;
 }
 
+export type PlayStatus = 'play_end' | 'next_image' | 'next_suggestion' | 'play_start';
+
 @Component({
     selector: 'theme-play',
     templateUrl: './theme-play.component.html',
@@ -36,35 +39,38 @@ export class ThemePlayComponent implements OnInit {
 
     themeId!: number;
     images!: Image[];
+
     selectedImage!: Image;
     selectedImageIndex = 0;
     scoreCard!: ScoreCard; 
-    
-    showNextButtons!: boolean;
+    score!: number;
+
+    playStatus: PlayStatus = 'play_start';
+    totalResult!: TotalResult;
 
     @ViewChild(ImageMapComponent) imageMap!: ImageMapComponent;
     @ViewChild(PlaceSuggestionListComponent) placeSuggestionList!: PlaceSuggestionListComponent;
 
     constructor(
-        private route: ActivatedRoute, 
+        private route: ActivatedRoute,
         private imageService: ImageService,
         private scoreService: ScoreService) { }
 
     ngOnInit() {
-        // TODO init game: ScoreService rename to GameService
         this.route.params.subscribe(p => {
             this.themeId = Number(p['id']);
             // get images
             this.imageService.images(this.themeId).then(i => {
                 this.images = shuffle(i);
-                this.scoreService.initialize(this.images);
+                this.scoreService.initialize(this.themeId, this.images);
                 this.setImage(this.images[this.selectedImageIndex]);
             });
         });
     }
 
     setImage(image: Image): void {
-        this.showNextButtons = false;
+        this.playStatus = 'play_start';
+        this.score = 0;
         // TODO reset the map
         this.selectedImage = image;
         this.scoreCard = this.scoreService.getScoreCard(this.selectedImage);
@@ -87,16 +93,18 @@ export class ThemePlayComponent implements OnInit {
         
         this.scoreService.score(this.scoreCard, tryIndex, placeSuggestion).then(s => {
             event.placeSuggestionComponent.displayScore(s); // TODO better way for component to react to score change? Signals?
-            if (s.score >= LOCALITY_SCORE || tryIndex == (TRY_NUMBER-1)) {
-                // TODO show summary: Score + ??
-
-                // Show next | cancel buttons
-                this.showNextButtons = true;
+            if (this.selectedImageIndex == (this.images.length-1)) {
+                this.scoreService.getTotalScore().then(ts => {
+                    this.playStatus = 'play_end';
+                    this.totalResult = ts;
+                });
+            } else if (s.score >= LOCALITY_SCORE || tryIndex == (TRY_NUMBER-1)) {
+                this.score = s.score;
+                this.playStatus = 'next_image';
                 // Disable current suggestions
                 this.placeSuggestionList.setEnabled(false);
-            } else if (this.selectedImageIndex == (this.images.length-1)) {
-                // TODO game over, show results
             } else {
+                this.playStatus = 'next_suggestion';
                 // move to the next suggestion for the current image
                 this.placeSuggestionList.nextSuggestion(tryIndex);
             }
@@ -109,7 +117,7 @@ export class ThemePlayComponent implements OnInit {
 
     nextImage(): void {
         this.selectedImageIndex = (this.selectedImageIndex+1)%this.images.length;
-        const next = this.images[this.selectedImageIndex];
-        this.setImage(next);
+        const nextImage = this.images[this.selectedImageIndex];
+        this.setImage(nextImage);
     }
 }

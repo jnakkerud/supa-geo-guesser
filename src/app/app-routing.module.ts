@@ -4,12 +4,14 @@ import { AdminComponent } from './admin/admin.component';
 import { EditImageComponent } from './admin/edit-image/edit-image.component';
 import { ThemePlayComponent } from './home/theme-play/theme-play.component';
 import { HomeComponent } from './home/home.component';
+import { ThemeResultComponent } from './home/theme-result/theme-result.component';
 
 const routes: Routes = [
     { path: '', component: HomeComponent},
     { path: 'admin', component: AdminComponent},
     { path: 'edit-image', component: EditImageComponent},
     { path: 'theme/:id', component: ThemePlayComponent },
+    { path: 'result/:id', component: ThemeResultComponent },
     { path: '**', redirectTo: '' }
 ];
 

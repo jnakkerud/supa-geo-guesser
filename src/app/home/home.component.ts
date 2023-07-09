@@ -7,6 +7,7 @@ import { Theme, ThemeService } from '../core/theme-service/theme.service';
 import { Router } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
+import { ThemeResultComponent } from './theme-result/theme-result.component';
 
 @Component({
     selector: 'home',
@@ -25,7 +26,6 @@ export class HomeComponent implements OnInit {
     }
 
     onSelectedTheme() {
-        console.log(this.selectedTheme);
         this.router.navigate(['/theme', this.selectedTheme.id]);
     }
 }
@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
         MaterialModule, 
         RouterModule,
         SharedModule],
-    exports: [HomeComponent, ThemePlayComponent],
-    declarations: [HomeComponent, ThemePlayComponent],
+    exports: [HomeComponent, ThemePlayComponent, ThemeResultComponent],
+    declarations: [HomeComponent, ThemePlayComponent, ThemeResultComponent],
   })
 export class HomeModule {}

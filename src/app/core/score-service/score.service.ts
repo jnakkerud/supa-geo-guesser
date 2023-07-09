@@ -3,6 +3,11 @@ import { Image } from '../image-service/image.service';
 import { GeoAddress, GeoService } from '../geo-service/geo.service';
 import { PlaceSuggestion } from '../place-service/place.service';
 import { calculateDistanceInKm } from '../utils';
+import { from } from 'rxjs/internal/observable/from';
+import { map } from 'rxjs/internal/operators/map';
+import { reduce } from 'rxjs/internal/operators/reduce';
+import { firstValueFrom } from 'rxjs';
+import { ResultsService, TotalResult } from '../results-service/results.service';
 
 export const TRY_NUMBER = 3;
 
@@ -15,6 +20,7 @@ export const BONUS = 5; // first try is correct
 function geoAddressValue(geoAddress: GeoAddress, property: keyof GeoAddress): any {
     return geoAddress[property];
 } 
+
 export interface Score {
     score: number;
     distance?: number; // in KM
@@ -28,7 +34,7 @@ export class ScoreCard {
     constructor(public image: Image) { 
     }
 
-    calculateScore(): number {
+    get score(): number {
         return Math.max(...this.scores.map(o => o.score));
     }
 }
@@ -36,10 +42,12 @@ export class ScoreCard {
 export class ScoreService {
 
     cards: Map<number, ScoreCard> = new Map<number, ScoreCard>();
+    themId!: number;
 
-    constructor(private geoService: GeoService) { }
+    constructor(private geoService: GeoService, private resultService: ResultsService) { }
 
-    public initialize(images: Image[]): void {
+    public initialize(themId: number, images: Image[]): void {
+        this.themId = themId;
         images.forEach(i => {
             this.cards.set(i.id, new ScoreCard(i));
         });
@@ -92,5 +100,24 @@ export class ScoreService {
 
         return new Promise((resolve) => {resolve(score)});
     }
+
+    public async getTotalScore(): Promise<TotalResult> {
+
+        // tally the total score
+        const tScore = from(this.cards.values()).pipe(
+            map(sc => sc.score),
+            reduce((acc, val) => acc + val)
+        ); 
+        const total = await firstValueFrom(tScore);
+
+        // save total and return the saved version
+        const totalResult = await this.resultService.save({
+            themeId: this.themId,
+            score: total
+        });
+
+        return new Promise((resolve) => resolve(totalResult));
+    }
+
 
 }
