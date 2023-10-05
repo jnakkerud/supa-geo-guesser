@@ -1,4 +1,5 @@
-<div class="center">
+<div *ngIf="totalResult" class="container">
     <h4>Results:</h4>
-    <span>Total: {{totalResult.score}}</span>
+    <span>Total: {{totalResult.total}}</span>
+    <image-map class="map-container" [images]="images" [center]="true"></image-map>
 </div>

@@ -38,9 +38,15 @@ export class ScoreCard {
         return Math.max(...this.scores.map(o => o.score));
     }
 }
+export interface TotalScore {
+    themeId: number;
+    total: number;
+    scores?: ScoreCard[];
+}
 @Injectable()
 export class ScoreService {
 
+    // cards indexed by image id
     cards: Map<number, ScoreCard> = new Map<number, ScoreCard>();
     themId!: number;
 
@@ -113,7 +119,8 @@ export class ScoreService {
         // save total and return the saved version
         const totalResult = await this.resultService.save({
             themeId: this.themId,
-            score: total
+            total: total,
+            scores: Array.from(this.cards.values())
         });
 
         return new Promise((resolve) => resolve(totalResult));

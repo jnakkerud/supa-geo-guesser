@@ -15,7 +15,7 @@
             </div>
         </ng-container>
         <ng-container *ngSwitchCase="'play_end'">
-            <span>Total Score: {{totalResult.score}}</span>
+            <span>Total Score: {{totalResult.total}}</span>
             <div class="button-row">
                 <a mat-button [routerLink]="['/result', totalResult.id]">Score Details</a>
                 <a mat-button color="accent" routerLink="/">New Game</a>
@@ -23,5 +23,5 @@
         </ng-container>
         <ng-container *ngSwitchDefault></ng-container>
     </ng-container>
-    <image-map class="map-container" [placeSuggestionList]="placeSuggestion"></image-map>
+    <image-map class="map-container" [placeSuggestionList]="placeSuggestion" [center]="true"></image-map>
 </div>

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
-import { tileLayer, latLng, Layer, icon, marker, Map, Marker } from 'leaflet';
+import { tileLayer, latLng, icon, marker, Map, Marker, LatLngTuple, point } from 'leaflet';
 import { LatLon } from 'src/app/core/lat-lon';
 import { PlaceSuggestionListComponent } from '../place-suggestion/place-suggestion-list.component';
 import { Image } from '../../core/image-service/image.service';
@@ -18,6 +18,8 @@ export class ImageMapComponent {
     @Input() height: string | number | null = DEFAULT_HEIGHT;
 
     @Input() width: string | number | null = DEFAULT_WIDTH;
+
+    @Input() center: boolean = false;
 
     @Input() placeSuggestionList!: PlaceSuggestionListComponent;
 
@@ -43,18 +45,25 @@ export class ImageMapComponent {
           zoom:2,
           center:latLng(0,0)
     }; 
-    markers: Layer[] = [];
- 
+    markers: Marker[] = [];
+    markerBounds: LatLngTuple[] = [];
+
     map!: Map;
 
     onMapReady(map: Map) {
         this.map = map;
+        if (this.markerBounds && this.center) {
+            this.centerMap();
+        } 
     }
 
     // Add markers from other components
     addMarker(location: LatLon): void {
         const newMarker = this.createStandardMarker(location);
         newMarker.addTo(this.map);
+        if (this.center) {            
+            this.centerMap();
+        }
 	} 
 
     mapClickedHandler(event: any) {
@@ -68,9 +77,18 @@ export class ImageMapComponent {
         }
     }
     
+    centerMap() {
+        this.map.fitBounds(this.markerBounds, {
+            padding: point(24, 24),
+            maxZoom: 12,
+            animate: true
+        });        
+    }
+
     private removeImageMarkers(): void {
         if (this.markers) {
             this.markers.forEach(m => {
+                m.options
                 m.remove();
             });
         }
@@ -80,7 +98,7 @@ export class ImageMapComponent {
         this.images.forEach(i => {
             const newMarker = this.createStandardMarker(i.location);
             this.markers.push(newMarker);
-        });   
+        });
     }
     
     private createStandardMarker(location: LatLon): Marker<any> {
@@ -96,6 +114,7 @@ export class ImageMapComponent {
 				})
 			}
 		);
+        this.markerBounds.push([location.latitude, location.longitude]);
         return newMarker;
     }
 }
