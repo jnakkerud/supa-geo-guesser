@@ -71,7 +71,6 @@ export class ThemePlayComponent implements OnInit {
     setImage(image: Image): void {
         this.playStatus = 'play_start';
         this.score = 0;
-        // TODO reset the map
         this.selectedImage = image;
         this.scoreCard = this.scoreService.getScoreCard(this.selectedImage);
     }
@@ -116,8 +115,15 @@ export class ThemePlayComponent implements OnInit {
     }
 
     nextImage(): void {
+        this.resetMap();
         this.selectedImageIndex = (this.selectedImageIndex+1)%this.images.length;
         const nextImage = this.images[this.selectedImageIndex];
         this.setImage(nextImage);
+    }
+
+    private resetMap() {
+        if (this.imageMap) {
+            this.imageMap.resetMap();
+        }
     }
 }

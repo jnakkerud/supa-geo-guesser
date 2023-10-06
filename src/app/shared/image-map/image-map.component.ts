@@ -7,6 +7,15 @@ import { Image } from '../../core/image-service/image.service';
 const DEFAULT_HEIGHT = '300px';
 const DEFAULT_WIDTH = '100%';
 
+function getLatLngFromMarkers(markers: Marker[]): LatLngTuple[] {
+    let markerBounds: LatLngTuple[] = [];
+    markers.forEach(m => {
+        let ll = m.getLatLng();
+        markerBounds.push([ll.lat, ll.lng]);
+    });
+    return markerBounds;
+}
+
 @Component({
     selector: 'image-map',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,7 +37,7 @@ export class ImageMapComponent {
     }
     set images(value: Image[]) {
         if (this._images) {
-            this.removeImageMarkers();
+            this.removeMarkers();
         }
         this._images = value;
         this.addImageMarkers();
@@ -46,13 +55,12 @@ export class ImageMapComponent {
           center:latLng(0,0)
     }; 
     markers: Marker[] = [];
-    markerBounds: LatLngTuple[] = [];
 
     map!: Map;
 
     onMapReady(map: Map) {
         this.map = map;
-        if (this.markerBounds && this.center) {
+        if (this.center) {
             this.centerMap();
         } 
     }
@@ -61,6 +69,7 @@ export class ImageMapComponent {
     addMarker(location: LatLon): void {
         const newMarker = this.createStandardMarker(location);
         newMarker.addTo(this.map);
+        this.markers.push(newMarker);
         if (this.center) {            
             this.centerMap();
         }
@@ -78,15 +87,24 @@ export class ImageMapComponent {
     }
     
     centerMap() {
-        this.map.fitBounds(this.markerBounds, {
-            padding: point(24, 24),
-            maxZoom: 12,
-            animate: true
-        });        
+        if (this.markers?.length > 0) {
+            this.map.fitBounds(getLatLngFromMarkers(this.markers), {
+                padding: point(24, 24),
+                maxZoom: 12,
+                animate: true
+            });            
+        }
     }
 
-    private removeImageMarkers(): void {
-        if (this.markers) {
+    resetMap() {
+        // clear markers 
+        this.removeMarkers();
+        // center map
+        this.map.setView([0, 0], 2);
+    }
+
+    private removeMarkers(): void {
+        if (this.markers?.length > 0) {
             this.markers.forEach(m => {
                 m.options
                 m.remove();
@@ -114,7 +132,6 @@ export class ImageMapComponent {
 				})
 			}
 		);
-        this.markerBounds.push([location.latitude, location.longitude]);
         return newMarker;
     }
 }
