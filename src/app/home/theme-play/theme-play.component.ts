@@ -92,16 +92,18 @@ export class ThemePlayComponent implements OnInit {
         
         this.scoreService.score(this.scoreCard, tryIndex, placeSuggestion).then(s => {
             event.placeSuggestionComponent.displayScore(s); // TODO better way for component to react to score change? Signals?
-            if (this.selectedImageIndex == (this.images.length-1)) {
-                this.scoreService.getTotalScore().then(ts => {
-                    this.playStatus = 'play_end';
-                    this.totalResult = ts;
-                });
-            } else if (s.score >= LOCALITY_SCORE || tryIndex == (TRY_NUMBER-1)) {
-                this.score = s.score;
-                this.playStatus = 'next_image';
+            if (s.score >= LOCALITY_SCORE || tryIndex == (TRY_NUMBER-1)) {
+                if (this.selectedImageIndex == (this.images.length-1)) {
+                    this.scoreService.getTotalScore().then(ts => {
+                        this.playStatus = 'play_end';
+                        this.totalResult = ts;
+                    });
+                } else {
+                    this.score = s.score;
+                    this.playStatus = 'next_image';                    
+                }
                 // Disable current suggestions
-                this.placeSuggestionList.setEnabled(false);
+                this.placeSuggestionList.setEnabled(false);    
             } else {
                 this.playStatus = 'next_suggestion';
                 // move to the next suggestion for the current image
