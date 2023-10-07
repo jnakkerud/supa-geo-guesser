@@ -90,7 +90,7 @@ export class ImageMapComponent {
         if (this.markers?.length > 0) {
             this.map.fitBounds(getLatLngFromMarkers(this.markers), {
                 padding: point(24, 24),
-                maxZoom: 12,
+                maxZoom: 3,
                 animate: true
             });            
         }
@@ -109,6 +109,7 @@ export class ImageMapComponent {
                 m.options
                 m.remove();
             });
+            this.markers = [];
         }
     }
 

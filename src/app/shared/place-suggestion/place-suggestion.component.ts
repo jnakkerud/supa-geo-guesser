@@ -77,6 +77,7 @@ export class PlaceSuggestionComponent implements OnInit {
         this.parent.onSelectionChange(this);
     }
 
+    // Called from user selection on map
     setSuggestion(suggestion: Partial<PlaceSuggestion>) {
         this.placeControl.patchValue(suggestion);
         this.onSelection(suggestion);
