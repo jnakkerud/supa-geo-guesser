@@ -91,6 +91,7 @@ export class ThemePlayComponent implements OnInit {
         }
         
         this.scoreService.score(this.scoreCard, tryIndex, placeSuggestion).then(s => {
+            // https://dev.to/nordyj/using-angular-signals-for-global-state-3pja
             event.placeSuggestionComponent.displayScore(s); // TODO better way for component to react to score change? Signals?
             if (s.score >= LOCALITY_SCORE || tryIndex == (TRY_NUMBER-1)) {
                 if (this.selectedImageIndex == (this.images.length-1)) {
