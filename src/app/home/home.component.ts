@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgModule, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { NgOptimizedImage } from '@angular/common'
@@ -13,7 +13,8 @@ import { ImageService, ImageSize } from '../core/image-service/image.service';
 @Component({
     selector: 'home',
     templateUrl: './home.component.html',
-    styleUrls: ['home.component.scss']
+    styleUrls: ['home.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
     

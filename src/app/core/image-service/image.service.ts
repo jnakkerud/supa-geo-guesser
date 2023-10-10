@@ -92,11 +92,17 @@ export class ImageService {
     }
     
     public getImageUrl(image: Partial<Image>, size: ImageSize): string {
-        if (image.sourceType == SourceType.FLICKR) {
-            return this.flickrService.getImageUrl(image, size);
+        try {
+            if (image.sourceType == SourceType.FLICKR) {
+                return this.flickrService.getImageUrl(image, size);
+            }
+                
+        } catch (error) {
+            console.error('Unable to get image URL', error);
         }
-        // TODO generic url
-        return 'https://live.staticflickr.com/65535/52793526908_c11769cd0c_n.jpg';
+        // TODO generic No Image url
+        return 'https://live.staticflickr.com/65535/52793526908_c11769cd0c_n.jpg';            
+
     }
 
     /**
