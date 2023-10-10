@@ -91,7 +91,7 @@ export class ImageService {
         return new Promise((resolve) => {resolve(result)});
     }
     
-    public getImageUrl(image: Image, size: ImageSize): string {
+    public getImageUrl(image: Partial<Image>, size: ImageSize): string {
         if (image.sourceType == SourceType.FLICKR) {
             return this.flickrService.getImageUrl(image, size);
         }

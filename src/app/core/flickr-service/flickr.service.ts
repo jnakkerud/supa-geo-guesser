@@ -69,7 +69,7 @@ export class FlickrService {
     }
 
     // https://www.flickr.com/services/api/misc.urls.html
-    public getImageUrl(image: Image, size: ImageSize): string {
+    public getImageUrl(image: Partial<Image>, size: ImageSize): string {
         const imageSource: FlickrImageSource = image.source as FlickrImageSource;
         return `https://live.staticflickr.com/${imageSource.serverId}/${imageSource.id}_${imageSource.secret}_${sizeSuffix(size)}.jpg`;
     }

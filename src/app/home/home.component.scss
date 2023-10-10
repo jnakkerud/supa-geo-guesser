@@ -5,3 +5,20 @@
     margin-right: -50%;
     transform: translate(-50%, -50%)
   }
+
+  .theme-list {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 16px;
+  
+    @media (max-width: 720px) {
+      justify-content: center;
+    }
+  }
+
+  .theme-card {
+    display: inline-block;
+    margin: 16px;
+    vertical-align: top;
+    //width: 320px;
+  }
