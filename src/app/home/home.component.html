@@ -1,7 +1,7 @@
 <div class="center">
     <h2>Select theme to start game</h2>
 </div>
-<div class="theme-list-x">
+<div class="theme-list">
     <a *ngFor="let theme of themes | async" class="theme-list-item"
         [routerLink]="['/theme/', theme.id]">
         <mat-card class="theme-card">
