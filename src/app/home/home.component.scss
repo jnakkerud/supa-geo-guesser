@@ -4,10 +4,11 @@
     align-items: center;
 }
 
-
 .theme-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    justify-content: center;    
 }
 
 .theme-list-item {
@@ -24,5 +25,5 @@
 
 .theme-card {
     margin: 16px;
-    max-width: 320px;
+    width: 320px;
 }
