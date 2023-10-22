@@ -1,3 +1,15 @@
+.play-container {
+    display: block;
+    @media (min-width:768px) {
+        display: grid;
+        grid-template-columns: 70% 30%;
+    }    
+}
+
+.play-container > * {
+    padding: 1rem;
+}
+
 .suggestion-container {
     display: flex;
     flex-direction: column;
@@ -7,15 +19,14 @@
 .map-container {
     width: 800px;
     height: 300px;
-    //position: inherit;
 }
 
-.container {
+.image-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Adjust as needed */
+    //height: 100vh; /* Adjust as needed */
 }
 
 .place-list {
