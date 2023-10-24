@@ -108,7 +108,6 @@ export class ScoreService {
     }
 
     public async getTotalScore(): Promise<TotalResult> {
-
         // tally the total score
         const tScore = from(this.cards.values()).pipe(
             map(sc => sc.score),

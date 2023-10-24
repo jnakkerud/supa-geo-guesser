@@ -1,57 +1,48 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, debounceTime, filter, startWith, switchMap } from 'rxjs';
 import { PlaceService, PlaceSuggestion } from 'src/app/core/place-service/place.service';
-import { PlaceSuggestionListComponent } from './place-suggestion-list.component';
-import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
-import { BONUS, COUNTRY_SCORE, LOCALITY_SCORE, STATE_SCORE, Score } from 'src/app/core/score-service/score.service';
 import { ThemePalette } from '@angular/material/core';
 
 type MessageIcon = 'cancel' | 'check_circle' | 'do_not_disturb_on';
 
-interface ScoreMessage {
-    message: string;
-    icon: MessageIcon;
-    iconColor: ThemePalette | '';
+export interface PlaceSuggestionOptions {
+    message?: string;
+    active?: boolean;
+    iconColor?: ThemePalette | '';
+    icon?: MessageIcon;
 }
 
-// Counter used to set a unique id and name for a selectable item 
-let nextId = 0;
+export class PlaceSuggestionChange {
+    constructor(
+      public source: PlaceSuggestionComponent,
+      public placeSuggestion: Partial<PlaceSuggestion>
+    ) {}
+}
 @Component({
     selector: 'place-suggestion',
     templateUrl: 'place-suggestion.component.html',
-    styleUrls: ['place-suggestion.component.scss']
+    styleUrls: ['place-suggestion.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaceSuggestionComponent implements OnInit {
 
     placeControl = new FormControl<any>('');
     suggestions!: Observable<PlaceSuggestion[]>;
-    selected!: Partial<PlaceSuggestion>;
     
-    // An ID to identify this suggestion as unique
-    id = `${nextId++}`;
-
-    parent: PlaceSuggestionListComponent = inject(PlaceSuggestionListComponent);
-
-    // Score messaging
-    scoreMessage!: ScoreMessage;
+    @Output() selectionChange: EventEmitter<PlaceSuggestionChange> = new EventEmitter<PlaceSuggestionChange>();   
 
     @Input()
-    get activated(): boolean {
-        return this._activated;
+    get suggestionOptions(): PlaceSuggestionOptions {
+        return this._suggestionOptions;
     }
-    set activated(value: BooleanInput) {
-        const newValue = coerceBooleanProperty(value);
-
-        if (newValue !== this._activated) {
-            this._activated = newValue;
-            // Toggle disabled
-            this._activated ? this.placeControl.enable() : this.placeControl.disable();
-        }
+    set suggestionOptions(value: PlaceSuggestionOptions) {
+        this._suggestionOptions = value;
+        this.updateSuggestionOptions();
     }
-    private _activated = true;
+    private _suggestionOptions!: PlaceSuggestionOptions;
 
-    constructor(private placeService: PlaceService) { }
+    constructor(private placeService: PlaceService, private changeDetectorRef: ChangeDetectorRef) { }
 
     ngOnInit() { 
         this.suggestions = this.placeControl.valueChanges.pipe(
@@ -73,8 +64,7 @@ export class PlaceSuggestionComponent implements OnInit {
     
     // Called from AutoComplete
     onSelection(selection: Partial<PlaceSuggestion>) {
-        this.selected = selection;
-        this.parent.onSelectionChange(this);
+        this.selectionChange.emit(new PlaceSuggestionChange(this, selection));
     }
 
     // Called from user selection on map
@@ -83,47 +73,21 @@ export class PlaceSuggestionComponent implements OnInit {
         this.onSelection(suggestion);
     }
 
-    displayScore(score: Score): void {
-        switch (score.score) {
-            case COUNTRY_SCORE:
-                this.scoreMessage = {
-                    icon: 'do_not_disturb_on',
-                    iconColor: '',
-                    message: 'Location is in the correct country'
-                };             
-                break;
-            case STATE_SCORE:
-                this.scoreMessage = {
-                    icon: 'do_not_disturb_on',
-                    iconColor: '',
-                    message: 'Location is in the correct state/province'
-                };             
-                break;
-            case LOCALITY_SCORE:
-                this.scoreMessage = {
-                    icon: 'check_circle',
-                    iconColor: 'accent',
-                    message: 'Location is correct!'
-                };             
-                break;
-            case BONUS:
-                this.scoreMessage = {
-                    icon: 'check_circle',
-                    iconColor: 'accent',
-                    message: 'Location is correct on the first try!'
-                };             
-                break;
-            default:
-                this.scoreMessage = {
-                    icon: 'cancel',
-                    iconColor: 'warn',
-                    message: `Wrong guess, location is ${score.distance} KM away`
-                };             
+    updateSuggestionOptions() {
+        if (this._suggestionOptions) {
+            if (this._suggestionOptions?.active !== undefined) {
+                const controlDisabled = this.placeControl.disabled;
+                this._suggestionOptions.active ? this.placeControl.enable() : this.placeControl.disable();
+                if (this._suggestionOptions.active && controlDisabled) {
+                    this.placeControl.reset();
+                } 
+            }
+            
+            this.changeDetectorRef.markForCheck();
         }
-
     }
 
     get message(): string {
-        return this.scoreMessage?.message || '';
+        return this.suggestionOptions?.message || '';
     }
 }

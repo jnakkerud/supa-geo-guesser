@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService, Image, ImageSize } from '../../core/image-service/image.service';
-import { PlaceSuggestionListChange, PlaceSuggestionListComponent } from 'src/app/shared/place-suggestion/place-suggestion-list.component';
-import { LOCALITY_SCORE, ScoreCard, ScoreService, TRY_NUMBER } from 'src/app/core/score-service/score.service';
+import { PlaceSuggestionChange, PlaceSuggestionComponent, PlaceSuggestionOptions } from 'src/app/shared/place-suggestion/place-suggestion.component';
+import { BONUS, COUNTRY_SCORE, LOCALITY_SCORE, STATE_SCORE, Score, ScoreCard, ScoreService, TRY_NUMBER } from 'src/app/core/score-service/score.service';
 import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component';
 import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
 import { TotalResult } from 'src/app/core/results-service/results.service';
@@ -27,7 +27,51 @@ function shuffle(array: Image[]): Image[] {
     return array;
 }
 
-export type PlayStatus = 'play_end' | 'next_image' | 'next_suggestion' | 'play_start';
+function generateSuggestionOptions(score: Score): PlaceSuggestionOptions {
+    let options: PlaceSuggestionOptions;
+    switch (score.score) {
+        case COUNTRY_SCORE:
+            options = {
+                icon: 'do_not_disturb_on',
+                message: 'Location is in the correct country'
+            };
+            break;       
+        case STATE_SCORE:
+            options = {
+                icon: 'do_not_disturb_on',
+                message: 'Location is in the correct state/province'
+            };
+            break;            
+        case LOCALITY_SCORE:
+            options = {
+                icon: 'check_circle',
+                iconColor: 'accent',
+                message: 'Location is correct!'
+            };
+            break;          
+        case BONUS:
+            options =  {
+                icon: 'check_circle',
+                iconColor: 'accent',
+                message: 'Location is correct on the first try!'
+            };
+            break;        
+        default:
+            options = {
+                icon: 'cancel',
+                iconColor: 'warn',
+                message: `Wrong guess, location is ${score.distance} KM away`
+            };             
+    }
+    options.active = false;
+    return options;
+}
+
+function tryMessage(tryIndex: number): string {
+    return `You get ${TRY_NUMBER-tryIndex} tries to guess the place`;
+}
+
+export type PlayStatus = 'play_end' | 'next_image' | 'next_suggestion' | 'play_start'; // TODO rename play_start to play
 
 @Component({
     selector: 'theme-play',
@@ -37,19 +81,22 @@ export type PlayStatus = 'play_end' | 'next_image' | 'next_suggestion' | 'play_s
 })
 export class ThemePlayComponent implements OnInit {
 
-    themeId!: number;
+    themeId!: number; // TODO replace with theme
     images!: Image[];
 
     selectedImage!: Image;
     selectedImageIndex = 0;
     scoreCard!: ScoreCard; 
-    score!: number;
+    score!: number; // TODO remove ?
+    tryIndex = 0;
 
     playStatus: PlayStatus = 'play_start';
     totalResult!: TotalResult;
 
+    placeSuggestionOptions!: PlaceSuggestionOptions;
+
     @ViewChild(ImageMapComponent) imageMap!: ImageMapComponent;
-    @ViewChild(PlaceSuggestionListComponent) placeSuggestionList!: PlaceSuggestionListComponent;
+    @ViewChild(PlaceSuggestionComponent) suggestionComponent!: PlaceSuggestionComponent;
 
     constructor(
         private route: ActivatedRoute,
@@ -59,6 +106,9 @@ export class ThemePlayComponent implements OnInit {
     ngOnInit() {
         this.route.params.subscribe(p => {
             this.themeId = Number(p['id']);
+
+            // TODO get theme / async
+
             // get images
             this.imageService.images(this.themeId).then(i => {
                 this.images = shuffle(i);
@@ -70,7 +120,10 @@ export class ThemePlayComponent implements OnInit {
 
     setImage(image: Image): void {
         this.playStatus = 'play_start';
-        this.score = 0;
+        this.score, this.tryIndex = 0;
+        this.placeSuggestionOptions = {
+            message: tryMessage(this.tryIndex)
+        };
         this.selectedImage = image;
         this.scoreCard = this.scoreService.getScoreCard(this.selectedImage);
     }
@@ -81,19 +134,18 @@ export class ThemePlayComponent implements OnInit {
      *  2) Update the place suggestion with score
      *  3) Move to next: suggestion/image tally score for game 
      */
-    onPlaceSuggestionSelection(event: PlaceSuggestionListChange) {
+    onPlaceSelection(event: PlaceSuggestionChange) {
         const placeSuggestion: Partial<PlaceSuggestion> = event.placeSuggestion;
-        const tryIndex = event.index;
 
         // add marker to map
         if (placeSuggestion.location) {
             this.imageMap.addMarker(placeSuggestion.location);
         }
         
-        this.scoreService.score(this.scoreCard, tryIndex, placeSuggestion).then(s => {
-            // https://dev.to/nordyj/using-angular-signals-for-global-state-3pja
-            event.placeSuggestionComponent.displayScore(s); // TODO better way for component to react to score change? Signals?
-            if (s.score >= LOCALITY_SCORE || tryIndex == (TRY_NUMBER-1)) {
+        // TODO performance slow
+        this.scoreService.score(this.scoreCard, this.tryIndex++, placeSuggestion).then(s => {
+            this.placeSuggestionOptions = generateSuggestionOptions(s);
+            if (s.score >= LOCALITY_SCORE || this.tryIndex == (TRY_NUMBER-1)) {
                 if (this.selectedImageIndex == (this.images.length-1)) {
                     this.scoreService.getTotalScore().then(ts => {
                         this.playStatus = 'play_end';
@@ -103,12 +155,8 @@ export class ThemePlayComponent implements OnInit {
                     this.score = s.score;
                     this.playStatus = 'next_image';                    
                 }
-                // Disable current suggestions
-                this.placeSuggestionList.setEnabled(false);    
             } else {
                 this.playStatus = 'next_suggestion';
-                // move to the next suggestion for the current image
-                this.placeSuggestionList.nextSuggestion(tryIndex);
             }
         });
     }
@@ -122,6 +170,14 @@ export class ThemePlayComponent implements OnInit {
         this.selectedImageIndex = (this.selectedImageIndex+1)%this.images.length;
         const nextImage = this.images[this.selectedImageIndex];
         this.setImage(nextImage);
+    }
+
+    nextSuggestion(): void {
+        this.placeSuggestionOptions = {
+            message:  tryMessage(this.tryIndex),
+            active: true
+        }
+        this.playStatus = 'play_start';
     }
 
     private resetMap() {

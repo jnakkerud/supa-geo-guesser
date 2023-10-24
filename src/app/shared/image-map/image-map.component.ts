@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
 import { tileLayer, latLng, icon, marker, Map, Marker, LatLngTuple, point } from 'leaflet';
 import { LatLon } from 'src/app/core/lat-lon';
-import { PlaceSuggestionListComponent } from '../place-suggestion/place-suggestion-list.component';
 import { Image } from '../../core/image-service/image.service';
+import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
 
 const DEFAULT_HEIGHT = '300px';
 const DEFAULT_WIDTH = '100%';
@@ -30,7 +30,7 @@ export class ImageMapComponent {
 
     @Input() center: boolean = false;
 
-    @Input() placeSuggestionList!: PlaceSuggestionListComponent;
+    @Output() selectionChange: EventEmitter<Partial<PlaceSuggestion>> = new EventEmitter<Partial<PlaceSuggestion>>();
 
     @Input() get images(): Image[] {
         return this._images;
@@ -76,14 +76,11 @@ export class ImageMapComponent {
 	} 
 
     mapClickedHandler(event: any) {
-        if (this.placeSuggestionList) {
-            const latLon: LatLon = {latitude: event.latlng.lat, longitude: event.latlng.lng};
-            this.placeSuggestionList.setPlaceSuggestion(
-                {
-                    location: latLon
-                }
-            );
-        }
+        const latLon: LatLon = {latitude: event.latlng.lat, longitude: event.latlng.lng};
+        this.selectionChange.emit({
+            location: latLon,
+            description: `${latLon.latitude} , ${latLon.longitude}`
+        });
     }
     
     centerMap() {

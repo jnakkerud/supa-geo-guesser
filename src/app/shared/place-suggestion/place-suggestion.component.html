@@ -8,7 +8,7 @@
                 {{option.description}}
             </mat-option>
         </mat-autocomplete>
-        <mat-icon *ngIf="scoreMessage" matSuffix [color]="scoreMessage.iconColor">{{scoreMessage.icon}}</mat-icon>
+        <mat-icon *ngIf="suggestionOptions" matSuffix [color]="suggestionOptions.iconColor">{{suggestionOptions.icon}}</mat-icon>
         <mat-hint>{{message}}</mat-hint>
     </mat-form-field>
 </form>
