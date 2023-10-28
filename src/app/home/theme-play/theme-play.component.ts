@@ -142,10 +142,11 @@ export class ThemePlayComponent implements OnInit {
             this.imageMap.addMarker(placeSuggestion.location);
         }
         
+        const tryNumber = this.tryIndex++;
         // TODO performance slow
-        this.scoreService.score(this.scoreCard, this.tryIndex++, placeSuggestion).then(s => {
+        this.scoreService.score(this.scoreCard, tryNumber, placeSuggestion).then(s => {
             this.placeSuggestionOptions = generateSuggestionOptions(s);
-            if (s.score >= LOCALITY_SCORE || this.tryIndex == (TRY_NUMBER-1)) {
+            if (s.score >= LOCALITY_SCORE || tryNumber == (TRY_NUMBER-1)) {
                 if (this.selectedImageIndex == (this.images.length-1)) {
                     this.scoreService.getTotalScore().then(ts => {
                         this.playStatus = 'play_end';
