@@ -71,7 +71,7 @@ function tryMessage(tryIndex: number): string {
     return `You get ${TRY_NUMBER-tryIndex} tries to guess the place`;
 }
 
-export type PlayStatus = 'play_end' | 'next_image' | 'next_suggestion' | 'play_start'; // TODO rename play_start to play
+export type PlayStatus = 'play_end' | 'next_image' | 'next_suggestion' | 'play';
 
 @Component({
     selector: 'theme-play',
@@ -87,10 +87,9 @@ export class ThemePlayComponent implements OnInit {
     selectedImage!: Image;
     selectedImageIndex = 0;
     scoreCard!: ScoreCard; 
-    score!: number; // TODO remove ?
     tryIndex = 0;
 
-    playStatus: PlayStatus = 'play_start';
+    playStatus: PlayStatus = 'play';
     totalResult!: TotalResult;
 
     placeSuggestionOptions!: PlaceSuggestionOptions;
@@ -119,8 +118,8 @@ export class ThemePlayComponent implements OnInit {
     }
 
     setImage(image: Image): void {
-        this.playStatus = 'play_start';
-        this.score, this.tryIndex = 0;
+        this.playStatus = 'play';
+        this.tryIndex = 0;
         this.placeSuggestionOptions = {
             message: tryMessage(this.tryIndex)
         };
@@ -153,7 +152,6 @@ export class ThemePlayComponent implements OnInit {
                         this.totalResult = ts;
                     });
                 } else {
-                    this.score = s.score;
                     this.playStatus = 'next_image';                    
                 }
             } else {
@@ -178,7 +176,7 @@ export class ThemePlayComponent implements OnInit {
             message:  tryMessage(this.tryIndex),
             active: true
         }
-        this.playStatus = 'play_start';
+        this.playStatus = 'play';
     }
 
     private resetMap() {
