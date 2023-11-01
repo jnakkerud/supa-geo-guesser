@@ -74,6 +74,18 @@ function tryMessage(tryIndex: number): string {
 
 export type PlayStatus = 'play_end' | 'next_image' | 'next_suggestion' | 'play';
 
+export class TryResult {
+    options!: PlaceSuggestionOptions;
+    constructor(public score: Score,
+    public suggestion: Partial<PlaceSuggestion>) {}
+    get suggestionOptions(): PlaceSuggestionOptions {
+        if (!this.options) {
+            this.options = generateSuggestionOptions(this.score);
+        }
+        return this.options;
+    }
+}
+
 @Component({
     selector: 'theme-play',
     templateUrl: './theme-play.component.html',
@@ -95,6 +107,8 @@ export class ThemePlayComponent implements OnInit {
     totalResult!: TotalResult;
 
     placeSuggestionOptions!: PlaceSuggestionOptions;
+
+    tryResults: TryResult[] = []; 
 
     @ViewChild(ImageMapComponent) imageMap!: ImageMapComponent;
     @ViewChild(PlaceSuggestionComponent) suggestionComponent!: PlaceSuggestionComponent;
@@ -132,6 +146,7 @@ export class ThemePlayComponent implements OnInit {
         };
         this.selectedImage = image;
         this.scoreCard = this.scoreService.getScoreCard(this.selectedImage);
+        this.tryResults = [];
     }
 
     /**
@@ -149,7 +164,7 @@ export class ThemePlayComponent implements OnInit {
         }
         
         const tryNumber = this.tryIndex++;
-        // TODO performance slow
+        // TODO performance can be slow
         this.scoreService.score(this.scoreCard, tryNumber, placeSuggestion).then(s => {
             this.placeSuggestionOptions = generateSuggestionOptions(s);
             if (s.score >= LOCALITY_SCORE || tryNumber == (TRY_NUMBER-1)) {
@@ -164,6 +179,7 @@ export class ThemePlayComponent implements OnInit {
             } else {
                 this.playStatus = 'next_suggestion';
             }
+            this.tryResults.push(new TryResult(s, placeSuggestion));
         });
     }
 
@@ -184,6 +200,10 @@ export class ThemePlayComponent implements OnInit {
             active: true
         }
         this.playStatus = 'play';
+    }
+
+    get score(): number {
+        return this.scoreCard?.score || 0;
     }
 
     private resetMap() {

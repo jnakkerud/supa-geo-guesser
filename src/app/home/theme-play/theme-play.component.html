@@ -35,5 +35,11 @@
         <h1>{{theme.name}}</h1>
         <p>{{theme.description || ''}}<p>
         <p>Playing image {{selectedImageIndex+1}} out of {{images.length}}</p>
+        <mat-divider></mat-divider>
+        Score {{score}}
+        <li *ngFor="let result of tryResults">
+            {{result.suggestion.description}}
+            {{result.suggestionOptions.message}}
+        </li>
     </div>
 </div>
