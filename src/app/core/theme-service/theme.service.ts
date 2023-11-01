@@ -34,6 +34,19 @@ export class ThemeService {
         }
     }
 
+    public async getTheme(themeId: number): Promise<Theme> {
+        const { data, error } = await this.supabaseService.supabase
+            .from('theme')
+            .select(`
+          name,
+          id,
+          description
+        `).eq('id', themeId).single();
+
+        handleError('', error);
+        return new Promise((resolve) => {resolve(data as Theme)});                    
+    }
+
     /**
      *  Return theme with associated images that can be displayed
      */

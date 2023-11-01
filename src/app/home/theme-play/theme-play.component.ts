@@ -6,6 +6,7 @@ import { BONUS, COUNTRY_SCORE, LOCALITY_SCORE, STATE_SCORE, Score, ScoreCard, Sc
 import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component';
 import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
 import { TotalResult } from 'src/app/core/results-service/results.service';
+import { Theme, ThemeService } from 'src/app/core/theme-service/theme.service';
 
 function shuffle(array: Image[]): Image[] {
     // tslint:disable-next-line: one-variable-per-declaration
@@ -68,7 +69,7 @@ function generateSuggestionOptions(score: Score): PlaceSuggestionOptions {
 }
 
 function tryMessage(tryIndex: number): string {
-    return `You get ${TRY_NUMBER-tryIndex} tries to guess the place`;
+    return `You get ${TRY_NUMBER-tryIndex} tries to guess the location`;
 }
 
 export type PlayStatus = 'play_end' | 'next_image' | 'next_suggestion' | 'play';
@@ -81,8 +82,9 @@ export type PlayStatus = 'play_end' | 'next_image' | 'next_suggestion' | 'play';
 })
 export class ThemePlayComponent implements OnInit {
 
-    themeId!: number; // TODO replace with theme
+    theme!: Theme;
     images!: Image[];
+    initialized = false;
 
     selectedImage!: Image;
     selectedImageIndex = 0;
@@ -99,21 +101,26 @@ export class ThemePlayComponent implements OnInit {
 
     constructor(
         private route: ActivatedRoute,
+        private themeService: ThemeService,
         private imageService: ImageService,
         private scoreService: ScoreService) { }
 
     ngOnInit() {
         this.route.params.subscribe(p => {
-            this.themeId = Number(p['id']);
+            this.initData(Number(p['id']));
+        });
+    }
 
-            // TODO get theme / async
+    private async initData(themeId: number) {
+        // get the theme
+        this.theme = await this.themeService.getTheme(themeId);
 
-            // get images
-            this.imageService.images(this.themeId).then(i => {
-                this.images = shuffle(i);
-                this.scoreService.initialize(this.themeId, this.images);
-                this.setImage(this.images[this.selectedImageIndex]);
-            });
+        // get images
+        this.imageService.images(themeId).then(i => {
+            this.images = shuffle(i);
+            this.scoreService.initialize(themeId, this.images);
+            this.setImage(this.images[this.selectedImageIndex]);
+            this.initialized = true;
         });
     }
 
