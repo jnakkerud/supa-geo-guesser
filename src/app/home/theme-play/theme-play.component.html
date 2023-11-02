@@ -36,10 +36,13 @@
         <p>{{theme.description || ''}}<p>
         <p>Playing image {{selectedImageIndex+1}} out of {{images.length}}</p>
         <mat-divider></mat-divider>
-        Score {{score}}
-        <li *ngFor="let result of tryResults">
-            {{result.suggestion.description}}
-            {{result.suggestionOptions.message}}
-        </li>
+        <p>Score: {{score}}</p>
+        <div *ngFor="let result of tryResults">
+            <div class="result-section">
+                <mat-icon [color]="result.suggestionOptions.iconColor">{{result.suggestionOptions.icon}}</mat-icon>
+                {{result.suggestion.description}} <br>
+                {{result.suggestionOptions.message}}
+            </div>
+        </div>
     </div>
 </div>
