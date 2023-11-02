@@ -142,7 +142,8 @@ export class ThemePlayComponent implements OnInit {
         this.playStatus = 'play';
         this.tryIndex = 0;
         this.placeSuggestionOptions = {
-            message: tryMessage(this.tryIndex)
+            message: tryMessage(this.tryIndex),
+            active: true
         };
         this.selectedImage = image;
         this.scoreCard = this.scoreService.getScoreCard(this.selectedImage);
