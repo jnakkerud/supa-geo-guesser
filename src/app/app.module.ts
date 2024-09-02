@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withJsonpSupport } from '@angular/common/http';
 import { HttpClientJsonpModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -10,21 +10,13 @@ import { MaterialModule } from './material.module';
 import { AdminModule } from './admin/admin.component';
 import { HomeModule } from './home/home.component';
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         AppComponent
     ],
-    imports: [
-        BrowserModule,
+    bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,
-        HttpClientModule,
-        HttpClientJsonpModule,
         BrowserAnimationsModule,
         MaterialModule,
         AdminModule,
-        HomeModule
-    ],
-    providers: [],
-    bootstrap: [AppComponent]
-})
+        HomeModule], providers: [provideHttpClient(withInterceptorsFromDi(), withJsonpSupport())] })
 export class AppModule { }
