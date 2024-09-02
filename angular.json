@@ -76,10 +76,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "supa-geo-game:build:production"
+              "buildTarget": "supa-geo-game:build:production"
             },
             "development": {
-              "browserTarget": "supa-geo-game:build:development"
+              "buildTarget": "supa-geo-game:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -87,7 +87,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "supa-geo-game:build"
+            "buildTarget": "supa-geo-game:build"
           }
         },
         "test": {
