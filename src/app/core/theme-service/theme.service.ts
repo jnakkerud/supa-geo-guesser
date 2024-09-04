@@ -6,10 +6,10 @@ import { Image } from '../image-service/image.service';
 export interface Theme {
     id: number;
     name: string;
-    description?: string; // TODO make required
+    description?: string;
 }
 
-export interface ThemeImage extends Theme{
+export interface ThemeImage extends Theme {
     images: Partial<Image>[];
 }
 

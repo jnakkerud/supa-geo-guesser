@@ -2,24 +2,23 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-top: 24px;
 }
 
 .theme-list {
     display: flex;
     flex-wrap: wrap;
-    padding: 20px;
+    padding: 24px;
     justify-content: center;    
 }
 
 .theme-list-item {
-
     &,
     &:active,
     &:hover,
     &:focus {
         text-decoration: none;
     }
-
     color: white;
 }
 
