@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
 import { tileLayer, latLng, icon, marker, Map, Marker, LatLngTuple, point } from 'leaflet';
 import { LatLon } from 'src/app/core/lat-lon';
 import { Image } from '../../core/image-service/image.service';
 import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
 
-const DEFAULT_HEIGHT = '300px';
+const DEFAULT_HEIGHT = '100%';
 const DEFAULT_WIDTH = '100%';
+const DEFAULT_MIN_HEIGHT = '300px'
 
 function getLatLngFromMarkers(markers: Marker[]): LatLngTuple[] {
     let markerBounds: LatLngTuple[] = [];
@@ -19,14 +20,16 @@ function getLatLngFromMarkers(markers: Marker[]): LatLngTuple[] {
 @Component({
     selector: 'image-map',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    template: `<div id="map" [style.width]="width" [style.height]="height" leaflet [leafletOptions]="mapOptions" [leafletLayers]="markers" (leafletMapReady)="onMapReady($event)" (leafletClick)="mapClickedHandler($event)"></div>`,
+    template: `<div id="map" [style.width]="width" [style.height]="height" [style.minHeight]="minHeight" leaflet [leafletOptions]="mapOptions" [leafletLayers]="markers" (leafletMapReady)="onMapReady($event)" (leafletClick)="mapClickedHandler($event)"></div>`,
     encapsulation: ViewEncapsulation.None,
 })
-export class ImageMapComponent {
+export class ImageMapComponent implements AfterViewInit, OnDestroy {
 
     @Input() height: string | number | null = DEFAULT_HEIGHT;
 
     @Input() width: string | number | null = DEFAULT_WIDTH;
+
+    @Input() minHeight: string | number | null = DEFAULT_MIN_HEIGHT;
 
     @Input() center: boolean = false;
 
@@ -57,6 +60,21 @@ export class ImageMapComponent {
     markers: Marker[] = [];
 
     map!: Map;
+
+    resizeObserver!: ResizeObserver;
+
+    constructor(private host: ElementRef) {}
+
+    ngAfterViewInit(): void {
+        this.resizeObserver = new ResizeObserver((entries) => { 
+            this.map.invalidateSize(); 
+        }); 
+        this.resizeObserver.observe(this.host.nativeElement);        
+    }
+
+    ngOnDestroy() {
+        this.resizeObserver.unobserve(this.host.nativeElement);
+      }    
 
     onMapReady(map: Map) {
         this.map = map;
