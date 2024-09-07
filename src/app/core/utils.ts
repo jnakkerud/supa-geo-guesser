@@ -18,7 +18,7 @@ export function calculateDistanceInKm(starting: LatLon, destination: LatLon): nu
         Math.cos(deg2rad(starting.latitude)) * Math.cos(deg2rad(destination.latitude)) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // Distance in km
+    const d = Math.round(R * c); // Distance in km
     return d;
 }
 

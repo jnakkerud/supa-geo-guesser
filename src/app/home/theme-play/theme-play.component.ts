@@ -34,13 +34,13 @@ function generateSuggestionOptions(score: Score): PlaceSuggestionOptions {
         case COUNTRY_SCORE:
             options = {
                 icon: 'do_not_disturb_on',
-                message: 'Location is in the correct country'
+                message: `Location is in the correct country. ${score.distance} KM away`
             };
             break;       
         case STATE_SCORE:
             options = {
                 icon: 'do_not_disturb_on',
-                message: 'Location is in the correct state/province'
+                message: `Location is in the correct state/province. ${score.distance} KM away`
             };
             break;            
         case LOCALITY_SCORE:
