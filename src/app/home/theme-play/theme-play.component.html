@@ -1,35 +1,36 @@
-<div *ngIf="initialized" class="play-container">
+@if (selectedImage) {
+<div class="play-container">
     <div class="image-container">
         <div>
             <img [src]="imgSource(selectedImage)" width="800" height="600" alt="No Image">
         </div>
         <place-suggestion #placeSuggestion (selectionChange)="onPlaceSelection($event)" [suggestionOptions]="placeSuggestionOptions"></place-suggestion>
-        <ng-container [ngSwitch]="playStatus">
-            <ng-container *ngSwitchCase="'next_image'">
+        @switch (playStatus) {
+            @case ('next_image') { 
                 <div class="button-row">
                     <button mat-button color="accent" (click)="nextImage()">Next Image</button>
                     <a mat-button routerLink="/">Exit</a>
                 </div>
-            </ng-container>
-            <ng-container *ngSwitchCase="'play_end'">
-                <div class="button-row">
-                    <a mat-button [routerLink]="['/result', totalResult.id]">Score Details</a>
+            }
+            @case ('play_end') {
+                <div class="button-row">                    
                     <a mat-button color="accent" routerLink="/">New Game</a>
+                    <a mat-button [routerLink]="['/result', totalResult.id]">Score Details</a>
                     <a mat-button routerLink="/">Exit</a>
                 </div>
-            </ng-container>
-            <ng-container *ngSwitchCase="'next_suggestion'">
+            }
+            @case ('next_suggestion') {
                 <div class="button-row">
                     <button mat-button color="accent" (click)="nextSuggestion()">Try Again</button>
                     <a mat-button routerLink="/">Exit</a>
-                </div>
-            </ng-container>            
-            <ng-container *ngSwitchDefault>
+                </div>                
+            }
+            @default {
                 <div class="button-row">
                     <a mat-button routerLink="/">Exit</a>
-                </div>
-            </ng-container>
-        </ng-container>
+                </div>                
+            }
+        }
         <image-map class="map-container" [center]="true" (selectionChange)="placeSuggestion.setSuggestion($event)"></image-map>
     </div>
     <div>
@@ -44,12 +45,13 @@
                 <p>Score: {{score}}</p>
             </mat-card-footer>
         </mat-card>
-        <div *ngFor="let result of tryResults">
+        @for (result of tryResults; track $index) {
             <div class="result-section">
                 <mat-icon [color]="result.suggestionOptions.iconColor">{{result.suggestionOptions.icon}}</mat-icon>
                 {{result.suggestion.description}} <br>
                 {{result.suggestionOptions.message}}
             </div>
-        </div>
+        }
     </div>
 </div>
+}

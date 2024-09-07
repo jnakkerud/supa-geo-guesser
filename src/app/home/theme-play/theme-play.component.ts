@@ -96,7 +96,6 @@ export class ThemePlayComponent implements OnInit {
 
     theme!: Theme;
     images!: Image[];
-    initialized = false;
 
     selectedImage!: Image;
     selectedImageIndex = 0;
@@ -134,7 +133,6 @@ export class ThemePlayComponent implements OnInit {
             this.images = shuffle(i);
             this.scoreService.initialize(themeId, this.images);
             this.setImage(this.images[this.selectedImageIndex]);
-            this.initialized = true;
         });
     }
 

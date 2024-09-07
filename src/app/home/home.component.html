@@ -2,17 +2,18 @@
     <h1>Select theme to start game</h1>
 </div>
 <div class="theme-list">
-    <a *ngFor="let theme of themes | async" class="theme-list-item"
-        [routerLink]="['/theme/', theme.id]">
-        <mat-card class="theme-card" appearance="outlined">
-            <mat-card-header>
-                <mat-card-title-group>
-                    <mat-card-title>{{theme.name}}</mat-card-title>
-                    <mat-card-subtitle>{{theme.images.length}} Images</mat-card-subtitle>
-                    <img mat-card-md-image [src]="themeImage(theme)" width="320" height="240" alt="No Image">
-                </mat-card-title-group>
-            </mat-card-header>     
-            <mat-card-content>{{theme.description || "&nbsp;"}}</mat-card-content>
-        </mat-card>
-    </a>
+    @for (theme of themes | async; track theme.id) {
+        <a class="theme-list-item" [routerLink]="['/theme/', theme.id]">
+            <mat-card class="theme-card" appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title-group>
+                        <mat-card-title>{{theme.name}}</mat-card-title>
+                        <mat-card-subtitle>{{theme.images.length}} Images</mat-card-subtitle>
+                        <img mat-card-md-image [src]="themeImage(theme)" width="320" height="240" alt="No Image">
+                    </mat-card-title-group>
+                </mat-card-header>     
+                <mat-card-content>{{theme.description || "&nbsp;"}}</mat-card-content>
+            </mat-card>
+        </a>
+    }
 </div>

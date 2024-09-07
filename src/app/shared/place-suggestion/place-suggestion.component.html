@@ -4,11 +4,15 @@
         <input type="text" matInput [formControl]="placeControl"
             [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelection($event.option.value)">
-            <mat-option *ngFor="let option of suggestions | async" [value]="option">
-                {{option.description}}
-            </mat-option>
+            @for (option of suggestions | async; track option.placeId) {
+                <mat-option [value]="option">
+                    {{option.description}}
+                </mat-option>    
+            }
         </mat-autocomplete>
-        <mat-icon *ngIf="suggestionOptions" matSuffix [color]="suggestionOptions.iconColor">{{suggestionOptions.icon}}</mat-icon>
+        @if (suggestionOptions) {
+            <mat-icon matSuffix [color]="suggestionOptions.iconColor">{{suggestionOptions.icon}}</mat-icon>
+        }        
         <mat-hint>{{message}}</mat-hint>
     </mat-form-field>
 </form>

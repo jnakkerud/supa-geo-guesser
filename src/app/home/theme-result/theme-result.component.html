@@ -1,5 +1,7 @@
-<div *ngIf="totalResult" class="container">
-    <h4>Results:</h4>
-    <span>Total: {{totalResult.total}}</span>
-    <image-map class="map-container" [images]="images" [center]="true"></image-map>
-</div>
+@if (totalResult) {
+    <div class="container">
+        <h4>Results:</h4>
+        <span>Total: {{totalResult.total}}</span>
+        <image-map class="map-container" [images]="images" [center]="true"></image-map>
+    </div>
+}
