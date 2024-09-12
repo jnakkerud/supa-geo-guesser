@@ -109,6 +109,9 @@ export class ThemePlayComponent implements OnInit {
 
     tryResults: TryResult[] = []; 
 
+    // Signal from the score service will have update total
+    totalScore = this.scoreService.totalScore;
+
     @ViewChild(ImageMapComponent) imageMap!: ImageMapComponent;
     @ViewChild(PlaceSuggestionComponent) suggestionComponent!: PlaceSuggestionComponent;
 
@@ -168,7 +171,7 @@ export class ThemePlayComponent implements OnInit {
             this.placeSuggestionOptions = generateSuggestionOptions(s);
             if (s.score >= LOCALITY_SCORE || tryNumber == (TRY_NUMBER-1)) {
                 if (this.selectedImageIndex == (this.images.length-1)) {
-                    this.scoreService.getTotalScore().then(ts => {
+                    this.scoreService.getTotalResult().then(ts => {
                         this.playStatus = 'play_end';
                         this.totalResult = ts;
                     });

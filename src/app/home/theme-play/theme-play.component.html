@@ -42,7 +42,7 @@
                 <p>Playing image {{selectedImageIndex+1}} out of {{images.length}}</p>
             </mat-card-content>
             <mat-card-footer class="score-card-footer">
-                <p>Score: {{score}}</p>
+                <p>Total Score: {{totalScore()}}</p>
             </mat-card-footer>
         </mat-card>
         @for (result of tryResults; track $index) {
@@ -51,6 +51,10 @@
                 {{result.suggestion.description}} <br>
                 {{result.suggestionOptions.message}}
             </div>
+            
+        }
+        @if (tryResults.length > 0) {
+            <h3>Score: {{score}}</h3>
         }
     </div>
 </div>

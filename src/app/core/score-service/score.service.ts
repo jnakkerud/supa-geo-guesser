@@ -1,12 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Image } from '../image-service/image.service';
 import { GeoAddress, GeoService } from '../geo-service/geo.service';
 import { PlaceSuggestion } from '../place-service/place.service';
 import { calculateDistanceInKm } from '../utils';
-import { from } from 'rxjs/internal/observable/from';
-import { map } from 'rxjs/internal/operators/map';
-import { reduce } from 'rxjs/internal/operators/reduce';
-import { firstValueFrom } from 'rxjs';
 import { ResultsService, TotalResult } from '../results-service/results.service';
 
 export const TRY_NUMBER = 3;
@@ -50,6 +46,9 @@ export class ScoreService {
     cards: Map<number, ScoreCard> = new Map<number, ScoreCard>();
     themId!: number;
 
+    cardList!: ScoreCard[];
+    totalScore = signal(0);
+
     constructor(private geoService: GeoService, private resultService: ResultsService) { }
 
     public initialize(themId: number, images: Image[]): void {
@@ -57,6 +56,7 @@ export class ScoreService {
         images.forEach(i => {
             this.cards.set(i.id, new ScoreCard(i));
         });
+        this.cardList = Array.from(this.cards.values());
     }
 
     public getScoreCard(image: Image): ScoreCard {
@@ -101,29 +101,26 @@ export class ScoreService {
             }
 
             score.score = tempScore;
-
         }
+
+        this.updateTotal();
 
         return new Promise((resolve) => {resolve(score)});
     }
 
-    public async getTotalScore(): Promise<TotalResult> {
-        // tally the total score
-        const tScore = from(this.cards.values()).pipe(
-            map(sc => sc.score),
-            reduce((acc, val) => acc + val)
-        ); 
-        const total = await firstValueFrom(tScore);
-
+    public async getTotalResult(): Promise<TotalResult> {
         // save total and return the saved version
         const totalResult = await this.resultService.save({
             themeId: this.themId,
-            total: total,
+            total: this.totalScore(),
             scores: Array.from(this.cards.values())
         });
 
         return new Promise((resolve) => resolve(totalResult));
     }
 
-
+    updateTotal() {
+        let total = this.cardList.reduce((acc, curr) => acc + curr.score, 0);
+        this.totalScore.set(total);
+    }
 }
