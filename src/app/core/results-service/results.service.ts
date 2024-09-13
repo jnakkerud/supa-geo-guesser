@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { TotalScore } from '../score-service/score.service';
-import { TapObserver } from 'rxjs';
 import { Theme } from '../theme-service/theme.service';
 
 export interface TotalResult extends TotalScore {

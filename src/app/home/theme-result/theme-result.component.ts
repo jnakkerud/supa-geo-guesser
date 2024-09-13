@@ -11,7 +11,6 @@ import { Image } from 'src/app/core/image-service/image.service';
 export class ThemeResultComponent implements OnInit {
 
     totalResult!: TotalResult;
-    images!: Image[];
     
     constructor(private route: ActivatedRoute, private resultsService: ResultsService) { }
 
@@ -21,9 +20,6 @@ export class ThemeResultComponent implements OnInit {
             // get results
             this.resultsService.get(resultId).then(r => {
                 this.totalResult = r;
-                if (r.scores) {
-                    this.images = r.scores.map(sc => sc.image);
-                }                
             });
         });
     }

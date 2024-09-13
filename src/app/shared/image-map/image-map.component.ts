@@ -1,8 +1,9 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
 import { tileLayer, latLng, icon, marker, Map, Marker, LatLngTuple, point } from 'leaflet';
 import { LatLon } from 'src/app/core/lat-lon';
-import { Image } from '../../core/image-service/image.service';
+import { Image, ImageService, ImageSize } from '../../core/image-service/image.service';
 import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
+import { ScoreCard } from 'src/app/core/score-service/score.service';
 
 const DEFAULT_HEIGHT = '100%';
 const DEFAULT_WIDTH = '100%';
@@ -15,6 +16,15 @@ function getLatLngFromMarkers(markers: Marker[]): LatLngTuple[] {
         markerBounds.push([ll.lat, ll.lng]);
     });
     return markerBounds;
+}
+
+function makeScorePopup(scoreCard: ScoreCard, imageUrl: string): string {
+    return `` +
+      `<div>Location: ${scoreCard.imageAddress.locality}</div>` +
+      `<div>Country: ${scoreCard.imageAddress.countryCode}</div>` +
+      `<div>Description: ${scoreCard.imageAddress.description}</div>` +
+      `<div>Score: ${scoreCard.score}</div><br>` +
+      `<img src=${imageUrl} width="112px" height="112px" alt="No Image"/>`
 }
 
 @Component({
@@ -47,6 +57,18 @@ export class ImageMapComponent implements AfterViewInit, OnDestroy {
     }
     _images!: Image[];
 
+    @Input() get scoreCards(): ScoreCard[] {
+        return this._scoreCards;
+    }
+    set scoreCards(value: ScoreCard[]) {
+        if (this._scoreCards) {
+            this.removeMarkers();
+        }
+        this._scoreCards = value;
+        this.addScoreCardMarkers();
+    }
+    _scoreCards!: ScoreCard[];    
+
     mapOptions = {
         layers:[tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             opacity: 0.7,
@@ -63,7 +85,7 @@ export class ImageMapComponent implements AfterViewInit, OnDestroy {
 
     resizeObserver!: ResizeObserver;
 
-    constructor(private host: ElementRef) {}
+    constructor(private host: ElementRef, private imageService: ImageService) {}
 
     ngAfterViewInit(): void {
         this.resizeObserver = new ResizeObserver((entries) => { 
@@ -135,6 +157,15 @@ export class ImageMapComponent implements AfterViewInit, OnDestroy {
         });
     }
     
+    private addScoreCardMarkers(): void {
+        this.scoreCards.forEach(s => {
+            const newMarker = this.createStandardMarker(s.image.location);
+            let imageLocation = this.imageService.getImageUrl(s.image, ImageSize.SMALL);
+            newMarker.bindPopup(makeScorePopup(s, imageLocation));
+            this.markers.push(newMarker);
+        });
+    }
+
     private createStandardMarker(location: LatLon): Marker<any> {
 		const newMarker = marker(
 			[ location.latitude, location.longitude ],
