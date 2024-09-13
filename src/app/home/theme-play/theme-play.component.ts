@@ -134,7 +134,7 @@ export class ThemePlayComponent implements OnInit {
         // get images
         this.imageService.images(themeId).then(i => {
             this.images = shuffle(i);
-            this.scoreService.initialize(themeId, this.images);
+            this.scoreService.initialize(this.theme, this.images);
             this.setImage(this.images[this.selectedImageIndex]);
         });
     }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TotalScore } from '../score-service/score.service';
 import { TapObserver } from 'rxjs';
+import { Theme } from '../theme-service/theme.service';
 
 export interface TotalResult extends TotalScore {
     id?: number;
@@ -9,11 +10,15 @@ export interface TotalResult extends TotalScore {
 let nextId = 0;
 const results = new Map<number, TotalResult>();
 
+const EMPTY_THEME: Theme = {
+    id: 0,
+    name: 'Empty Theme'
+}
+
 @Injectable({providedIn: 'root'})
 export class ResultsService {
 
     public save(result: TotalScore): Promise<TotalResult> {
-
         // Clone
         const newResult = Object.assign({}, result) as TotalResult;
         newResult.id = nextId++;
@@ -28,7 +33,7 @@ export class ResultsService {
         if (result) {
             return new Promise((resolve) => resolve(result));
         }
-        return new Promise((reject) => reject({total:0,themeId:0}));
+        return new Promise((reject) => reject({total:0,theme:EMPTY_THEME}));
     }
     
 }

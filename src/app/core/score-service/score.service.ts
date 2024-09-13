@@ -4,6 +4,7 @@ import { GeoAddress, GeoService } from '../geo-service/geo.service';
 import { PlaceSuggestion } from '../place-service/place.service';
 import { calculateDistanceInKm } from '../utils';
 import { ResultsService, TotalResult } from '../results-service/results.service';
+import { Theme } from '../theme-service/theme.service';
 
 export const TRY_NUMBER = 3;
 
@@ -35,7 +36,7 @@ export class ScoreCard {
     }
 }
 export interface TotalScore {
-    themeId: number;
+    theme: Theme;
     total: number;
     scores?: ScoreCard[];
 }
@@ -44,15 +45,15 @@ export class ScoreService {
 
     // cards indexed by image id
     cards: Map<number, ScoreCard> = new Map<number, ScoreCard>();
-    themId!: number;
+    theme!: Theme;
 
     cardList!: ScoreCard[];
     totalScore = signal(0);
 
     constructor(private geoService: GeoService, private resultService: ResultsService) { }
 
-    public initialize(themId: number, images: Image[]): void {
-        this.themId = themId;
+    public initialize(theme: Theme, images: Image[]): void {
+        this.theme = theme;
         images.forEach(i => {
             this.cards.set(i.id, new ScoreCard(i));
         });
@@ -111,7 +112,7 @@ export class ScoreService {
     public async getTotalResult(): Promise<TotalResult> {
         // save total and return the saved version
         const totalResult = await this.resultService.save({
-            themeId: this.themId,
+            theme: this.theme,
             total: this.totalScore(),
             scores: Array.from(this.cards.values())
         });
