@@ -106,6 +106,7 @@ export class ThemePlayComponent implements OnInit {
     totalResult!: TotalResult;
 
     placeSuggestionOptions!: PlaceSuggestionOptions;
+    countryCodes: string | undefined;
 
     tryResults: TryResult[] = []; 
 
@@ -147,8 +148,12 @@ export class ThemePlayComponent implements OnInit {
             active: true
         };
         this.selectedImage = image;
-        this.scoreCard = this.scoreService.getScoreCard(this.selectedImage);
+        this.scoreService.getScoreCard(this.selectedImage).then(sc => {
+            this.scoreCard = sc;
+            this.countryCodes = this.generateCountryCodes(this.scoreCard);
+        });
         this.tryResults = [];
+        
     }
 
     /**
@@ -212,5 +217,19 @@ export class ThemePlayComponent implements OnInit {
         if (this.imageMap) {
             this.imageMap.resetMap();
         }
+    }
+
+    private generateCountryCodes(scoreCard: ScoreCard): string | undefined {
+        let result;
+        const countries = [];
+        if (scoreCard.imageAddress.countryCode) {
+            const cc = scoreCard.imageAddress.countryCode.toLowerCase()
+            countries.push(cc);
+            if (cc !== 'us') {
+                countries.push('us')
+            }
+            result = countries.join(',');
+        }
+        return result;
     }
 }

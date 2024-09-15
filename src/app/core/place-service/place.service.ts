@@ -18,9 +18,16 @@ export class PlaceService {
     constructor(private httpClient: HttpClient) { }
     
     // https://apidocs.geoapify.com/docs/geocoding/address-autocomplete/#autocomplete
-    public search(searchTerm: string): Promise<PlaceSuggestion[]> {
+    public async search(searchTerm: string, countryCodeFilter?: string): Promise<PlaceSuggestion[]> {
+        const urlBuilder = [];
+        urlBuilder.push(`https://api.geoapify.com/v1/geocode/autocomplete?text=${searchTerm}`);
+        if (countryCodeFilter) {
+            // Adding a country code filter will return better results for more obscure place names
+            urlBuilder.push(`&filter=countrycode:${countryCodeFilter}`);
+        }
+        urlBuilder.push(`&apiKey=${geoapifyConfig.apiKey}`);
+        const url = urlBuilder.join('');
 
-        const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${searchTerm}&apiKey=${geoapifyConfig.apiKey}`;
         return new Promise<PlaceSuggestion[]>((resolve) => {
             this.httpClient.get(url)
             .subscribe((res: any) => {

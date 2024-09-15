@@ -32,6 +32,8 @@ export class PlaceSuggestionComponent implements OnInit {
     
     @Output() selectionChange: EventEmitter<PlaceSuggestionChange> = new EventEmitter<PlaceSuggestionChange>();   
 
+    @Input() countryCodeFilter: string | undefined;
+
     @Input()
     get suggestionOptions(): PlaceSuggestionOptions {
         return this._suggestionOptions;
@@ -53,7 +55,7 @@ export class PlaceSuggestionComponent implements OnInit {
                 // When text field length is 2 char or less,
                 // return empty array to hide the drop down.                
                 if (value?.length! <= 2) return [];
-                return this.placeService.search(value || '');
+                return this.placeService.search(value || '', this.countryCodeFilter);
             }),
         );         
     }

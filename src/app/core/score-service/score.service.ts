@@ -60,15 +60,13 @@ export class ScoreService {
         this.cardList = Array.from(this.cards.values());
     }
 
-    public getScoreCard(image: Image): ScoreCard {
+    public async getScoreCard(image: Image): Promise<ScoreCard> {
         const scoreCard = this.cards.get(image.id);
-        if (scoreCard) {
-            this.geoService.lookup(image.location).then(res => {
-                scoreCard.imageAddress = res;
-            });        
-            return scoreCard;
+        if (scoreCard) {            
+            scoreCard.imageAddress = await this.geoService.lookup(image.location);        
+            return new Promise((resolve) => {resolve(scoreCard)});
         }
-        return new ScoreCard(image);
+        return new Promise((resolve) => {resolve(new ScoreCard(image))});
     }
 
     public async score(scoreCard: ScoreCard, tryNumber: number, placeSuggestion: Partial<PlaceSuggestion>): Promise<Score> {
