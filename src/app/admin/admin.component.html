@@ -1,5 +1,16 @@
 <div class="center">
-    <h4>Select theme to add images</h4>
+    <form [formGroup]="login" (ngSubmit)="onLoginSubmit()" class="admin-form">
+        <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Password</mat-label>
+            <textarea matInput formControlName="password"></textarea>
+        </mat-form-field>
+        <button type="submit" mat-raised-button color="accent">Login</button>
+    </form>
+    <h2>Select theme to add images</h2>
     <mat-form-field>
         <mat-label>Themes</mat-label>
         <mat-select [(value)]="selectedTheme" (selectionChange)="onSelectedTheme()">

@@ -7,6 +7,7 @@ import { Theme, ThemeService } from '../core/theme-service/theme.service';
 import { EditImageComponent } from './edit-image/edit-image.component';
 import { Router } from '@angular/router';
 import { SharedModule } from '../shared/shared.module'
+import { SupabaseService } from '../core/supabase-service/supabase.service';
 
 @Component({
     selector: 'admin',
@@ -23,7 +24,12 @@ export class AdminComponent implements OnInit {
         description: new FormControl<string>('')
     });
 
-    constructor(private router: Router, private themeService: ThemeService) { }
+    login: FormGroup = new FormGroup({
+        email: new FormControl<string>('', [Validators.required, Validators.email]),
+        password: new FormControl<string>('', Validators.required)
+    });
+
+    constructor(private router: Router, private themeService: ThemeService, private supabaseService: SupabaseService) { }
 
     ngOnInit(): void {
         this.themes = this.themeService.themes();
@@ -46,22 +52,8 @@ export class AdminComponent implements OnInit {
         this.themeService.insert(theme).then(r => console.log('Theme created', r));
     }
 
-    test() {
-        console.log('start test');
-        /*this.flickrService.getLocation('52793526908').then(result => {
-            console.log(result)
-        });*/
-
-        //this.themeService.themes().then(r => console.log(r));
-
-        /*this.imageService.insert([{
-            themeId: 2,
-            source: '52793526908',
-            sourceType: SourceType.FLICKR,
-            location: {latitude: 48.211727, longitude: 16.365630}
-        }]).then(r => console.log(r));*/
-
-        //this.imageService.images(2).then(r => console.log(r));
+    onLoginSubmit() {
+        this.supabaseService.signIn(this.login.value.email, this.login.value.password);
     }
 
 }
