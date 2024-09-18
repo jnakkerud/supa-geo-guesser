@@ -1,28 +1,28 @@
 .center {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding-top: 24px;
+    padding-top: 32px;
 }
 
-.theme-list {
+.button-row {
+    display: table-cell;
+    max-width: 600px;
+  }
+  
+  .button-row .mat-mdc-button-base {
+    margin: 8px 8px 8px 0;
+  }
+  
+  .flex-container {
     display: flex;
+    justify-content: space-between;
     flex-wrap: wrap;
-    padding: 24px;
-    justify-content: center;    
-}
-
-.theme-list-item {
-    &,
-    &:active,
-    &:hover,
-    &:focus {
-        text-decoration: none;
-    }
-    color: white;
-}
-
-.theme-card {
-    margin: 16px;
-    width: 320px;
-}
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: center;
+    width: 120px;
+  }

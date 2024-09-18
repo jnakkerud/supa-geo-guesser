@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 const modules: any[] = [
     MatButtonModule,
@@ -19,7 +20,8 @@ const modules: any[] = [
     MatIconModule,
     MatTabsModule,
     MatAutocompleteModule,
-    MatDividerModule
+    MatDividerModule,
+    MatExpansionModule
 ];
 
 @NgModule({

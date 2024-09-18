@@ -1,34 +1,32 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, NgModule, OnInit } from '@angular/core';
+import { Component, NgModule, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { NgOptimizedImage } from '@angular/common'
 import { ThemePlayComponent } from './theme-play/theme-play.component';
-import { ThemeImage, ThemeService } from '../core/theme-service/theme.service';
+import { Theme, ThemeService } from '../core/theme-service/theme.service';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { ThemeResultComponent } from './theme-result/theme-result.component';
-import { ImageService, ImageSize } from '../core/image-service/image.service';
+import { ThemeListComponent } from './theme-list/theme-list.component';
 
 @Component({
     selector: 'home',
     templateUrl: './home.component.html',
-    styleUrls: ['home.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    styleUrls: ['home.component.scss']
 })
 export class HomeComponent implements OnInit {
     
-    themes!: Promise<ThemeImage[]>;
-  
-    constructor(private themeService: ThemeService, private imageService: ImageService) { }
+    randomTheme!: Theme;
+
+    constructor(private themeService: ThemeService) { }
 
     ngOnInit() { 
-        this.themes = this.themeService.themeImages();        
-    }
-
-    themeImage(theme: ThemeImage): string {
-        return this.imageService.getImageUrl(theme.images[0], ImageSize.SMALL)
-    }    
+        this.themeService.themeImages().then(themes => {
+            const random = Math.floor(Math.random() * themes.length);
+            this.randomTheme = themes[random];
+        });
+    }  
 }
 
 @NgModule({
@@ -39,7 +37,7 @@ export class HomeComponent implements OnInit {
         RouterModule,
         NgOptimizedImage,
         SharedModule],
-    exports: [HomeComponent, ThemePlayComponent, ThemeResultComponent],
-    declarations: [HomeComponent, ThemePlayComponent, ThemeResultComponent],
+    exports: [HomeComponent, ThemePlayComponent, ThemeResultComponent, ThemeListComponent],
+    declarations: [HomeComponent, ThemePlayComponent, ThemeResultComponent, ThemeListComponent],
   })
 export class HomeModule {}
