@@ -1,5 +1,21 @@
 <div class="center">
-    <h1>Try to guess the location of the image</h1>
+    <div class="header-container">
+        <h1>SupaGeoGuesser</h1>
+        <button mat-mini-fab color="grey"  (click)="toggle()">
+            <mat-icon>menu</mat-icon>
+        </button>
+    </div>
+    @if (toggleHelp) {
+        <div class="help-container">
+            <p>You have 3 tries to try to guess the location of the image</p>
+            <p>If you guess correct the first try you get 5 points</p>
+            <p>Otherwise, you get 3 points if you guess the correct location</p>
+            <p>1 point if you guess the correct country and 2 for the correct state/province</p>
+            <a mat-button color="accent" routerLink="/themes">View Image Themes</a>
+        </div>
+    }
+
+    <h2>Try to guess the location of the image</h2>
     @if (randomTheme) {
         <div class="flex-container">
             <a mat-fab extended [routerLink]="['/theme/', randomTheme.id]">

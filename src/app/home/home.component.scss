@@ -6,23 +6,21 @@
     padding-top: 32px;
 }
 
-.button-row {
-    display: table-cell;
-    max-width: 600px;
-  }
-  
-  .button-row .mat-mdc-button-base {
-    margin: 8px 8px 8px 0;
-  }
-  
-  .flex-container {
+
+.flex-container {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-  }
-  
-  .button-container {
-    display: flex;
-    justify-content: center;
-    width: 120px;
-  }
+}
+
+.header-container {
+    display:flex;
+    justify-content: space-around;
+    gap: 40px;
+    padding-bottom: 32px;
+}
+
+.help-container {
+    padding-bottom: 24px;
+    text-align: center;
+}

@@ -19,6 +19,8 @@ export class HomeComponent implements OnInit {
     
     randomTheme!: Theme;
 
+    toggleHelp = false;
+
     constructor(private themeService: ThemeService) { }
 
     ngOnInit() { 
@@ -26,7 +28,11 @@ export class HomeComponent implements OnInit {
             const random = Math.floor(Math.random() * themes.length);
             this.randomTheme = themes[random];
         });
-    }  
+    }
+
+    toggle() {
+        this.toggleHelp = !this.toggleHelp;
+    }
 }
 
 @NgModule({
