@@ -50,7 +50,7 @@ export class ThemeService {
     /**
      *  Return theme with associated images that can be displayed
      * Note the use of the inner keyword to force an inner join to return not null
-     * from the embedded table
+     * from the joined image table
      */
     public async themeImages(): Promise<ThemeImage[]> {
         const { data, error } = await this.supabaseService.supabase

@@ -20,10 +20,13 @@ export interface FlickrPhotoInfo extends FlickrImageSource {
 
 export function sizeSuffix(size: ImageSize): string {
     switch (size) {
+        // 320
         case ImageSize.SMALL:
             return 'n';
+        // 800
         case ImageSize.MEDIUM:
             return 'c';
+        // 1024
         case ImageSize.LARGE:
             return 'b';
     }
