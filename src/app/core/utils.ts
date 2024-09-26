@@ -8,6 +8,12 @@ export function handleError(title: string, error: PostgrestError | null): void {
     }
 }
 
+export enum SourceType {
+    URL = 'url',
+    STORED = 'stored',
+    FLICKR = 'flickr'
+}
+
 // https://rosettacode.org/wiki/Haversine_formula#TypeScript
 export function calculateDistanceInKm(starting: LatLon, destination: LatLon): number {
     const R = 6371; // Radius of the earth in km

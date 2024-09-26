@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Image, ImageService, ImageSize, SourceType } from '../../core/image-service/image.service';
+import { Image, ImageService, ImageSize } from '../../core/image-service/image.service';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { of } from 'rxjs/internal/observable/of';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FlickrPhotoInfo } from 'src/app/core/flickr-service/flickr.service';
+import { SourceType } from 'src/app/core/utils';
 
 @Component({
     selector: 'edit-image',

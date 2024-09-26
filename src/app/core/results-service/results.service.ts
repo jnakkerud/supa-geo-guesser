@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TotalScore } from '../score-service/score.service';
 import { Theme } from '../theme-service/theme.service';
+import { SourceType } from '../utils';
 
 export interface TotalResult extends TotalScore {
     id?: number;
@@ -11,7 +12,8 @@ const results = new Map<number, TotalResult>();
 
 const EMPTY_THEME: Theme = {
     id: 0,
-    name: 'Empty Theme'
+    name: 'Empty Theme',
+    sourceType: SourceType.FLICKR
 }
 
 @Injectable({providedIn: 'root'})

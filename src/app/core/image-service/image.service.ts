@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SupabaseService } from '../supabase-service/supabase.service';
-import { handleError } from '../utils';
+import { handleError, SourceType } from '../utils';
 import { FlickrService } from '../flickr-service/flickr.service';
 import { LatLon } from '../lat-lon';
 
@@ -11,12 +11,6 @@ export interface Image {
     source: any;
     location: LatLon;
     description?: string;
-}
-
-export enum SourceType {
-    URL = 'url',
-    STORED = 'stored',
-    FLICKR = 'flickr'
 }
 
 export enum ImageSize {

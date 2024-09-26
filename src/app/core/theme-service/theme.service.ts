@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { SupabaseService } from '../supabase-service/supabase.service';
-import { handleError } from '../utils';
+import { handleError, SourceType } from '../utils';
 import { Image } from '../image-service/image.service';
 
 export interface Theme {
     id: number;
     name: string;
+    sourceType: SourceType;
     description?: string;
+    sourceInfo?: any;
 }
 
 export interface ThemeImage extends Theme {
