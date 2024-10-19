@@ -42,6 +42,7 @@ export class ThemeService {
             .select(`
           name,
           id,
+          sourceType:source_type,
           description
         `).eq('id', themeId).single();
 

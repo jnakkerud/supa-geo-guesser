@@ -1,12 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ImageService, Image, ImageSize } from '../../core/image-service/image.service';
+import { Image, ImageSize } from '../../core/image-service/image.service';
 import { PlaceSuggestionChange, PlaceSuggestionComponent, PlaceSuggestionOptions } from 'src/app/shared/place-suggestion/place-suggestion.component';
 import { BONUS, COUNTRY_SCORE, LOCALITY_SCORE, STATE_SCORE, Score, ScoreCard, ScoreService, TRY_NUMBER } from 'src/app/core/score-service/score.service';
 import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component';
 import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
 import { TotalResult } from 'src/app/core/results-service/results.service';
 import { Theme, ThemeService } from 'src/app/core/theme-service/theme.service';
+import { ImageProviderFactoryService } from 'src/app/core/image-provider/image-provider-factory.service';
+import { ImageProvider } from 'src/app/core/image-provider/image-provider';
 
 function shuffle(array: Image[]): Image[] {
     // tslint:disable-next-line: one-variable-per-declaration
@@ -113,13 +115,15 @@ export class ThemePlayComponent implements OnInit {
     // Signal from the score service will have update total
     totalScore = this.scoreService.totalScore;
 
+    imageProvider!: ImageProvider;
+
     @ViewChild(ImageMapComponent) imageMap!: ImageMapComponent;
     @ViewChild(PlaceSuggestionComponent) suggestionComponent!: PlaceSuggestionComponent;
 
     constructor(
         private route: ActivatedRoute,
         private themeService: ThemeService,
-        private imageService: ImageService,
+        private imageProviderFactory: ImageProviderFactoryService,
         private scoreService: ScoreService) { }
 
     ngOnInit() {
@@ -132,8 +136,9 @@ export class ThemePlayComponent implements OnInit {
         // get the theme
         this.theme = await this.themeService.getTheme(themeId);
 
-        // get images
-        this.imageService.images(themeId).then(i => {
+        this.imageProvider = this.imageProviderFactory.create(this.theme);
+
+        this.imageProvider.images(this.theme).then(i => {
             this.images = shuffle(i);
             this.scoreService.initialize(this.theme, this.images);
             this.setImage(this.images[this.selectedImageIndex]);
@@ -191,7 +196,7 @@ export class ThemePlayComponent implements OnInit {
     }
 
     imgSource(image: Image): string {
-        return this.imageService.getImageUrl(image, ImageSize.MEDIUM);
+        return this.imageProvider.getImageUrl(image, ImageSize.MEDIUM);
     }
 
     nextImage(): void {
