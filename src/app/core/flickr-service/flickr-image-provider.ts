@@ -11,7 +11,14 @@ export class FlickerImageProvider extends ImageProvider {
     }
 
     public override getImageUrl(image: Partial<Image>, size: ImageSize): string {
-        return this.flickrService.getImageUrl(image, size);
+        try {
+            return this.flickrService.getImageUrl(image, size);
+
+        } catch (error) {
+            console.error('Unable to get image URL', error);
+        }
+        // TODO generic No Image url
+        return 'https://live.staticflickr.com/65535/52793526908_c11769cd0c_n.jpg';
     }
 
     public override getImageInfo(source: string): Promise<any> {

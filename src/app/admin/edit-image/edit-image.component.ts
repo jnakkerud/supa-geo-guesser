@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Image, ImageService, ImageSize } from '../../core/image-service/image.service';
-import { switchMap } from 'rxjs/internal/operators/switchMap';
-import { of } from 'rxjs/internal/observable/of';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { FlickrPhotoInfo } from 'src/app/core/flickr-service/flickr.service';
-import { SourceType } from 'src/app/core/utils';
+import { ImageProviderFactoryService } from 'src/app/core/image-provider/image-provider-factory.service';
+import { ImageProvider } from 'src/app/core/image-provider/image-provider';
+import { Theme, ThemeService } from 'src/app/core/theme-service/theme.service';
 
 @Component({
     selector: 'edit-image',
@@ -14,8 +13,9 @@ import { SourceType } from 'src/app/core/utils';
 })
 export class EditImageComponent implements OnInit {
 
-    themeId!: number;
+    theme!: Theme;
     images!: Image[];
+    imageProvider!: ImageProvider;
 
     editImage: FormGroup = new FormGroup({
         source: new FormControl<string>('', [Validators.required]),
@@ -25,26 +25,31 @@ export class EditImageComponent implements OnInit {
         description: new FormControl<string>('')
     });
 
-    constructor(private route: ActivatedRoute, private imageService: ImageService) { }
+    constructor(private route: ActivatedRoute, 
+        private imageService: ImageService, 
+        private themeService: ThemeService,
+        private imageProviderFactory: ImageProviderFactoryService) { }
 
     ngOnInit() {
-        this.route.paramMap.pipe(
-            switchMap((params: ParamMap) =>
-                of(params.get('id'))
-            )
-        ).subscribe((id) => {
-            this.themeId = Number(id);
-            this.imageService.images(this.themeId).then(r => {
-                this.images = r;
-            });
+        this.route.params.subscribe(p => {
+            this.initData(Number(p['id']));
+        });
+    }
+
+    private async initData(themeId: number) {
+        const theme = await this.themeService.getTheme(themeId);
+
+        this.imageProvider = this.imageProviderFactory.create(theme.sourceType);
+
+        this.imageProvider.images(theme).then(r => {
+            this.images = r;
         });
     }
 
     onSubmit() {
-        const sourceType = SourceType.FLICKR;
         const image:  Partial<Image> = {
-            sourceType: sourceType,
-            themeId: this.themeId,
+            sourceType: this.theme.sourceType,
+            themeId: this.theme.id,
             location: {
                 longitude: this.editImage.value.longitude,
                 latitude: this.editImage.value.latitude
@@ -64,15 +69,14 @@ export class EditImageComponent implements OnInit {
             // null location, so we add it here
             const img: Image =  Object.assign({} as Image, image);
             // refetch image              
-            this.imageService.images(this.themeId).then(r => {
+            this.imageProvider.images(this.theme).then(r => {
                 this.images = r;
             });
         });
     }
 
     imageInfo(): void {
-        this.imageService.getImageInfo(SourceType.FLICKR, this.editImage.value.source).then(r =>  {
-            const flickrResult: FlickrPhotoInfo = r as FlickrPhotoInfo;
+        this.imageProvider.getImageInfo(this.editImage.value.source).then(r =>  {
             let { longitude, latitude, ...imageSource } = r;
             this.editImage.patchValue(
                 {
@@ -85,6 +89,6 @@ export class EditImageComponent implements OnInit {
     }
 
     imgSmallSource(image: Image): string {
-        return this.imageService.getImageUrl(image, ImageSize.SMALL);
+        return this.imageProvider.getImageUrl(image, ImageSize.SMALL);
     }
 }

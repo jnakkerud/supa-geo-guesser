@@ -1,9 +1,10 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
 import { tileLayer, latLng, icon, marker, Map, Marker, LatLngTuple, point } from 'leaflet';
 import { LatLon } from 'src/app/core/lat-lon';
-import { Image, ImageService, ImageSize } from '../../core/image-service/image.service';
+import { Image, ImageSize } from '../../core/image-service/image.service';
 import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
 import { ScoreCard } from 'src/app/core/score-service/score.service';
+import { ImageProviderFactoryService } from 'src/app/core/image-provider/image-provider-factory.service';
 
 const DEFAULT_HEIGHT = '100%';
 const DEFAULT_WIDTH = '100%';
@@ -85,7 +86,7 @@ export class ImageMapComponent implements AfterViewInit, OnDestroy {
 
     resizeObserver!: ResizeObserver;
 
-    constructor(private host: ElementRef, private imageService: ImageService) {}
+    constructor(private host: ElementRef, private imageProviderFactory: ImageProviderFactoryService) {}
 
     ngAfterViewInit(): void {
         this.resizeObserver = new ResizeObserver((entries) => { 
@@ -160,7 +161,8 @@ export class ImageMapComponent implements AfterViewInit, OnDestroy {
     private addScoreCardMarkers(): void {
         this.scoreCards.forEach(s => {
             const newMarker = this.createStandardMarker(s.image.location);
-            let imageLocation = this.imageService.getImageUrl(s.image, ImageSize.SMALL);
+            const imageProvider = this.imageProviderFactory.create(s.image.sourceType);
+            let imageLocation = imageProvider.getImageUrl(s.image, ImageSize.SMALL);
             newMarker.bindPopup(makeScorePopup(s, imageLocation));
             this.markers.push(newMarker);
         });

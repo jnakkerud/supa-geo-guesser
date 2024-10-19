@@ -136,7 +136,7 @@ export class ThemePlayComponent implements OnInit {
         // get the theme
         this.theme = await this.themeService.getTheme(themeId);
 
-        this.imageProvider = this.imageProviderFactory.create(this.theme);
+        this.imageProvider = this.imageProviderFactory.create(this.theme.sourceType);
 
         this.imageProvider.images(this.theme).then(i => {
             this.images = shuffle(i);

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SupabaseService } from '../supabase-service/supabase.service';
 import { handleError, SourceType } from '../utils';
-import { FlickrService } from '../flickr-service/flickr.service';
 import { LatLon } from '../lat-lon';
 
 export interface Image {
@@ -47,21 +46,7 @@ export function mapResultToImage(data: any): Image[] {
 
 @Injectable({providedIn: 'root'})
 export class ImageService {
-    constructor(private supabaseService: SupabaseService, private flickrService: FlickrService) { }
- 
-    public async images(themeId: number): Promise<Image[]> {
-        const { data, error } = await this.supabaseService.supabase.rpc('images_in_theme',
-            {themeid: themeId}
-        );
-   
-        try {
-            handleError('', error);
-            const result = mapResultToImage(data);
-            return new Promise((resolve) => {resolve(result)});                
-        } catch (error) {
-            return new Promise((resolve) => {resolve([])});                
-        }
-    }
+    constructor(private supabaseService: SupabaseService) { }
    
     public async insert(images:  Partial<Image>[]): Promise<Image[] |  Error> {
         const updateTime = new Date();
@@ -84,35 +69,5 @@ export class ImageService {
         const result = mapResultToImage(data);
         return new Promise((resolve) => {resolve(result)});
     }
-    
-    public getImageUrl(image: Partial<Image>, size: ImageSize): string {
-        try {
-            if (image.sourceType == SourceType.FLICKR) {
-                return this.flickrService.getImageUrl(image, size);
-            }
-                
-        } catch (error) {
-            console.error('Unable to get image URL', error);
-        }
-        // TODO generic No Image url
-        return 'https://live.staticflickr.com/65535/52793526908_c11769cd0c_n.jpg';            
 
-    }
-
-    /**
-     * Get info about an image.  
-     * 
-     * @param sourceType 
-     * @param source 
-     * @returns Info Object
-     */
-    public async getImageInfo(sourceType: SourceType, source: string ): Promise<any> {
-        if (sourceType == SourceType.FLICKR) {
-            const result = await this.flickrService.getInfo(source);
-            return new Promise((resolve) => {resolve(result)});
-        }
-
-        // default return 
-        return new Promise((resolve) => {resolve({source: source})});
-    }
 }

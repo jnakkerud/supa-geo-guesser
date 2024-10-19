@@ -25,6 +25,7 @@ export class ThemeService {
             .select(`
           name,
           id,
+          sourceType:source_type,
           description
         `);
 
@@ -61,6 +62,7 @@ export class ThemeService {
             .select(`
           name,
           id,
+          sourceType:source_type,
           description,
           images:image!inner (
             sourceType:source_type,
