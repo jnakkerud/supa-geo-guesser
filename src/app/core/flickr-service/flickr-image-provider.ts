@@ -4,7 +4,15 @@ import { FlickrService } from "./flickr.service";
 import { SupabaseService } from "../supabase-service/supabase.service";
 import { SourceType } from "../utils";
 
-// TODO add flickr service code here
+const ERROR_IMAGE: Image = {
+    id: -1,
+    location: {latitude:1,longitude:1},
+    source:  {id: '348695565', secret: 'b2a60d594f', serverId: '153'},
+    sourceType: SourceType.FLICKR,
+    themeId: -1,
+    description: 'Error loading image'
+};
+
 export class FlickerImageProvider extends ImageProvider {
 
     constructor(public override supabaseService: SupabaseService, public flickrService: FlickrService) {
@@ -20,10 +28,9 @@ export class FlickerImageProvider extends ImageProvider {
             return this.flickrService.getImageUrl(image, size);
 
         } catch (error) {
-            console.error('Unable to get image URL', error);
+            console.error(`Unable to get image URL for ${image.source}`, error);
         }
-        // TODO generic No Image url
-        return 'https://live.staticflickr.com/65535/52793526908_c11769cd0c_n.jpg';
+        return this.flickrService.getImageUrl(ERROR_IMAGE, size);
     }
 
     public override getImageInfo(source: string): Promise<any> {

@@ -14,36 +14,32 @@ export interface FlickrGroupInfo {
 
 export class FlickrGroupImageProvider extends FlickerImageProvider {
 
-    cachedImages!: Image[];
-
     public override async images(theme: Theme): Promise<Image[]> {
         // return a single image
-        if (!this.cachedImages) {
-            this.cachedImages = [];
+        const resultImages: Image[] = [];
 
-            const groupInfo: FlickrGroupInfo = theme.sourceInfo;
+        const groupInfo: FlickrGroupInfo = theme.sourceInfo;
 
-            // generate a random page number
-            const pages = Math.floor(groupInfo.photoCount / PER_PAGE);
-            const randomPage = randomNumber(1, pages);
+        // generate a random page number
+        const pages = Math.floor(groupInfo.photoCount / PER_PAGE);
+        const randomPage = randomNumber(1, pages);
 
-            const res = await this.flickrService.getGroupPhotos(encodeURI(groupInfo.groupID),randomPage, PER_PAGE);
-            
-            // find a random image
-            const randomImage = res[randomInt(PER_PAGE)];
+        const res = await this.flickrService.getGroupPhotos(encodeURI(groupInfo.groupID), randomPage, PER_PAGE);
 
-            this.cachedImages.push(
-                {
-                    id: coerceNumberProperty(randomImage.id),
-                    location: {latitude: coerceNumberProperty(randomImage.latitude), longitude: coerceNumberProperty(randomImage.longitude)},
-                    source: randomImage,
-                    sourceType: SourceType.FLICKR,
-                    themeId: theme.id,
-                    description: randomImage.title
+        // find a random image
+        const randomImage = res[randomInt(PER_PAGE)];
 
-                }
-            );
-        }
-        return new Promise((resolve) => {resolve(this.cachedImages)});  
+        resultImages.push(
+            {
+                id: coerceNumberProperty(randomImage.id),
+                location: { latitude: coerceNumberProperty(randomImage.latitude), longitude: coerceNumberProperty(randomImage.longitude) },
+                source: randomImage,
+                sourceType: SourceType.FLICKR,
+                themeId: theme.id,
+                description: randomImage.title
+
+            }
+        );
+        return new Promise((resolve) => { resolve(resultImages) });  
     }
 }
