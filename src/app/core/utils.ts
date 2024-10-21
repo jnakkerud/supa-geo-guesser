@@ -8,10 +8,19 @@ export function handleError(title: string, error: PostgrestError | null): void {
     }
 }
 
+export function randomInt(max: number): number {
+    return Math.floor(Math.random() * max);
+}
+
+export function randomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 export enum SourceType {
     URL = 'url',
     STORED = 'stored',
-    FLICKR = 'flickr'
+    FLICKR = 'flickr',
+    FLICKR_GROUP = 'flickr-group'
 }
 
 // https://rosettacode.org/wiki/Haversine_formula#TypeScript

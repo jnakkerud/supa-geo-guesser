@@ -2,16 +2,21 @@ import { ImageProvider } from "../image-provider/image-provider";
 import { Image, ImageSize } from "../image-service/image.service";
 import { FlickrService } from "./flickr.service";
 import { SupabaseService } from "../supabase-service/supabase.service";
+import { SourceType } from "../utils";
 
 // TODO add flickr service code here
 export class FlickerImageProvider extends ImageProvider {
 
-    constructor(public override supabaseService: SupabaseService, private flickrService: FlickrService) {
+    constructor(public override supabaseService: SupabaseService, public flickrService: FlickrService) {
         super(supabaseService);
     }
 
     public override getImageUrl(image: Partial<Image>, size: ImageSize): string {
         try {
+            // TODO not here for url?
+            if (image.sourceType == SourceType.URL) {
+                return image.source.url;
+            }
             return this.flickrService.getImageUrl(image, size);
 
         } catch (error) {

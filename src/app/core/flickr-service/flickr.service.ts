@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { flickrConfig } from '../../app-config';
 import { ImageSize, Image } from '../image-service/image.service';
+import { coerceNumberProperty } from '@angular/cdk/coercion';
 
 function flickrUrl(methodName: string): URL {
     return new URL(`https://www.flickr.com/services/rest/?method=${methodName}&api_key=${flickrConfig.apiKey}&format=json`);
@@ -16,6 +17,7 @@ export interface FlickrPhotoInfo extends FlickrImageSource {
     //description: string; TODO get description?
     longitude?: number;
     latitude?: number;
+    title?: string;
 }
 
 export function sizeSuffix(size: ImageSize): string {
@@ -30,6 +32,18 @@ export function sizeSuffix(size: ImageSize): string {
         case ImageSize.LARGE:
             return 'b';
     }
+}
+
+export function mapPhoto(photo: any): FlickrPhotoInfo {
+    const result: FlickrPhotoInfo = {
+        id: photo.id,
+        secret: photo.secret,
+        serverId: photo.server,
+        title: photo.title,
+        latitude: coerceNumberProperty(photo.latitude),
+        longitude: coerceNumberProperty(photo.longitude)
+    }
+    return result;
 }
 
 @Injectable({providedIn: 'root'})
@@ -75,6 +89,34 @@ export class FlickrService {
     public getImageUrl(image: Partial<Image>, size: ImageSize): string {
         const imageSource: FlickrImageSource = image.source as FlickrImageSource;
         return `https://live.staticflickr.com/${imageSource.serverId}/${imageSource.id}_${imageSource.secret}_${sizeSuffix(size)}.jpg`;
+    }
+
+    public getGroupPhotos(groupId: string, page: number, perPage=30): Promise<FlickrPhotoInfo[]> {
+        const url: URL = flickrUrl('flickr.groups.pools.getPhotos');
+        url.searchParams.append('extras', 'geo');
+        url.searchParams.append('group_id', groupId);
+        url.searchParams.append('page', String(page));
+        url.searchParams.append('per_page', String(perPage));
+
+        return new Promise<FlickrPhotoInfo[]>((resolve, reject) => {
+            this.httpClient.jsonp(url.href, 'jsoncallback')
+                .subscribe((res: any) => {
+                    if (res.stat !== 'ok') {
+                        console.error(res);
+                        reject(`Error calling service: ${res.message}`);
+                    }
+
+                    const result: FlickrPhotoInfo[] = [];
+                    const photos: any[] = res.photos.photo;
+
+                    photos.forEach(p => {
+                        result.push(mapPhoto(p));
+                    });
+
+                    resolve(result)
+                }
+            );
+        });
     }
 
 }

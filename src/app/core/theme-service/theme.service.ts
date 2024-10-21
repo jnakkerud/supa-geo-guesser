@@ -26,7 +26,8 @@ export class ThemeService {
           name,
           id,
           sourceType:source_type,
-          description
+          description,
+          sourceInfo:source_info
         `);
 
         try {
@@ -44,7 +45,8 @@ export class ThemeService {
           name,
           id,
           sourceType:source_type,
-          description
+          description,
+          sourceInfo:source_info
         `).eq('id', themeId).single();
 
         handleError('', error);
