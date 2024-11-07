@@ -199,6 +199,11 @@ export class ThemePlayComponent implements OnInit {
         return this.imageProvider.getImageUrl(image, ImageSize.MEDIUM);
     }
 
+    imageClick(): void {
+        const url = this.imageProvider.getImageUrl(this.selectedImage, ImageSize.LARGE)
+        window.open(url, "_blank");
+    }
+
     nextImage(): void {
         this.resetMap();
         this.selectedImageIndex = (this.selectedImageIndex+1)%this.images.length;
