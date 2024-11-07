@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, debounceTime, filter, startWith, switchMap } from 'rxjs';
+import { Observable, debounceTime, distinctUntilChanged, filter, startWith, switchMap } from 'rxjs';
 import { PlaceService, PlaceSuggestion } from 'src/app/core/place-service/place.service';
 import { ThemePalette } from '@angular/material/core';
 
@@ -51,6 +51,7 @@ export class PlaceSuggestionComponent implements OnInit {
             startWith(''),
             debounceTime(300),
             filter(value => typeof value === 'string'),
+            distinctUntilChanged(),
             switchMap(value => {
                 // When text field length is 2 char or less,
                 // return empty array to hide the drop down.                

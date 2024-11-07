@@ -235,9 +235,6 @@ export class ThemePlayComponent implements OnInit {
         if (scoreCard.imageAddress.countryCode) {
             const cc = scoreCard.imageAddress.countryCode.toLowerCase()
             countries.push(cc);
-            if (cc !== 'us') {
-                countries.push('us')
-            }
             result = countries.join(',');
         }
         return result;

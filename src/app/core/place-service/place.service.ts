@@ -16,14 +16,14 @@ export interface PlaceSuggestion {
 export class PlaceService {
     
     constructor(private httpClient: HttpClient) { }
-    
+
     // https://apidocs.geoapify.com/docs/geocoding/address-autocomplete/#autocomplete
     public async search(searchTerm: string, countryCodeFilter?: string): Promise<PlaceSuggestion[]> {
         const urlBuilder = [];
-        urlBuilder.push(`https://api.geoapify.com/v1/geocode/autocomplete?text=${searchTerm}`);
+        urlBuilder.push(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(searchTerm)}&lang=en`);
         if (countryCodeFilter) {
             // Adding a country code filter will return better results for more obscure place names
-            urlBuilder.push(`&filter=countrycode:${countryCodeFilter}`);
+            urlBuilder.push(`&bias=countrycode:${countryCodeFilter}`);
         }
         urlBuilder.push(`&apiKey=${geoapifyConfig.apiKey}`);
         const url = urlBuilder.join('');
@@ -42,8 +42,6 @@ export class PlaceService {
                         location: {latitude: f.properties.lat, longitude: f.properties.lon}
                     }
                 });
-                console.log(result);
-
                 resolve(result);
             });        
         });
