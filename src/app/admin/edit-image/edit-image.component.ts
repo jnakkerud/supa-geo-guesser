@@ -37,11 +37,11 @@ export class EditImageComponent implements OnInit {
     }
 
     private async initData(themeId: number) {
-        const theme = await this.themeService.getTheme(themeId);
+        this.theme = await this.themeService.getTheme(themeId);
 
-        this.imageProvider = this.imageProviderFactory.create(theme.sourceType);
+        this.imageProvider = this.imageProviderFactory.create(this.theme.sourceType);
 
-        this.imageProvider.images(theme).then(r => {
+        this.imageProvider.images(this.theme).then(r => {
             this.images = r;
         });
     }

@@ -8,6 +8,7 @@ import { EditImageComponent } from './edit-image/edit-image.component';
 import { Router } from '@angular/router';
 import { SharedModule } from '../shared/shared.module'
 import { SupabaseService } from '../core/supabase-service/supabase.service';
+import { SourceType } from '../core/utils';
 
 @Component({
     selector: 'admin',
@@ -42,7 +43,8 @@ export class AdminComponent implements OnInit {
 
     onSubmit() {
         const theme: Partial<Theme>  = {
-            name: this.adminTheme.value.name
+            name: this.adminTheme.value.name,
+            sourceType: SourceType.FLICKR
         }
 
         if (!!this.adminTheme.value.description) {

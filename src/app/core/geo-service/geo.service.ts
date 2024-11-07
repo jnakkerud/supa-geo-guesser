@@ -25,9 +25,10 @@ export class GeoService {
                     placeId: res.place_id,
                     description: res.display_name,
                     countryCode: res.address?.country_code ?? '',
-                    state: res.address?.state ?? '',
-                    locality: res.address?.city ?? res.address?.town ?? res.address?.village ?? ''
-                } 
+                    state: res.address?.state ?? null,
+                    locality: res.address?.city ?? res.address?.town ?? res.address?.village ?? null
+                }
+                console.log(`lat=${location.latitude}&lon=${location.longitude}`, result)
                 resolve(result);
             });        
         });

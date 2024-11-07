@@ -62,8 +62,8 @@ export class ScoreService {
 
     public async getScoreCard(image: Image): Promise<ScoreCard> {
         const scoreCard = this.cards.get(image.id);
-        if (scoreCard) {            
-            scoreCard.imageAddress = await this.geoService.lookup(image.location);        
+        if (scoreCard) { 
+            scoreCard.imageAddress = await this.geoService.lookup(image.location);    
             return new Promise((resolve) => {resolve(scoreCard)});
         }
         return new Promise((resolve) => {resolve(new ScoreCard(image))});
@@ -91,11 +91,11 @@ export class ScoreService {
                 tempScore = COUNTRY_SCORE;
             }
 
-            if (state == geoAddressValue(guessGeo, 'state')) {
+            if (state && tempScore == COUNTRY_SCORE && state == geoAddressValue(guessGeo, 'state')) {
                 tempScore = STATE_SCORE;          
             }
 
-            if (tempScore > 0 && locality == geoAddressValue(guessGeo, 'locality')) {
+            if (locality && tempScore >= COUNTRY_SCORE && locality == geoAddressValue(guessGeo, 'locality')) {
                 tempScore = LOCALITY_SCORE;           
             }
 

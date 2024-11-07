@@ -86,7 +86,7 @@ export class ThemeService {
         const { data, error } = await this.supabaseService.supabase
         .from('theme')
         .insert([
-          { name: theme.name, updated_at: new Date(), description: theme.description }
+          { name: theme.name, updated_at: new Date(), description: theme.description, source_type: theme.sourceType }
         ]).select();
 
         handleError('Insert Theme Error', error);
