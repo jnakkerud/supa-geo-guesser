@@ -10,6 +10,17 @@ import { Theme, ThemeService } from 'src/app/core/theme-service/theme.service';
 import { ImageProviderFactoryService } from 'src/app/core/image-provider/image-provider-factory.service';
 import { ImageProvider } from 'src/app/core/image-provider/image-provider';
 
+const LARGE_IMAGE_SIZE = {
+    width: 800,
+    height: 600
+}
+
+const SMALL_IMAGE_SIZE = {
+    width: 800,
+    height: 350
+}
+
+
 function shuffle(array: Image[]): Image[] {
     // tslint:disable-next-line: one-variable-per-declaration
     let currentIndex = array.length, temporaryValue, randomIndex;
@@ -98,6 +109,9 @@ export class ThemePlayComponent implements OnInit {
 
     theme!: Theme;
     images!: Image[];
+
+    width = LARGE_IMAGE_SIZE.width;
+    height = LARGE_IMAGE_SIZE.height;
 
     selectedImage!: Image;
     selectedImageIndex = 0;
@@ -200,6 +214,8 @@ export class ThemePlayComponent implements OnInit {
     }
 
     imageClick(): void {
+        this.height = SMALL_IMAGE_SIZE.height;
+        this.width = SMALL_IMAGE_SIZE.width;
         const url = this.imageProvider.getImageUrl(this.selectedImage, ImageSize.LARGE)
         window.open(url, "_blank");
     }

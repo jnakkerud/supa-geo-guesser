@@ -2,7 +2,7 @@
 <div class="play-container">
     <div class="image-container">
         <div>
-            <img [src]="imgSource(selectedImage)" width="800" height="600" alt="No Image" (click)="imageClick()">
+            <img [src]="imgSource(selectedImage)" [style.width.px]="width" [style.height.px]="height" alt="No Image" (click)="imageClick()">
         </div>
         <place-suggestion #placeSuggestion (selectionChange)="onPlaceSelection($event)" [suggestionOptions]="placeSuggestionOptions" [countryCodeFilter]="countryCodes"></place-suggestion>
         @switch (playStatus) {
