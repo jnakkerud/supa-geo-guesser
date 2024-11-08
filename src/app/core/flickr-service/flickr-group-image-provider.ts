@@ -27,7 +27,11 @@ export class FlickrGroupImageProvider extends FlickerImageProvider {
         const res = await this.flickrService.getGroupPhotos(encodeURI(groupInfo.groupID), randomPage, PER_PAGE);
 
         // find a random image
-        const randomImage = res[randomInt(PER_PAGE)];
+        let randomImage = res[randomInt(PER_PAGE)];
+        if (randomImage.latitude == 0 && randomImage.longitude == 0) {
+            return this.images(theme);
+        }
+        console.log('random group image', randomImage)
 
         resultImages.push(
             {
