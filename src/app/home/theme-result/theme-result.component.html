@@ -1,7 +1,7 @@
 @if (totalResult) {
     <div class="container">
         <h1>Total score for {{totalResult.theme.name}}: {{totalResult.total}}</h1>
-        <a mat-button color="accent" routerLink="/">New Game</a>
+        <a mat-button color="accent" [routerLink]="['/theme/', totalResult.theme.id]">New Game</a>
         <image-map class="map-container" [scoreCards]="totalResult.scores!" [center]="true" width="800px" height="500px"></image-map>
     </div>
 }
