@@ -1,16 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Image, ImageService, ImageSize } from '../../core/image-service/image.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ImageProviderFactoryService } from 'src/app/core/image-provider/image-provider-factory.service';
 import { ImageProvider } from 'src/app/core/image-provider/image-provider';
 import { Theme, ThemeService } from 'src/app/core/theme-service/theme.service';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatTab, MatTabGroup } from '@angular/material/tabs';
+import { MatCard, MatCardContent } from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { NgOptimizedImage } from '@angular/common';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { MatInput } from '@angular/material/input';
 
 @Component({
     selector: 'edit-image',
     templateUrl: 'edit-image.component.html',
     styleUrls: ['edit-image.component.scss'],
-    standalone: false
+    imports: [
+        MatFormField,
+        MatLabel,
+        MatTab,
+        MatTabGroup,
+        MatCard,
+        MatCardContent,
+        ReactiveFormsModule,
+        MatIcon,
+        NgOptimizedImage,
+        SharedModule,
+        MatInput
+    ]
 })
 export class EditImageComponent implements OnInit {
 

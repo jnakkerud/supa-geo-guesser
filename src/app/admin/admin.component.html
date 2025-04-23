@@ -14,9 +14,11 @@
     <mat-form-field>
         <mat-label>Themes</mat-label>
         <mat-select [(value)]="selectedTheme" (selectionChange)="onSelectedTheme()">
-            <mat-option *ngFor="let theme of themes |  async" [value]="theme">
-                {{theme.name}}
-            </mat-option>
+            @for (theme of (themes | async); track theme.id) {
+                <mat-option [value]="theme">
+                    {{theme.name}}
+                </mat-option>
+            }
         </mat-select>
     </mat-form-field>
     <form [formGroup]="adminTheme" (ngSubmit)="onSubmit()" class="admin-form">

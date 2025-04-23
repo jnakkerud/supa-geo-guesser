@@ -1,20 +1,26 @@
-import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgOptimizedImage } from '@angular/common'
-import { MaterialModule } from '../material.module';
 import { Theme, ThemeService } from '../core/theme-service/theme.service';
-import { EditImageComponent } from './edit-image/edit-image.component';
 import { Router } from '@angular/router';
-import { SharedModule } from '../shared/shared.module'
 import { SupabaseService } from '../core/supabase-service/supabase.service';
 import { SourceType } from '../core/utils';
-
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelect, MatOption } from '@angular/material/select';
+import { AsyncPipe } from '@angular/common';
+import { MatInput } from '@angular/material/input';
 @Component({
     selector: 'admin',
     templateUrl: './admin.component.html',
     styleUrls: ['admin.component.scss'],
-    standalone: false
+    imports: [
+        MatFormField,
+        MatLabel,
+        MatSelect,
+        MatOption,
+        ReactiveFormsModule,
+        AsyncPipe,
+        MatInput
+    ]
 })
 export class AdminComponent implements OnInit {
 
@@ -60,11 +66,3 @@ export class AdminComponent implements OnInit {
     }
 
 }
-
-@NgModule({
-    imports: [
-        CommonModule, ReactiveFormsModule, MaterialModule, NgOptimizedImage, SharedModule],
-    exports: [AdminComponent, EditImageComponent],
-    declarations: [AdminComponent, EditImageComponent],
-  })
-export class AdminModule {}

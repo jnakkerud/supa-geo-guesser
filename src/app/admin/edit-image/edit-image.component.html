@@ -30,12 +30,12 @@
     <mat-tab-group>
         <mat-tab label="Image List">
             <div class="image-list">
-                <div *ngFor="let image of images">
+                @for (image of images; track image.id) {
                     <mat-card class="edit-card">
                         <img mat-card-image [ngSrc]="imgSmallSource(image)" width="320" height="240" alt="No Image">
                         <mat-card-content>{{image.description}}</mat-card-content>
                     </mat-card>
-                </div>
+                }
             </div>
         </mat-tab>
         <mat-tab label="Map">
