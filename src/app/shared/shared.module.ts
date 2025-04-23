@@ -4,7 +4,7 @@ import { PlaceSuggestionComponent } from './place-suggestion/place-suggestion.co
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { ImageMapComponent } from './image-map/image-map.component';
 
 @NgModule({
