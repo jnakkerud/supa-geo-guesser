@@ -24,6 +24,7 @@ export class PlaceSuggestionChange {
     templateUrl: 'place-suggestion.component.html',
     styleUrls: ['place-suggestion.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class PlaceSuggestionComponent implements OnInit {
 

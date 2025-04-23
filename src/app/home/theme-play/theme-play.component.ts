@@ -103,7 +103,8 @@ export class TryResult {
     selector: 'theme-play',
     templateUrl: './theme-play.component.html',
     styleUrls: ['theme-play.component.scss'],
-    providers: [ScoreService]
+    providers: [ScoreService],
+    standalone: false
 })
 export class ThemePlayComponent implements OnInit {
 

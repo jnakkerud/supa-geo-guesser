@@ -8,7 +8,8 @@ import { ImageProviderFactoryService } from 'src/app/core/image-provider/image-p
     selector: 'theme-list',
     templateUrl: './theme-list.component.html',
     styleUrls: ['theme-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ThemeListComponent implements OnInit {
     

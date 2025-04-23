@@ -10,6 +10,7 @@ import { Theme, ThemeService } from 'src/app/core/theme-service/theme.service';
     selector: 'edit-image',
     templateUrl: 'edit-image.component.html',
     styleUrls: ['edit-image.component.scss'],
+    standalone: false
 })
 export class EditImageComponent implements OnInit {
 

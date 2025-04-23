@@ -33,6 +33,7 @@ function makeScorePopup(scoreCard: ScoreCard, imageUrl: string): string {
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `<div id="map" [style.width]="width" [style.height]="height" [style.minHeight]="minHeight" leaflet [leafletOptions]="mapOptions" [leafletLayers]="markers" (leafletMapReady)="onMapReady($event)" (leafletClick)="mapClickedHandler($event)"></div>`,
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class ImageMapComponent implements AfterViewInit, OnDestroy {
 
