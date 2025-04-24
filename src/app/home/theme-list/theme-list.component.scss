@@ -19,7 +19,9 @@
     &:focus {
         text-decoration: none;
     }
-    color: white;
+    & {
+        color: white;
+    }
 }
 
 .theme-card {
