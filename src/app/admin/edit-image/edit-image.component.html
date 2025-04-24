@@ -40,7 +40,9 @@
         </mat-tab>
         <mat-tab label="Map">
             <ng-template class="edit-map-container" matTabContent>
-                <image-map [images]="images"></image-map>
+                @defer {
+                    <image-map [images]="images"></image-map>
+                }                
             </ng-template>
         </mat-tab>
     </mat-tab-group>

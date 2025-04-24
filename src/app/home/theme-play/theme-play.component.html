@@ -31,7 +31,9 @@
                 </div>                
             }
         }
-        <image-map class="map-container" (selectionChange)="placeSuggestion.setSuggestion($event)"></image-map>
+        @defer {
+            <image-map class="map-container" (selectionChange)="placeSuggestion.setSuggestion($event)"></image-map>
+        }        
     </div>
     <div>
         <mat-card class="score-card" appearance="outlined">
