@@ -5,10 +5,11 @@ import { MaterialModule } from '../material.module';
 import { NgOptimizedImage } from '@angular/common'
 import { ThemePlayComponent } from './theme-play/theme-play.component';
 import { Theme, ThemeService } from '../core/theme-service/theme.service';
-import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { ThemeResultComponent } from './theme-result/theme-result.component';
 import { ThemeListComponent } from './theme-list/theme-list.component';
+import { PlaceSuggestionComponent } from '../shared/place-suggestion/place-suggestion.component';
+import { ImageMapComponent } from '../shared/image-map/image-map.component';
 
 @Component({
     selector: 'home',
@@ -42,8 +43,9 @@ export class HomeComponent implements OnInit {
         ReactiveFormsModule, 
         MaterialModule, 
         RouterModule,
-        NgOptimizedImage,
-        SharedModule],
+        PlaceSuggestionComponent,
+        ImageMapComponent,
+        NgOptimizedImage],
     exports: [HomeComponent, ThemePlayComponent, ThemeResultComponent, ThemeListComponent],
     declarations: [HomeComponent, ThemePlayComponent, ThemeResultComponent, ThemeListComponent],
   })

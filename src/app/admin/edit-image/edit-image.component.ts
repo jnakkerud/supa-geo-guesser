@@ -10,8 +10,8 @@ import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { NgOptimizedImage } from '@angular/common';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { MatInput } from '@angular/material/input';
+import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component';
 
 @Component({
     selector: 'edit-image',
@@ -27,7 +27,7 @@ import { MatInput } from '@angular/material/input';
         ReactiveFormsModule,
         MatIcon,
         NgOptimizedImage,
-        SharedModule,
+        ImageMapComponent,
         MatInput
     ]
 })

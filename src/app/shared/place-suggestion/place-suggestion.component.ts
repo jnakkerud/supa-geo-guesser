@@ -1,8 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Observable, debounceTime, distinctUntilChanged, filter, startWith, switchMap } from 'rxjs';
 import { PlaceService, PlaceSuggestion } from 'src/app/core/place-service/place.service';
-import { ThemePalette } from '@angular/material/core';
+import { MatOption, ThemePalette } from '@angular/material/core';
+import { MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/input';
+import { MatIcon } from '@angular/material/icon';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { AsyncPipe } from '@angular/common';
 
 type MessageIcon = 'cancel' | 'check_circle' | 'do_not_disturb_on';
 
@@ -24,7 +28,17 @@ export class PlaceSuggestionChange {
     templateUrl: 'place-suggestion.component.html',
     styleUrls: ['place-suggestion.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [
+        ReactiveFormsModule,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        MatIcon,
+        MatOption,
+        MatAutocompleteModule,
+        MatHint,
+        AsyncPipe
+    ]
 })
 export class PlaceSuggestionComponent implements OnInit {
 

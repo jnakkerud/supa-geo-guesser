@@ -5,6 +5,7 @@ import { Image, ImageSize } from '../../core/image-service/image.service';
 import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
 import { ScoreCard } from 'src/app/core/score-service/score.service';
 import { ImageProviderFactoryService } from 'src/app/core/image-provider/image-provider-factory.service';
+import { LeafletModule } from '@bluehalo/ngx-leaflet';
 
 const DEFAULT_HEIGHT = '100%';
 const DEFAULT_WIDTH = '100%';
@@ -33,7 +34,7 @@ function makeScorePopup(scoreCard: ScoreCard, imageUrl: string): string {
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `<div id="map" [style.width]="width" [style.height]="height" [style.minHeight]="minHeight" leaflet [leafletOptions]="mapOptions" [leafletLayers]="markers" (leafletMapReady)="onMapReady($event)" (leafletClick)="mapClickedHandler($event)"></div>`,
     encapsulation: ViewEncapsulation.None,
-    standalone: false
+    imports: [LeafletModule],
 })
 export class ImageMapComponent implements AfterViewInit, OnDestroy {
 
