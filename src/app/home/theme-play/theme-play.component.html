@@ -32,7 +32,7 @@
             }
         }
         @defer {
-            <image-map class="map-container" (selectionChange)="placeSuggestion.setSuggestion($event)"></image-map>
+            <image-map class="map-container" [disableMapClick]="playEnd" (selectionChange)="placeSuggestion.setSuggestion($event)"></image-map>
         }        
     </div>
     <div>

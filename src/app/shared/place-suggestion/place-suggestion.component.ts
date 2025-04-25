@@ -87,6 +87,7 @@ export class PlaceSuggestionComponent implements OnInit {
 
     // Called from user selection on map
     setSuggestion(suggestion: Partial<PlaceSuggestion>) {
+        // TODO resolve lat lon to actual place name
         this.placeControl.patchValue(suggestion);
         this.onSelection(suggestion);
     }

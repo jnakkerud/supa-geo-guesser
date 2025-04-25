@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
-import { tileLayer, latLng, icon, marker, Map, Marker, LatLngTuple, point } from 'leaflet';
+import { tileLayer, latLng, icon, marker, Map, Marker, LatLngTuple, point, LeafletMouseEvent } from 'leaflet';
 import { LatLon } from 'src/app/core/lat-lon';
 import { Image, ImageSize } from '../../core/image-service/image.service';
 import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
@@ -45,6 +45,8 @@ export class ImageMapComponent implements AfterViewInit, OnDestroy {
     @Input() minHeight: string | number | null = DEFAULT_MIN_HEIGHT;
 
     @Input() center: boolean = false;
+
+    @Input() disableMapClick: boolean = false;
 
     @Output() selectionChange: EventEmitter<Partial<PlaceSuggestion>> = new EventEmitter<Partial<PlaceSuggestion>>();
 
@@ -118,7 +120,12 @@ export class ImageMapComponent implements AfterViewInit, OnDestroy {
         }
 	} 
 
-    mapClickedHandler(event: any) {
+    mapClickedHandler(event: LeafletMouseEvent) {
+        // stop map click event from propagating to other components
+        if (this.disableMapClick) {
+            event.originalEvent.stopPropagation();
+            return;
+        }
         const latLon: LatLon = {latitude: event.latlng.lat, longitude: event.latlng.lng};
         this.selectionChange.emit({
             location: latLon,

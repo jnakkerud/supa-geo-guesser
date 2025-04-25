@@ -240,6 +240,10 @@ export class ThemePlayComponent implements OnInit {
         return this.scoreCard?.score || 0;
     }
 
+    get playEnd(): boolean {
+        return (this.playStatus == 'play_end' || this.playStatus == 'next_image');
+    }
+
     private resetMap() {
         if (this.imageMap) {
             this.imageMap.resetMap();
