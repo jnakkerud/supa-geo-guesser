@@ -29,6 +29,8 @@ export class FlickrGroupImageProvider extends FlickerImageProvider {
         // find a random image
         let randomImage = res[randomInt(PER_PAGE)];
         if (randomImage.latitude == 0 && randomImage.longitude == 0) {
+            // TODO just return first image with geo data
+            // randomImage = res.find((image) => image.latitude != 0 && image.longitude != 0);
             return this.images(theme);
         }
         console.log('random group image', randomImage)

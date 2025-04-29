@@ -93,7 +93,7 @@ export class FlickrService {
 
     public getGroupPhotos(groupId: string, page: number, perPage=30): Promise<FlickrPhotoInfo[]> {
         const url: URL = flickrUrl('flickr.groups.pools.getPhotos');
-        url.searchParams.append('extras', 'geo');
+        url.searchParams.append('extras', 'geo'); // TODO return description and license. see https://www.flickr.com/services/api/flickr.groups.pools.getPhotos.html
         url.searchParams.append('group_id', groupId);
         url.searchParams.append('page', String(page));
         url.searchParams.append('per_page', String(perPage));
