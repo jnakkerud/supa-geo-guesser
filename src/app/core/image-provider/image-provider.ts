@@ -23,5 +23,6 @@ export abstract class ImageProvider {
 
     public abstract getImageUrl(image: Partial<Image>, size: ImageSize): string;
 
+    // Used when adding an image to to the database
     public abstract getImageInfo(source: string ): Promise<any>;
 }

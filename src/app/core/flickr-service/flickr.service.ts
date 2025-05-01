@@ -18,6 +18,7 @@ export interface FlickrPhotoInfo extends FlickrImageSource {
     longitude?: number;
     latitude?: number;
     title?: string;
+    license?: string; // https://www.flickr.com/services/api/flickr.photos.licenses.getInfo.html
 }
 
 export function sizeSuffix(size: ImageSize): string {
@@ -40,6 +41,7 @@ export function mapPhoto(photo: any): FlickrPhotoInfo {
         secret: photo.secret,
         serverId: photo.server,
         title: photo.title,
+        license: photo.license,
         latitude: coerceNumberProperty(photo.latitude),
         longitude: coerceNumberProperty(photo.longitude)
     }
@@ -69,7 +71,8 @@ export class FlickrService {
                     const result: FlickrPhotoInfo = {
                         id: photo.id,
                         secret: photo.secret,
-                        serverId: photo.server
+                        serverId: photo.server,
+                        license: photo.license
                     }
 
                     if (photo.location && photo.location?.longitude) {
@@ -93,7 +96,7 @@ export class FlickrService {
 
     public getGroupPhotos(groupId: string, page: number, perPage=30): Promise<FlickrPhotoInfo[]> {
         const url: URL = flickrUrl('flickr.groups.pools.getPhotos');
-        url.searchParams.append('extras', 'geo'); // TODO return description and license. see https://www.flickr.com/services/api/flickr.groups.pools.getPhotos.html
+        url.searchParams.append('extras', 'geo,license'); 
         url.searchParams.append('group_id', groupId);
         url.searchParams.append('page', String(page));
         url.searchParams.append('per_page', String(perPage));

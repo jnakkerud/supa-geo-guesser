@@ -25,14 +25,16 @@ export class FlickrGroupImageProvider extends FlickerImageProvider {
         const randomPage = randomNumber(1, pages);
 
         const res = await this.flickrService.getGroupPhotos(encodeURI(groupInfo.groupID), randomPage, PER_PAGE);
-
-        // find a random image
-        let randomImage = res[randomInt(PER_PAGE)];
-        if (randomImage.latitude == 0 && randomImage.longitude == 0) {
-            // TODO just return first image with geo data
-            // randomImage = res.find((image) => image.latitude != 0 && image.longitude != 0);
+        res.filter((image) => image.latitude != 0 && image.longitude != 0);
+        
+        if (res.length == 0) {
+            console.log('No images found with geo', theme.id);
             return this.images(theme);
         }
+
+        // get a random image
+        let randomImage = res[randomInt(res.length)];
+        
         console.log('random group image', randomImage)
 
         resultImages.push(
