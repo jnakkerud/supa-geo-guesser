@@ -10,6 +10,7 @@ import { ThemeResultComponent } from './theme-result/theme-result.component';
 import { ThemeListComponent } from './theme-list/theme-list.component';
 import { PlaceSuggestionComponent } from '../shared/place-suggestion/place-suggestion.component';
 import { ImageMapComponent } from '../shared/image-map/image-map.component';
+import { PlayerComponent } from '../shared/player/player.component';
 
 @Component({
     selector: 'home',
@@ -44,6 +45,7 @@ export class HomeComponent implements OnInit {
         MaterialModule, 
         RouterModule,
         PlaceSuggestionComponent,
+        PlayerComponent,
         ImageMapComponent,
         NgOptimizedImage],
     exports: [HomeComponent, ThemePlayComponent, ThemeResultComponent, ThemeListComponent],

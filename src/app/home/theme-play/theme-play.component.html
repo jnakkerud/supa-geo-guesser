@@ -35,7 +35,8 @@
             <image-map class="map-container" [disableMapClick]="playEnd" (selectionChange)="placeSuggestion.setSuggestion($event)"></image-map>
         }        
     </div>
-    <div>
+    <div class="score-container">
+        <player></player>        
         <mat-card class="score-card" appearance="outlined">
             <mat-card-header>
               <mat-card-title>{{theme.name}}</mat-card-title>

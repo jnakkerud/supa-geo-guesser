@@ -173,7 +173,6 @@ export class ThemePlayComponent implements OnInit {
             this.countryCodes = this.generateCountryCodes(this.scoreCard);
         });
         this.tryResults = [];
-        
     }
 
     /**
