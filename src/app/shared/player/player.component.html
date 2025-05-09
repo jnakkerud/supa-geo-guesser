@@ -1,6 +1,20 @@
 <mat-expansion-panel>
     <mat-expansion-panel-header>
-        <mat-panel-title> Player: {{player.name}}</mat-panel-title>
+        <mat-panel-title> Player: {{player?.name }}</mat-panel-title>
     </mat-expansion-panel-header>
-    <p>This is the primary content of the panel.</p>
+    <mat-form-field appearance="outline">
+        <mat-label>Player Name</mat-label>
+        <input matInput [formControl]="name" (blur)="updateErrorMessage()" required/>
+        @if (name.invalid && (name.touched || name.dirty)) {
+            <mat-error>{{errorMessage()}}</mat-error>
+        } @else {
+            <mat-hint>Enter a player name</mat-hint>
+        }   
+    </mat-form-field>
+    
+    @if (name.valid && (name.touched || name.dirty)) {        
+        <mat-action-row>
+            <button mat-button (click)="savePlayerName()">Save</button>
+        </mat-action-row>
+    }
 </mat-expansion-panel>
