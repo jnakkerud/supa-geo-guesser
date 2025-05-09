@@ -5,7 +5,7 @@ import { PlaceSuggestionChange, PlaceSuggestionComponent, PlaceSuggestionOptions
 import { BONUS, COUNTRY_SCORE, LOCALITY_SCORE, STATE_SCORE, Score, ScoreCard, ScoreService, TRY_NUMBER } from 'src/app/core/score-service/score.service';
 import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component';
 import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
-import { TotalResult } from 'src/app/core/results-service/results.service';
+import { TotalResult } from 'src/app/core/score-store-service/score-store.service';
 import { Theme, ThemeService } from 'src/app/core/theme-service/theme.service';
 import { ImageProviderFactoryService } from 'src/app/core/image-provider/image-provider-factory.service';
 import { ImageProvider } from 'src/app/core/image-provider/image-provider';

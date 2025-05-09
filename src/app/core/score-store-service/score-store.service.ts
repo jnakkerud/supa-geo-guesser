@@ -17,7 +17,7 @@ const EMPTY_THEME: Theme = {
 }
 
 @Injectable({providedIn: 'root'})
-export class ResultsService {
+export class ScoreStoreService {
 
     public save(result: TotalScore): Promise<TotalResult> {
         // Clone

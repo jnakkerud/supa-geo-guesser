@@ -3,7 +3,7 @@ import { Image } from '../image-service/image.service';
 import { GeoAddress, GeoService } from '../geo-service/geo.service';
 import { PlaceSuggestion } from '../place-service/place.service';
 import { calculateDistanceInKm } from '../utils';
-import { ResultsService, TotalResult } from '../results-service/results.service';
+import { ScoreStoreService, TotalResult } from '../score-store-service/score-store.service';
 import { Theme } from '../theme-service/theme.service';
 
 export const TRY_NUMBER = 3;
@@ -50,7 +50,7 @@ export class ScoreService {
     cardList!: ScoreCard[];
     totalScore = signal(0);
 
-    constructor(private geoService: GeoService, private resultService: ResultsService) { }
+    constructor(private geoService: GeoService, private resultService: ScoreStoreService) { }
 
     public initialize(theme: Theme, images: Image[]): void {
         this.theme = theme;

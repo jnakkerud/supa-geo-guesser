@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ResultsService, TotalResult } from 'src/app/core/results-service/results.service';
+import { ScoreStoreService, TotalResult } from 'src/app/core/score-store-service/score-store.service';
 import { Image } from 'src/app/core/image-service/image.service';
 
 @Component({
@@ -13,7 +13,7 @@ export class ThemeResultComponent implements OnInit {
 
     totalResult!: TotalResult;
     
-    constructor(private route: ActivatedRoute, private resultsService: ResultsService) { }
+    constructor(private route: ActivatedRoute, private resultsService: ScoreStoreService) { }
 
     ngOnInit() { 
         this.route.params.subscribe(p => {
