@@ -36,7 +36,7 @@
         }        
     </div>
     <div class="score-container">
-        <player></player>        
+        @if (persistScore) {<player></player>}              
         <mat-card class="score-card" appearance="outlined">
             <mat-card-header>
               <mat-card-title>{{theme.name}}</mat-card-title>

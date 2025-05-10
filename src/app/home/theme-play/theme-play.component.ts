@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Image, ImageSize } from '../../core/image-service/image.service';
 import { PlaceSuggestionChange, PlaceSuggestionComponent, PlaceSuggestionOptions } from 'src/app/shared/place-suggestion/place-suggestion.component';
@@ -9,7 +9,8 @@ import { PlayerScore } from 'src/app/core/score-store-service/score-store.servic
 import { Theme, ThemeService } from 'src/app/core/theme-service/theme.service';
 import { ImageProviderFactoryService } from 'src/app/core/image-provider/image-provider-factory.service';
 import { ImageProvider } from 'src/app/core/image-provider/image-provider';
-import { Player } from 'src/app/core/player-service/player.service';
+import { combineLatest, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 const LARGE_IMAGE_SIZE = {
     width: 800,
@@ -107,12 +108,12 @@ export class TryResult {
     providers: [ScoreService],
     standalone: false
 })
-export class ThemePlayComponent implements OnInit {
+export class ThemePlayComponent implements OnInit, OnDestroy {
 
     theme!: Theme;
     images!: Image[];
 
-    player!: Player;
+    //player!: Player;
 
     width = LARGE_IMAGE_SIZE.width;
     height = LARGE_IMAGE_SIZE.height;
@@ -123,7 +124,8 @@ export class ThemePlayComponent implements OnInit {
     tryIndex = 0;
 
     playStatus: PlayStatus = 'play';
-    totalResult!: PlayerScore;
+    totalResult!: PlayerScore; // TODO just the result id
+    persistScore = false;
 
     placeSuggestionOptions!: PlaceSuggestionOptions;
     countryCodes: string | undefined;
@@ -135,6 +137,8 @@ export class ThemePlayComponent implements OnInit {
 
     imageProvider!: ImageProvider;
 
+    private routeSubscription: Subscription | undefined;
+
     @ViewChild(ImageMapComponent) imageMap!: ImageMapComponent;
     @ViewChild(PlaceSuggestionComponent) suggestionComponent!: PlaceSuggestionComponent;
 
@@ -145,28 +149,34 @@ export class ThemePlayComponent implements OnInit {
         private scoreService: ScoreService) { }
 
     ngOnInit() {
-        this.route.params.subscribe(p => {
-            this.initData(Number(p['id']));
-        });
+        this.routeSubscription = combineLatest([
+            this.route.params,
+            this.route.queryParams,
+        ])
+        .pipe(
+            switchMap(([params, queryParams]) => {
+                this.persistScore = queryParams['score'] ?? false;
+                return this.initData(Number(params['id']));
+            })
+        ).subscribe();
+ 
+    }
+
+    ngOnDestroy(): void {
+        if (this.routeSubscription) {
+            this.routeSubscription.unsubscribe();
+        }
     }
 
     private async initData(themeId: number) {
         // get the theme
         this.theme = await this.themeService.getTheme(themeId);
 
-        // TODO get the player
-        //this.player = await this.playerService.getPlayer();
-        this.player = {
-            id: 1,
-            name: 'Test Player',
-            canScore: false,
-        }
-
         this.imageProvider = this.imageProviderFactory.create(this.theme.sourceType);
 
         this.imageProvider.images(this.theme).then(i => {
             this.images = shuffle(i);
-            this.scoreService.initialize(this.theme, this.player, this.images);
+            this.scoreService.initialize(this.theme, this.images);
             this.setImage(this.images[this.selectedImageIndex]);
         });
     }
@@ -206,7 +216,7 @@ export class ThemePlayComponent implements OnInit {
             this.placeSuggestionOptions = generateSuggestionOptions(s);
             if (s.score >= LOCALITY_SCORE || tryNumber == (TRY_NUMBER-1)) {
                 if (this.selectedImageIndex == (this.images.length-1)) {
-                    this.scoreService.getTotalResult().then(ts => {
+                    this.scoreService.getTotalResult(this.persistScore).then(ts => {
                         this.playStatus = 'play_end';
                         this.totalResult = ts;
                     });

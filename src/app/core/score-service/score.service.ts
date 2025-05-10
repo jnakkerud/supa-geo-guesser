@@ -5,7 +5,7 @@ import { PlaceSuggestion } from '../place-service/place.service';
 import { calculateDistanceInKm } from '../utils';
 import { PlayerScore, ScoreStoreService } from '../score-store-service/score-store.service';
 import { Theme } from '../theme-service/theme.service';
-import { Player } from '../player-service/player.service';
+import { Player, PlayerService } from '../player-service/player.service';
 
 export const TRY_NUMBER = 3;
 
@@ -43,16 +43,15 @@ export class ScoreService {
     cards: Map<number, ScoreCard> = new Map<number, ScoreCard>();
     theme!: Theme;
 
-    player!: Player;
-
     cardList!: ScoreCard[];
     totalScore = signal(0);
 
-    constructor(private geoService: GeoService, private resultService: ScoreStoreService) { }
+    constructor(private geoService: GeoService,
+                private playerService: PlayerService,
+                private resultService: ScoreStoreService) { }
 
-    public initialize(theme: Theme, player: Player, images: Image[]): void {
+    public initialize(theme: Theme, images: Image[]): void {
         this.theme = theme;
-        this.player = player;
         images.forEach(i => {
             this.cards.set(i.id, new ScoreCard(i));
         });
@@ -106,14 +105,20 @@ export class ScoreService {
         return new Promise((resolve) => {resolve(score)});
     }
 
-    public async getTotalResult(): Promise<PlayerScore> {
+    public async getTotalResult(canPersist: boolean): Promise<PlayerScore> {
+        let player = await this.playerService.getPlayer();
+        let persistScore = canPersist;
+        if (player && player.canScore === false) {
+            // player is not allowed to score
+            persistScore = false;
+        }
         // save total and return the saved version
         const totalResult = await this.resultService.save({
             theme: this.theme,
-            player: this.player,
+            player: player,
             score: this.totalScore(),
             gameSummary: Array.from(this.cards.values())
-        });
+        }, persistScore);
 
         return new Promise((resolve) => resolve(totalResult));
     }

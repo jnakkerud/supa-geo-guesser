@@ -61,12 +61,12 @@ export class ScoreStoreService {
 
     constructor(private supabaseService: SupabaseService) {}
 
-    public save(playerScore: Partial<PlayerScore>, transientStore = true): Promise<PlayerScore> {
-        if (transientStore) {
-            // Save to local store
-            return this.localStore.save(playerScore);
+    public save(playerScore: Partial<PlayerScore>, persistStore: boolean): Promise<PlayerScore> {
+        if (persistStore) {
+            // save to the db
+            return this.insert(playerScore);
         }
-        return this.insert(playerScore);
+        return this.localStore.save(playerScore);        
     }
 
     public get(id: number): Promise<PlayerScore> {
