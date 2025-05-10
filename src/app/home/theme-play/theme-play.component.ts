@@ -5,10 +5,11 @@ import { PlaceSuggestionChange, PlaceSuggestionComponent, PlaceSuggestionOptions
 import { BONUS, COUNTRY_SCORE, LOCALITY_SCORE, STATE_SCORE, Score, ScoreCard, ScoreService, TRY_NUMBER } from 'src/app/core/score-service/score.service';
 import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component';
 import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
-import { TotalResult } from 'src/app/core/score-store-service/score-store.service';
+import { PlayerScore } from 'src/app/core/score-store-service/score-store.service';
 import { Theme, ThemeService } from 'src/app/core/theme-service/theme.service';
 import { ImageProviderFactoryService } from 'src/app/core/image-provider/image-provider-factory.service';
 import { ImageProvider } from 'src/app/core/image-provider/image-provider';
+import { Player } from 'src/app/core/player-service/player.service';
 
 const LARGE_IMAGE_SIZE = {
     width: 800,
@@ -111,6 +112,8 @@ export class ThemePlayComponent implements OnInit {
     theme!: Theme;
     images!: Image[];
 
+    player!: Player;
+
     width = LARGE_IMAGE_SIZE.width;
     height = LARGE_IMAGE_SIZE.height;
 
@@ -120,7 +123,7 @@ export class ThemePlayComponent implements OnInit {
     tryIndex = 0;
 
     playStatus: PlayStatus = 'play';
-    totalResult!: TotalResult;
+    totalResult!: PlayerScore;
 
     placeSuggestionOptions!: PlaceSuggestionOptions;
     countryCodes: string | undefined;
@@ -151,11 +154,19 @@ export class ThemePlayComponent implements OnInit {
         // get the theme
         this.theme = await this.themeService.getTheme(themeId);
 
+        // TODO get the player
+        //this.player = await this.playerService.getPlayer();
+        this.player = {
+            id: 1,
+            name: 'Test Player',
+            canScore: false,
+        }
+
         this.imageProvider = this.imageProviderFactory.create(this.theme.sourceType);
 
         this.imageProvider.images(this.theme).then(i => {
             this.images = shuffle(i);
-            this.scoreService.initialize(this.theme, this.images);
+            this.scoreService.initialize(this.theme, this.player, this.images);
             this.setImage(this.images[this.selectedImageIndex]);
         });
     }

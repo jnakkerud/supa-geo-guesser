@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ScoreStoreService, TotalResult } from 'src/app/core/score-store-service/score-store.service';
-import { Image } from 'src/app/core/image-service/image.service';
+import { ScoreStoreService, PlayerScore } from 'src/app/core/score-store-service/score-store.service';
 
 @Component({
     selector: 'theme-result',
@@ -11,7 +10,7 @@ import { Image } from 'src/app/core/image-service/image.service';
 })
 export class ThemeResultComponent implements OnInit {
 
-    totalResult!: TotalResult;
+    playerScore!: PlayerScore;
     
     constructor(private route: ActivatedRoute, private resultsService: ScoreStoreService) { }
 
@@ -20,7 +19,7 @@ export class ThemeResultComponent implements OnInit {
             const resultId = Number(p['id']);
             // get results
             this.resultsService.get(resultId).then(r => {
-                this.totalResult = r;
+                this.playerScore = r;
             });
         });
     }

@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
-import { TotalScore } from '../score-service/score.service';
 import { Theme } from '../theme-service/theme.service';
 import { SourceType } from '../utils';
+import { SupabaseService } from '../supabase-service/supabase.service';
+import { ScoreCard } from '../score-service/score.service';
+import { Player } from '../player-service/player.service';
 
-export interface TotalResult extends TotalScore {
-    id?: number;
+export interface PlayerScore {
+    id: number;
+    theme: Theme;
+    score: number;
+    player: Player;
+    gameSummary: ScoreCard[];
 }
 
 const EMPTY_THEME: Theme = {
@@ -13,13 +19,29 @@ const EMPTY_THEME: Theme = {
     sourceType: SourceType.FLICKR
 }
 
+const scoreColumns = `
+id,
+score,
+gameSummary:game_summary,
+theme:theme (
+    id,
+    name,
+    sourceType:source_type
+),
+player:player (
+    id,
+    name,
+    canScore:can_score
+)
+`;
+
 export class LocalScoreStoreService {
     nextId = 0;
-    results = new Map<number, TotalResult>();
+    results = new Map<number, PlayerScore>();
 
-    public save(result: TotalScore): Promise<TotalResult> {
+    public save(result: Partial<PlayerScore>): Promise<PlayerScore> {
         // Clone
-        const newResult = Object.assign({}, result) as TotalResult;
+        const newResult = Object.assign({}, result) as PlayerScore;
         newResult.id = this.nextId++;
 
         this.results.set(newResult.id, newResult);
@@ -27,12 +49,8 @@ export class LocalScoreStoreService {
         return new Promise((resolve) => resolve(newResult));        
     }
 
-    public get(id: number): Promise<TotalResult> {
-        const result = this.results.get(id);
-        if (result) {
-            return new Promise((resolve) => resolve(result));
-        }
-        return new Promise((reject) => reject({total:0,theme:EMPTY_THEME}));
+    public get(id: number): PlayerScore | undefined {
+        return this.results.get(id);
     }
 }
 
@@ -41,12 +59,67 @@ export class ScoreStoreService {
 
     localStore = new LocalScoreStoreService();
 
-    public save(result: TotalScore): Promise<TotalResult> {
-        return this.localStore.save(result);
+    constructor(private supabaseService: SupabaseService) {}
+
+    public save(playerScore: Partial<PlayerScore>, transientStore = true): Promise<PlayerScore> {
+        if (transientStore) {
+            // Save to local store
+            return this.localStore.save(playerScore);
+        }
+        return this.insert(playerScore);
     }
 
-    public get(id: number): Promise<TotalResult> {
-        return this.localStore.get(id);
+    public get(id: number): Promise<PlayerScore> {
+        let result = this.localStore.get(id);
+        if (!result) {
+            return this.getById(id);
+        }
+        return new Promise((resolve) => resolve(result));
     }
     
+    // Get a result by id
+    public async getById(id: number): Promise<PlayerScore> {
+        const { data, error } = await this.supabaseService.supabase
+            .from('score')
+            .select(scoreColumns)
+            .eq('id', id)
+            .single();
+        if (error) {
+            throw error;
+        }
+        return new Promise((resolve) => resolve(data as unknown as PlayerScore)); 
+    }
+
+    // Get Results filtered by the theme id
+    // TODO map results to TotalResult
+    public async getByThemeId(themeId: number): Promise<PlayerScore[]> {
+        const { data, error } = await this.supabaseService.supabase
+            .from('score')
+            .select(`*`)
+            .eq('theme_id', themeId);
+        if (error) {
+            throw error;
+        }
+        return new Promise((resolve) => resolve(data as PlayerScore[]));
+    }
+
+    // insert a new score into the database
+    private async insert(playerScore: Partial<PlayerScore>): Promise<PlayerScore> { 
+        const { data, error } = await this.supabaseService.supabase
+            .from('score')
+            .insert([{
+                score: playerScore.score,
+                theme_id: playerScore.theme?.id,
+                player_id: playerScore.player?.id,
+                game_summary: playerScore.gameSummary,
+                game_type: playerScore.theme?.sourceType === SourceType.FLICKR_GROUP ? 'timed' : 'standard'
+            }])
+            .select()
+            .single();
+        if (error) {
+            throw error;
+        }
+        return new Promise((resolve) => resolve(data as PlayerScore));
+    }
+
 }
