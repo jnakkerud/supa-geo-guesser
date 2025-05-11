@@ -124,7 +124,7 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
     tryIndex = 0;
 
     playStatus: PlayStatus = 'play';
-    totalResult!: PlayerScore; // TODO just the result id
+    totalResult!: PlayerScore;
     persistScore = false;
 
     placeSuggestionOptions!: PlaceSuggestionOptions;

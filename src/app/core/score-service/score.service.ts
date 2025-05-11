@@ -5,7 +5,7 @@ import { PlaceSuggestion } from '../place-service/place.service';
 import { calculateDistanceInKm } from '../utils';
 import { PlayerScore, ScoreStoreService } from '../score-store-service/score-store.service';
 import { Theme } from '../theme-service/theme.service';
-import { Player, PlayerService } from '../player-service/player.service';
+import { PlayerService } from '../player-service/player.service';
 
 export const TRY_NUMBER = 3;
 

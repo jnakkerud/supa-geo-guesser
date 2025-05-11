@@ -87,7 +87,17 @@ export class ScoreStoreService {
         if (error) {
             throw error;
         }
-        return new Promise((resolve) => resolve(data as unknown as PlayerScore)); 
+
+        // Map the result to PlayerScore
+        let result: PlayerScore = Object.assign({} as PlayerScore, data);
+        result.gameSummary = result.gameSummary.map((s: ScoreCard) => {
+            const scoreCard = new ScoreCard(s.image);
+            scoreCard.scores = s.scores;
+            scoreCard.imageAddress = s.imageAddress;
+            return scoreCard
+        });
+      
+        return new Promise((resolve) => resolve(result)); 
     }
 
     // Get Results filtered by the theme id
