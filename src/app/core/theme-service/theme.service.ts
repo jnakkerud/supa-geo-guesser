@@ -7,6 +7,7 @@ export interface Theme {
     id: number;
     name: string;
     sourceType: SourceType;
+    storeScore: boolean;
     description?: string;
     sourceInfo?: any;
 }
@@ -26,6 +27,7 @@ export class ThemeService {
           name,
           id,
           sourceType:source_type,
+          storeScore:store_score,
           description,
           sourceInfo:source_info
         `);
@@ -45,6 +47,7 @@ export class ThemeService {
           name,
           id,
           sourceType:source_type,
+          storeScore:store_score,
           description,
           sourceInfo:source_info
         `).eq('id', themeId).single();
@@ -65,6 +68,7 @@ export class ThemeService {
           name,
           id,
           sourceType:source_type,
+          storeScore:store_score,
           description,
           images:image!inner (
             sourceType:source_type,
@@ -86,7 +90,7 @@ export class ThemeService {
         const { data, error } = await this.supabaseService.supabase
         .from('theme')
         .insert([
-          { name: theme.name, updated_at: new Date(), description: theme.description, source_type: theme.sourceType }
+          { name: theme.name, updated_at: new Date(), description: theme.description, source_type: theme.sourceType, store_score: theme.storeScore }
         ]).select();
 
         handleError('Insert Theme Error', error);

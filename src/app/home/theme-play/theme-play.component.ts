@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { Image, ImageSize } from '../../core/image-service/image.service';
 import { PlaceSuggestionChange, PlaceSuggestionComponent, PlaceSuggestionOptions } from 'src/app/shared/place-suggestion/place-suggestion.component';
 import { BONUS, COUNTRY_SCORE, LOCALITY_SCORE, STATE_SCORE, Score, ScoreCard, ScoreService, TRY_NUMBER } from 'src/app/core/score-service/score.service';
@@ -113,8 +113,6 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
     theme!: Theme;
     images!: Image[];
 
-    //player!: Player;
-
     width = LARGE_IMAGE_SIZE.width;
     height = LARGE_IMAGE_SIZE.height;
 
@@ -155,8 +153,7 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
         ])
         .pipe(
             switchMap(([params, queryParams]) => {
-                this.persistScore = queryParams['score'] ?? false;
-                return this.initData(Number(params['id']));
+                return this.initData(Number(params['id']), queryParams);
             })
         ).subscribe();
  
@@ -168,9 +165,10 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
         }
     }
 
-    private async initData(themeId: number) {
+    private async initData(themeId: number, queryParams: Params) {
         // get the theme
         this.theme = await this.themeService.getTheme(themeId);
+        this.persistScore = queryParams['score'] ?? this.theme.storeScore;
 
         this.imageProvider = this.imageProviderFactory.create(this.theme.sourceType);
 

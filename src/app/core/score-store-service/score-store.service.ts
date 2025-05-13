@@ -16,7 +16,8 @@ export interface PlayerScore {
 const EMPTY_THEME: Theme = {
     id: 0,
     name: 'Empty Theme',
-    sourceType: SourceType.FLICKR
+    sourceType: SourceType.FLICKR,
+    storeScore: false
 }
 
 const scoreColumns = `
