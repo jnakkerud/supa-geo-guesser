@@ -14,7 +14,7 @@ export interface FlickrGroupInfo {
 
 export class FlickrGroupImageProvider extends FlickerImageProvider {
 
-    public override async images(theme: Theme): Promise<Image[]> {
+    public override async loadImages(theme: Theme): Promise<Image[]> {
         // return a single image
         const resultImages: Image[] = [];
 
@@ -29,7 +29,7 @@ export class FlickrGroupImageProvider extends FlickerImageProvider {
         
         if (res.length == 0) {
             console.log('No images found with geo', theme.id);
-            return this.images(theme);
+            return this.loadImages(theme);
         }
 
         // get a random image

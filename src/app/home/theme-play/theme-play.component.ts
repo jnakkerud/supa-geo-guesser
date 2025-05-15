@@ -11,6 +11,7 @@ import { ImageProviderFactoryService } from 'src/app/core/image-provider/image-p
 import { ImageProvider } from 'src/app/core/image-provider/image-provider';
 import { combineLatest, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { SourceType } from 'src/app/core/utils';
 
 const LARGE_IMAGE_SIZE = {
     width: 800,
@@ -20,27 +21,6 @@ const LARGE_IMAGE_SIZE = {
 const SMALL_IMAGE_SIZE = {
     width: 800,
     height: 350
-}
-
-
-function shuffle(array: Image[]): Image[] {
-    // tslint:disable-next-line: one-variable-per-declaration
-    let currentIndex = array.length, temporaryValue, randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
 }
 
 function generateSuggestionOptions(score: Score): PlaceSuggestionOptions {
@@ -111,13 +91,13 @@ export class TryResult {
 export class ThemePlayComponent implements OnInit, OnDestroy {
 
     theme!: Theme;
-    images!: Image[];
+    //images!: Image[]; // TODO remove this
 
     width = LARGE_IMAGE_SIZE.width;
     height = LARGE_IMAGE_SIZE.height;
 
     selectedImage!: Image;
-    selectedImageIndex = 0;
+    //selectedImageIndex = 0;
     scoreCard!: ScoreCard; 
     tryIndex = 0;
 
@@ -156,7 +136,6 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
                 return this.initData(Number(params['id']), queryParams);
             })
         ).subscribe();
- 
     }
 
     ngOnDestroy(): void {
@@ -172,10 +151,9 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
 
         this.imageProvider = this.imageProviderFactory.create(this.theme.sourceType);
 
-        this.imageProvider.images(this.theme).then(i => {
-            this.images = shuffle(i);
-            this.scoreService.initialize(this.theme, this.images);
-            this.setImage(this.images[this.selectedImageIndex]);
+        this.imageProvider.loadImages(this.theme, true).then(images => {
+            this.scoreService.initialize(this.theme, images);
+            this.setImage(this.imageProvider.currentImage());
         });
     }
 
@@ -209,11 +187,12 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
         }
         
         const tryNumber = this.tryIndex++;
-        // TODO performance can be slow
+
+        // TODO move to separate method
         this.scoreService.score(this.scoreCard, tryNumber, placeSuggestion).then(s => {
             this.placeSuggestionOptions = generateSuggestionOptions(s);
             if (s.score >= LOCALITY_SCORE || tryNumber == (TRY_NUMBER-1)) {
-                if (this.selectedImageIndex == (this.images.length-1)) {
+                if (this.imageProvider.hasMoreImages() == false) {
                     this.scoreService.getTotalResult(this.persistScore).then(ts => {
                         this.playStatus = 'play_end';
                         this.totalResult = ts;
@@ -240,9 +219,12 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
     }
 
     nextImage(): void {
+        // TODO score if the user still has tries left?
         this.resetMap();
-        this.selectedImageIndex = (this.selectedImageIndex+1)%this.images.length;
-        const nextImage = this.images[this.selectedImageIndex];
+        // TODO from the image provider get the next image
+        //this.selectedImageIndex = (this.selectedImageIndex+1)%this.images.length;
+        //const nextImage = this.images[this.selectedImageIndex];
+        const nextImage = this.imageProvider.nextImage();
         this.setImage(nextImage);
     }
 
@@ -254,6 +236,12 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
         this.playStatus = 'play';
     }
 
+    hasMoreImages(): boolean {
+        return (this.theme.storeScore && this.theme.sourceType === SourceType.FLICKR_GROUP) || (this.imageProvider.hasMoreImages());
+    }
+
+
+   
     get score(): number {
         return this.scoreCard?.score || 0;
     }

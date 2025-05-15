@@ -61,7 +61,7 @@ export class EditImageComponent implements OnInit {
 
         this.imageProvider = this.imageProviderFactory.create(this.theme.sourceType);
 
-        this.imageProvider.images(this.theme).then(r => {
+        this.imageProvider.loadImages(this.theme).then(r => {
             this.images = r;
         });
     }
@@ -89,7 +89,7 @@ export class EditImageComponent implements OnInit {
             // null location, so we add it here
             const img: Image =  Object.assign({} as Image, image);
             // refetch image              
-            this.imageProvider.images(this.theme).then(r => {
+            this.imageProvider.loadImages(this.theme).then(r => {
                 this.images = r;
             });
         });

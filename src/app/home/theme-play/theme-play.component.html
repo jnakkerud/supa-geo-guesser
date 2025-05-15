@@ -14,7 +14,7 @@
             }
             @case ('play_end') {
                 <div class="button-row">                    
-                    <a mat-button color="accent" routerLink="/">New Game</a>
+                    <a mat-button color="accent" [routerLink]="['/theme', theme.id]">New Game</a>
                     <a mat-button [routerLink]="['/result', totalResult.id]">Score Details</a>
                     <a mat-button routerLink="/">Exit</a>
                 </div>
@@ -27,6 +27,9 @@
             }
             @default {
                 <div class="button-row">
+                    @if (hasMoreImages()) {
+                        <button mat-button color="accent" (click)="nextImage()">Next Image</button>
+                    }
                     <a mat-button routerLink="/">Exit</a>
                 </div>                
             }
@@ -43,7 +46,7 @@
               <mat-card-subtitle>{{theme.description}}</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
-                <p>Playing image {{selectedImageIndex+1}} out of {{images.length}}</p>
+                <p>Playing image {{imageProvider.currentImageIndex+1}} out of {{imageProvider.images.length}}</p>
             </mat-card-content>
             <mat-card-footer class="score-card-footer">
                 <p>Total Score: {{totalScore()}}</p>
