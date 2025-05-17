@@ -9,20 +9,20 @@
             @case ('next_image') { 
                 <div class="button-row">
                     <button mat-button color="accent" (click)="nextImage()">Next Image</button>
-                    <a mat-button routerLink="/">Exit</a>
                 </div>
             }
             @case ('play_end') {
                 <div class="button-row">                    
-                    <a mat-button color="accent" [routerLink]="['/theme', theme.id]">New Game</a>
+                    <a mat-button color="accent" (click)="pageRefresh()">New Game</a>
                     <a mat-button [routerLink]="['/result', totalResult.id]">Score Details</a>
-                    <a mat-button routerLink="/">Exit</a>
                 </div>
             }
             @case ('next_suggestion') {
                 <div class="button-row">
                     <button mat-button color="accent" (click)="nextSuggestion()">Try Again</button>
-                    <a mat-button routerLink="/">Exit</a>
+                    @if (hasMoreImages()) {
+                        <button mat-button color="accent" (click)="nextImage()">Next Image</button>
+                    }                    
                 </div>                
             }
             @default {
@@ -30,7 +30,6 @@
                     @if (hasMoreImages()) {
                         <button mat-button color="accent" (click)="nextImage()">Next Image</button>
                     }
-                    <a mat-button routerLink="/">Exit</a>
                 </div>                
             }
         }

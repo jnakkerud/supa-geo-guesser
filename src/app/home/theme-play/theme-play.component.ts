@@ -221,9 +221,6 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
     nextImage(): void {
         // TODO score if the user still has tries left?
         this.resetMap();
-        // TODO from the image provider get the next image
-        //this.selectedImageIndex = (this.selectedImageIndex+1)%this.images.length;
-        //const nextImage = this.images[this.selectedImageIndex];
         const nextImage = this.imageProvider.nextImage();
         this.setImage(nextImage);
     }
@@ -237,11 +234,13 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
     }
 
     hasMoreImages(): boolean {
-        return (this.theme.storeScore && this.theme.sourceType === SourceType.FLICKR_GROUP) || (this.imageProvider.hasMoreImages());
+        return (this.theme.storeScore && this.theme.sourceType === SourceType.FLICKR_GROUP);
     }
 
+    pageRefresh(): void {
+        window.location.reload();
+    }
 
-   
     get score(): number {
         return this.scoreCard?.score || 0;
     }
