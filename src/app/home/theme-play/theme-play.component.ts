@@ -241,6 +241,11 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
         window.location.reload();
     }
 
+    onCountDownEnd(): void {
+        // TODO finalize score
+        console.log("Count down complete");
+    }
+
     get score(): number {
         return this.scoreCard?.score || 0;
     }

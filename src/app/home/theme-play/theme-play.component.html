@@ -38,6 +38,9 @@
         }        
     </div>
     <div class="score-container">
+        @if (hasMoreImages()) {
+            <count-down [seconds]="30" (complete)="onCountDownEnd()"></count-down>
+        }
         @if (persistScore) {<player></player>}              
         <mat-card class="score-card" appearance="outlined">
             <mat-card-header>
