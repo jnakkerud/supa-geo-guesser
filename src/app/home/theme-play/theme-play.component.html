@@ -48,7 +48,7 @@
               <mat-card-subtitle>{{theme.description}}</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
-                <p>Playing image {{imageProvider.currentImageIndex+1}} out of {{imageProvider.images.length}}</p>
+                <p>Playing image {{imageProvider.currentImageIndex+1}} out of {{imageLengthMessage()}}</p>
             </mat-card-content>
             <mat-card-footer class="score-card-footer">
                 <p>Total Score: {{totalScore()}}</p>
@@ -60,7 +60,6 @@
                 {{result.suggestion.description}} <br>
                 {{result.suggestionOptions.message}}
             </div>
-            
         }
         @if (tryResults.length > 0) {
             <h3>Score: {{score}}</h3>

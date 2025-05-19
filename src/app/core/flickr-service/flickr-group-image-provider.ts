@@ -81,7 +81,12 @@ export class FlickrGroupImageProvider extends FlickerImageProvider {
     public override nextImage(): Image {
         const dequeuedImage = this.queue.dequeue();
         this._images = dequeuedImage ? [dequeuedImage] : [];
+        this._currentImageIndex++
         return this._images[0];        
+    }
+
+    public override hasMoreImages(): boolean {
+        return this.queue.size() > 0;
     }
 
 }

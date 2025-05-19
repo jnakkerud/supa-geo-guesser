@@ -157,7 +157,7 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
         });
     }
 
-    setImage(image: Image): void {
+    async setImage(image: Image) {
         this.playStatus = 'play';
         this.tryIndex = 0;
         this.placeSuggestionOptions = {
@@ -165,10 +165,17 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
             active: true
         };
         this.selectedImage = image;
-        this.scoreService.getScoreCard(this.selectedImage).then(sc => {
-            this.scoreCard = sc;
-            this.countryCodes = this.generateCountryCodes(this.scoreCard);
-        });
+        // a scorecard might not exist if playing a timed game
+        let sc = await this.scoreService.getScoreCard(this.selectedImage);
+        if (!sc) {
+            sc = await this.scoreService.setScoreCard(this.selectedImage);
+        }
+        if (!sc) {
+            console.error('score card not found for image', this.selectedImage);
+            return;
+        }
+        this.scoreCard = sc;
+        this.countryCodes = this.generateCountryCodes(this.scoreCard);
         this.tryResults = [];
     }
 
@@ -188,7 +195,6 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
         
         const tryNumber = this.tryIndex++;
 
-        // TODO move to separate method
         this.scoreService.score(this.scoreCard, tryNumber, placeSuggestion).then(s => {
             this.placeSuggestionOptions = generateSuggestionOptions(s);
             if (s.score >= LOCALITY_SCORE || tryNumber == (TRY_NUMBER-1)) {
@@ -219,7 +225,6 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
     }
 
     nextImage(): void {
-        // TODO score if the user still has tries left?
         this.resetMap();
         const nextImage = this.imageProvider.nextImage();
         this.setImage(nextImage);
@@ -242,8 +247,11 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
     }
 
     onCountDownEnd(): void {
-        // TODO finalize score
-        console.log("Count down complete");
+        // for timed games, finalize score
+        this.scoreService.getTotalResult(this.persistScore).then(ts => {
+            this.playStatus = 'play_end';
+            this.totalResult = ts;
+        });
     }
 
     get score(): number {
@@ -252,6 +260,13 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
 
     get playEnd(): boolean {
         return (this.playStatus == 'play_end' || this.playStatus == 'next_image');
+    }
+
+    imageLengthMessage(): string {
+        if (this.hasMoreImages()) {
+            return 'random'
+        }
+        return this.imageProvider.images.length+'';
     }
 
     private resetMap() {

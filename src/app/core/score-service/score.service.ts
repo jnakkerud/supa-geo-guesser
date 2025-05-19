@@ -43,7 +43,6 @@ export class ScoreService {
     cards: Map<number, ScoreCard> = new Map<number, ScoreCard>();
     theme!: Theme;
 
-    cardList!: ScoreCard[];
     totalScore = signal(0);
 
     constructor(private geoService: GeoService,
@@ -55,16 +54,20 @@ export class ScoreService {
         images.forEach(i => {
             this.cards.set(i.id, new ScoreCard(i));
         });
-        this.cardList = Array.from(this.cards.values());
     }
 
-    public async getScoreCard(image: Image): Promise<ScoreCard> {
-        const scoreCard = this.cards.get(image.id);
-        if (scoreCard) { 
-            scoreCard.imageAddress = await this.geoService.lookup(image.location);    
-            return new Promise((resolve) => {resolve(scoreCard)});
+    public async getScoreCard(image: Image): Promise<ScoreCard | null> {
+            const scoreCard = this.cards.get(image.id);
+            if (scoreCard) { 
+                scoreCard.imageAddress = await this.geoService.lookup(image.location);    
+                return new Promise((resolve) => {resolve(scoreCard)});
+            }
+            return new Promise((resolve) => {resolve(null)});
         }
-        return new Promise((resolve) => {resolve(new ScoreCard(image))});
+
+    public setScoreCard(image:Image): Promise<ScoreCard | null> {
+        this.cards.set(image.id, new ScoreCard(image));
+        return this.getScoreCard(image);
     }
 
     public async score(scoreCard: ScoreCard, tryNumber: number, placeSuggestion: Partial<PlaceSuggestion>): Promise<Score> {
@@ -124,7 +127,8 @@ export class ScoreService {
     }
 
     updateTotal() {
-        let total = this.cardList.reduce((acc, curr) => acc + curr.score, 0);
+        const cardList = Array.from(this.cards.values());
+        let total = cardList.reduce((acc, curr) => acc + curr.score, 0);
         this.totalScore.set(total);
     }
 }
