@@ -89,15 +89,12 @@ export class TryResult {
     standalone: false
 })
 export class ThemePlayComponent implements OnInit, OnDestroy {
-
     theme!: Theme;
-    //images!: Image[]; // TODO remove this
 
     width = LARGE_IMAGE_SIZE.width;
     height = LARGE_IMAGE_SIZE.height;
 
     selectedImage!: Image;
-    //selectedImageIndex = 0;
     scoreCard!: ScoreCard; 
     tryIndex = 0;
 

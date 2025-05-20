@@ -9,23 +9,14 @@ import { FlickrGroupImageProvider } from '../flickr-service/flickr-group-image-p
 @Injectable({providedIn: 'root'})
 export class ImageProviderFactoryService {
 
-    flickrImageProvider!: FlickerImageProvider;
-    flickrGroupImageProvider!: FlickrGroupImageProvider;
-
     constructor(private supabaseService: SupabaseService, private flickrService: FlickrService) {}
 
     public create(sourceType: SourceType): ImageProvider {
         if (sourceType == SourceType.FLICKR) {
-            if (!this.flickrImageProvider) {
-                this.flickrImageProvider = new FlickerImageProvider(this.supabaseService, this.flickrService);
-            }
-            return this.flickrImageProvider;
+            return  new FlickerImageProvider(this.supabaseService, this.flickrService);
         }
         else if (sourceType == SourceType.FLICKR_GROUP) {
-            if (!this.flickrGroupImageProvider) {
-                this.flickrGroupImageProvider = new FlickrGroupImageProvider(this.supabaseService, this.flickrService);
-            }
-            return this.flickrGroupImageProvider;
+            return new FlickrGroupImageProvider(this.supabaseService, this.flickrService);
         } else {
             throw new Error(`Unavailable source type: ${sourceType}`);
         }

@@ -10,6 +10,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const modules: any[] = [
     MatButtonModule,
@@ -21,7 +22,8 @@ const modules: any[] = [
     MatTabsModule,
     MatAutocompleteModule,
     MatDividerModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatProgressSpinnerModule
 ];
 
 @NgModule({
