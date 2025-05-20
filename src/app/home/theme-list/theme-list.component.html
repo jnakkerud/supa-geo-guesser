@@ -12,7 +12,10 @@
                         <img mat-card-md-image [src]="themeImage(theme)" width="320" height="240" alt="No Image">
                     </mat-card-title-group>
                 </mat-card-header>     
-                <mat-card-content>{{theme.description || "&nbsp;"}}</mat-card-content>
+                <mat-card-content>&nbsp;</mat-card-content>
+                <mat-card-footer class="theme-card-footer">
+                    {{theme.description || "&nbsp;"}}
+                </mat-card-footer>
             </mat-card>
         </a>
     }
