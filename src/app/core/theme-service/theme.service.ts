@@ -70,6 +70,7 @@ export class ThemeService {
           sourceType:source_type,
           storeScore:store_score,
           description,
+          sourceInfo:source_info,
           images:image!inner (
             sourceType:source_type,
             source,

@@ -8,7 +8,7 @@
                 <mat-card-header>
                     <mat-card-title-group>
                         <mat-card-title>{{theme.name}}</mat-card-title>
-                        <mat-card-subtitle>{{theme.images.length}} Images</mat-card-subtitle>
+                        <mat-card-subtitle>{{imagesCount(theme)}} Images</mat-card-subtitle>
                         <img mat-card-md-image [src]="themeImage(theme)" width="320" height="240" alt="No Image">
                     </mat-card-title-group>
                 </mat-card-header>     
