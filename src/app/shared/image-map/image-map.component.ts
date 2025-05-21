@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
 import { tileLayer, latLng, icon, marker, Map, Marker, LatLngTuple, point, LeafletMouseEvent } from 'leaflet';
-import { LatLon } from 'src/app/core/lat-lon';
+import { CENTER, LatLon } from 'src/app/core/lat-lon';
 import { Image, ImageSize } from '../../core/image-service/image.service';
 import { PlaceSuggestion } from 'src/app/core/place-service/place.service';
 import { ScoreCard } from 'src/app/core/score-service/score.service';
@@ -10,6 +10,14 @@ import { LeafletModule } from '@bluehalo/ngx-leaflet';
 const DEFAULT_HEIGHT = '100%';
 const DEFAULT_WIDTH = '100%';
 const DEFAULT_MIN_HEIGHT = '300px'
+
+function zoomLevel(distanceInKm: number): number {
+    if (distanceInKm <= 50) return 10;
+    if (distanceInKm <= 200) return 8;
+    if (distanceInKm <= 500) return 6;
+    if (distanceInKm <= 1000) return 4;
+    return 2;
+}    
 
 function getLatLngFromMarkers(markers: Marker[]): LatLngTuple[] {
     let markerBounds: LatLngTuple[] = [];
@@ -120,6 +128,11 @@ export class ImageMapComponent implements AfterViewInit, OnDestroy {
         }
 	} 
 
+    zoomToLocation(location = CENTER, distance = 2000): void {
+        const zoom = this.getZoomLevel(distance);
+        this.map.setView([location.latitude, location.longitude], zoom);
+    }
+
     mapClickedHandler(event: LeafletMouseEvent) {
         // stop map click event from propagating to other components
         if (this.disableMapClick) {
@@ -191,5 +204,15 @@ export class ImageMapComponent implements AfterViewInit, OnDestroy {
 			}
 		);
         return newMarker;
+    }
+
+    // Returns a zoom level based on the given radius in kilometers.
+    private getZoomLevel(distanceInKm: number): number {
+        let zoom = this.map.getZoom();
+        const desiredZoom = zoomLevel(distanceInKm);
+        if (desiredZoom > zoom) {
+            zoom = desiredZoom;
+        }
+        return zoom;
     }
 }

@@ -206,6 +206,7 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
             } else {
                 this.playStatus = 'next_suggestion';
             }
+            this.imageMap.zoomToLocation(placeSuggestion.location!, s.distance);
             this.tryResults.push(new TryResult(s, placeSuggestion));
         });
     }
