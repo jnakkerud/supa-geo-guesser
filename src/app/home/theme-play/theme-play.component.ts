@@ -261,8 +261,10 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
     }
 
     imageLengthMessage(): string {
-        if (this.hasMoreImages()) {
-            return 'random'
+        if (this.theme.sourceType === SourceType.FLICKR_GROUP) {
+            return '1 random image from the group';
+        } else if (this.hasMoreImages()) {
+            return 'random';
         }
         return this.imageProvider.images.length+'';
     }
