@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import {
     AuthResponse,
+    AuthSession,
     createClient,
     SupabaseClient
 } from "@supabase/supabase-js";
@@ -38,4 +39,12 @@ export class SupabaseService {
             throw error;
         }
     }
+
+    public async getAuthSession(): Promise<AuthSession> {
+        let { data, error } = await this.supabase.auth.getSession();
+        if (error) {
+            throw error;
+        }
+        return new Promise((resolve) => {resolve(data.session!)});
+    }    
 }

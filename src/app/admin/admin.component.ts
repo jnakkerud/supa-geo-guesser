@@ -39,11 +39,19 @@ export class AdminComponent implements OnInit {
         password: new FormControl<string>('', Validators.required)
     });
     loginError: string | undefined;
+    loggedIn: boolean = false;
 
     constructor(private router: Router, private themeService: ThemeService, private supabaseService: SupabaseService) { }
 
     ngOnInit(): void {
         this.themes = this.themeService.themes();
+        this.supabaseService.getAuthSession().then(session => {
+            if (session) {
+                this.loggedIn = true;
+            }
+        }).catch(err => {
+            console.error('Error getting auth session', err);
+        }); 
     }
 
     onSelectedTheme() {
@@ -69,7 +77,7 @@ export class AdminComponent implements OnInit {
             this.loginError = undefined;
             this.supabaseService.signIn(this.login.value.email, this.login.value.password)
                 .then(() => {
-                    //this.router.navigate(['/']);
+                    this.loggedIn = true;
                 })
                 .catch(err => {
                     this.loginError = err;
