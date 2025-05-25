@@ -18,10 +18,11 @@
             <button type="submit" mat-raised-button color="accent" [disabled]="!login.valid">Login</button>
         </form>
     } @else {
-        <h2>Select theme or create a new theme</h2>
+        <h2>Select a theme to edit or create a new theme</h2>
         <mat-form-field>
             <mat-label>Themes</mat-label>
             <mat-select [(value)]="selectedTheme" (selectionChange)="onSelectedTheme()">
+                <mat-option class="create-theme-option" (onSelectionChange)="createTheme = true">Create New Theme</mat-option>
                 @for (theme of (themes | async); track theme.id) {
                     <mat-option [value]="theme">
                         {{theme.name}}
@@ -29,16 +30,18 @@
                 }
             </mat-select>
         </mat-form-field>
-        <form [formGroup]="adminTheme" (ngSubmit)="onSubmit()" class="admin-form">
-            <mat-form-field>
-                <mat-label>Theme name</mat-label>
-                <input matInput formControlName="name">
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>Theme description</mat-label>
-                <textarea matInput formControlName="description"></textarea>
-            </mat-form-field>
-            <button type="submit" mat-raised-button color="accent">Create</button>
-        </form>
+        @if (createTheme) {
+            <form [formGroup]="adminTheme" (ngSubmit)="onSubmit()" class="admin-form">
+                <mat-form-field>
+                    <mat-label>Theme name</mat-label>
+                    <input matInput formControlName="name">
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Theme description</mat-label>
+                    <textarea matInput formControlName="description"></textarea>
+                </mat-form-field>
+                <button type="submit" mat-raised-button color="accent">Create</button>
+            </form>
+        }
     }
 </div>

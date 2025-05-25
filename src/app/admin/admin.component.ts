@@ -33,6 +33,7 @@ export class AdminComponent implements OnInit {
         name: new FormControl<string>('', [Validators.required]),
         description: new FormControl<string>('')
     });
+    createTheme: boolean = false
 
     login: FormGroup = new FormGroup({
         email: new FormControl<string>('', [Validators.required, Validators.email]),
@@ -55,7 +56,7 @@ export class AdminComponent implements OnInit {
     }
 
     onSelectedTheme() {
-        console.log(this.selectedTheme);
+        console.log('onSelectedTheme', this.selectedTheme);
         this.router.navigate(['/edit-image', { id: this.selectedTheme.id }]);
     }
 
@@ -68,7 +69,7 @@ export class AdminComponent implements OnInit {
         if (!!this.adminTheme.value.description) {
             theme.description = this.adminTheme.value.description;
         }
-        
+        // TODO navigate to new theme
         this.themeService.insert(theme).then(r => console.log('Theme created', r));
     }
 
