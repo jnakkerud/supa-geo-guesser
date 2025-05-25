@@ -19,7 +19,7 @@
         </form>
     } @else {
         <h2>Select a theme to edit or create a new theme</h2>
-        <mat-form-field>
+        <mat-form-field class="select-theme">
             <mat-label>Themes</mat-label>
             <mat-select [(value)]="selectedTheme" (selectionChange)="onSelectedTheme()">
                 <mat-option class="create-theme-option" (onSelectionChange)="createTheme = true">Create New Theme</mat-option>
