@@ -6,9 +6,14 @@
         </mat-form-field>
         <mat-form-field>
             <mat-label>Password</mat-label>
-            <textarea matInput formControlName="password"></textarea>
+            <input matInput formControlName="password" type="password">
         </mat-form-field>
-        <button type="submit" mat-raised-button color="accent">Login</button>
+        @if (loginError) {
+            <p class="error">
+                {{ loginError }}
+            </p>
+        }
+        <button type="submit" mat-raised-button color="accent" [disabled]="!login.valid">Login</button>
     </form>
     <h2>Select theme to add images</h2>
     <mat-form-field>

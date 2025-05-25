@@ -8,6 +8,7 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatSelect, MatOption } from '@angular/material/select';
 import { AsyncPipe } from '@angular/common';
 import { MatInput } from '@angular/material/input';
+import  { MatButton } from '@angular/material/button';
 @Component({
     selector: 'admin',
     templateUrl: './admin.component.html',
@@ -19,7 +20,8 @@ import { MatInput } from '@angular/material/input';
         MatOption,
         ReactiveFormsModule,
         AsyncPipe,
-        MatInput
+        MatInput,
+        MatButton
     ]
 })
 export class AdminComponent implements OnInit {
@@ -36,6 +38,7 @@ export class AdminComponent implements OnInit {
         email: new FormControl<string>('', [Validators.required, Validators.email]),
         password: new FormControl<string>('', Validators.required)
     });
+    loginError: string | undefined;
 
     constructor(private router: Router, private themeService: ThemeService, private supabaseService: SupabaseService) { }
 
@@ -62,7 +65,16 @@ export class AdminComponent implements OnInit {
     }
 
     onLoginSubmit() {
-        this.supabaseService.signIn(this.login.value.email, this.login.value.password);
+        if (this.login.valid) {
+            this.loginError = undefined;
+            this.supabaseService.signIn(this.login.value.email, this.login.value.password)
+                .then(() => {
+                    //this.router.navigate(['/']);
+                })
+                .catch(err => {
+                    this.loginError = err;
+                })
+        }
     }
 
 }

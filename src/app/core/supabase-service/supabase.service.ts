@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import {
+    AuthResponse,
     createClient,
     SupabaseClient
 } from "@supabase/supabase-js";
@@ -22,10 +23,19 @@ export class SupabaseService {
         return this._supabase;
     }
     
-    public async signIn(email: string, password: string) {
-        const { data, error } = await this.supabase.auth.signInWithPassword({
-            email: email,
-            password: password,
-        });
+    public async signIn(email: string, password: string): Promise<AuthResponse> {
+        try {
+            const { data, error } = await this.supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
+            if (error) {
+                throw error;
+            }
+            return { data, error: null };
+        } catch (error) {
+            console.error('Error signing in with password', error);
+            throw error;
+        }
     }
 }
