@@ -70,4 +70,14 @@ export class ImageService {
         return new Promise((resolve) => {resolve(result)});
     }
 
+    public async delete(imageId: number): Promise<void | Error> {
+        const { error } = await this.supabaseService.supabase
+            .from('image')
+            .delete()
+            .eq('id', imageId);
+
+        handleError('Delete Image', error);
+        return new Promise((resolve) => {resolve()});
+    }
+
 }

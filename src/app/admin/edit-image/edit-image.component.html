@@ -34,6 +34,9 @@
                     <mat-card class="edit-card">
                         <img mat-card-image [ngSrc]="imgSmallSource(image)" width="320" height="240" alt="No Image">
                         <mat-card-content>{{image.description}}</mat-card-content>
+                        <mat-card-actions align="end">
+                            <button mat-button (click)="deleteImage(image)">Delete</button>
+                        </mat-card-actions>
                     </mat-card>
                 }
             </div>

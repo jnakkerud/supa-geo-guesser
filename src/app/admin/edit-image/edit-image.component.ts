@@ -7,11 +7,12 @@ import { ImageProvider } from 'src/app/core/image-provider/image-provider';
 import { Theme, ThemeService } from 'src/app/core/theme-service/theme.service';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
-import { MatCard, MatCardContent } from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { NgOptimizedImage } from '@angular/common';
 import { MatInput } from '@angular/material/input';
 import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'edit-image',
@@ -22,11 +23,11 @@ import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component'
         MatLabel,
         MatTab,
         MatTabGroup,
-        MatCard,
-        MatCardContent,
+        MatCardModule,
         ReactiveFormsModule,
         MatIcon,
         NgOptimizedImage,
+        MatButtonModule,
         ImageMapComponent,
         MatInput
     ]
@@ -112,4 +113,13 @@ export class EditImageComponent implements OnInit {
     imgSmallSource(image: Image): string {
         return this.imageProvider.getImageUrl(image, ImageSize.SMALL);
     }
+
+    deleteImage(image: Image): void {
+        this.imageService.delete(image.id).then(() => {
+            this.images = this.images.filter(i => i.id !== image.id);
+        }).catch(err => {
+            console.error('Error deleting image', err);
+        });
+    }
+
 }
