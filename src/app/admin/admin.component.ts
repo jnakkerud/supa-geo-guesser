@@ -9,6 +9,7 @@ import { MatSelect, MatOption } from '@angular/material/select';
 import { AsyncPipe } from '@angular/common';
 import { MatInput } from '@angular/material/input';
 import  { MatButton } from '@angular/material/button';
+import { MatRadioModule } from '@angular/material/radio';
 @Component({
     selector: 'admin',
     templateUrl: './admin.component.html',
@@ -21,16 +22,19 @@ import  { MatButton } from '@angular/material/button';
         ReactiveFormsModule,
         AsyncPipe,
         MatInput,
-        MatButton
+        MatButton,
+        MatRadioModule
     ]
 })
 export class AdminComponent implements OnInit {
+    SourceType = SourceType; // Expose SourceType enum to the template
 
     themes!: Promise<Theme[]>;
     selectedTheme!: Theme;
 
     adminTheme: FormGroup = new FormGroup({
         name: new FormControl<string>('', [Validators.required]),
+        sourceType: new FormControl<SourceType>(SourceType.FLICKR, [Validators.required]),
         description: new FormControl<string>('')
     });
     createTheme: boolean = false
@@ -60,17 +64,20 @@ export class AdminComponent implements OnInit {
         this.router.navigate(['/edit-image', { id: this.selectedTheme.id }]);
     }
 
-    onSubmit() {
+    onAdminThemeSubmit() {
         const theme: Partial<Theme>  = {
             name: this.adminTheme.value.name,
-            sourceType: SourceType.FLICKR
+            sourceType: this.adminTheme.value.sourceType,
+            storeScore: false 
         }
 
         if (!!this.adminTheme.value.description) {
             theme.description = this.adminTheme.value.description;
         }
-        // TODO navigate to new theme
-        this.themeService.insert(theme).then(r => console.log('Theme created', r));
+
+        this.themeService.insert(theme).then(newTheme => {
+            this.router.navigate(['/edit-image', { id: newTheme.id }]);
+        });
     }
 
     onLoginSubmit() {

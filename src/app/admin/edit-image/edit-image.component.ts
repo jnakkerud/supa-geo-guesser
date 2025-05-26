@@ -77,6 +77,7 @@ export class EditImageComponent implements OnInit {
             source: this.editImage.value.convertedSource
         }
 
+        // TODO get title or description from image source
         if (!!this.editImage.value.description) {
             image.description = this.editImage.value.description;
         }        

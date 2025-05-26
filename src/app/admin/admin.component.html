@@ -31,7 +31,11 @@
             </mat-select>
         </mat-form-field>
         @if (createTheme) {
-            <form [formGroup]="adminTheme" (ngSubmit)="onSubmit()" class="admin-form">
+            <form [formGroup]="adminTheme" (ngSubmit)="onAdminThemeSubmit()" class="admin-form">
+                <mat-radio-group formControlName="sourceType">
+                    <mat-radio-button [value]="SourceType.FLICKR">Flickr</mat-radio-button>
+                    <mat-radio-button [value]="SourceType.FLICKR_GROUP">Flickr Groups</mat-radio-button>
+                </mat-radio-group>
                 <mat-form-field>
                     <mat-label>Theme name</mat-label>
                     <input matInput formControlName="name">
@@ -40,7 +44,7 @@
                     <mat-label>Theme description</mat-label>
                     <textarea matInput formControlName="description"></textarea>
                 </mat-form-field>
-                <button type="submit" mat-raised-button color="accent">Create</button>
+                <button type="submit" mat-raised-button color="accent" [disabled]="!adminTheme.valid">Create</button>
             </form>
         }
     }

@@ -86,7 +86,7 @@ export class ThemeService {
         }
     }    
 
-    public async insert(theme:  Partial<Theme>): Promise<Theme[] |  Error> {
+    public async insert(theme:  Partial<Theme>): Promise<Theme> {
         console.log('Inserting theme', theme);
         const { data, error } = await this.supabaseService.supabase
         .from('theme')
@@ -96,7 +96,7 @@ export class ThemeService {
 
         handleError('Insert Theme Error', error);
         let result: Theme[] = Object.assign([] as Theme[], data);
-        return new Promise((resolve) => {resolve(result)});
+        return new Promise((resolve) => {resolve(result[0])});
     }
 
 }
