@@ -1,10 +1,12 @@
-<mat-toolbar>
-    <span>{{theme.name}}</span>
-    <span class="toolbar-spacer"></span>
-    <button mat-icon-button (click)="deleteTheme()">
-        <mat-icon>delete</mat-icon>
-    </button>
-</mat-toolbar>
+@if (theme) {
+    <mat-toolbar>
+        <span>{{theme.name}}</span>
+        <span class="toolbar-spacer"></span>
+        <button mat-icon-button (click)="deleteTheme()">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </mat-toolbar>
+}
 <div>
     <div class="edit-container">
         <form [formGroup]="editImage" (ngSubmit)="onSubmit()" class="edit-image-form">
@@ -34,7 +36,7 @@
             <button type="submit" mat-raised-button color="accent">Create</button>
         </form>
     </div>
-    <mat-tab-group>
+    <mat-tab-group (selectedTabChange)="onTabChange($event)">
         <mat-tab label="Image List">
             <div class="image-list">
                 @for (image of images; track image.id) {
@@ -49,11 +51,9 @@
             </div>
         </mat-tab>
         <mat-tab label="Map">
-            <ng-template class="edit-map-container" matTabContent>
-                @defer {
-                    <image-map [images]="images"></image-map>
-                }                
-            </ng-template>
+            @defer (when loadMap) {
+                <image-map class="edit-map-container" [images]="images"></image-map>
+            }
         </mat-tab>
     </mat-tab-group>
 </div>

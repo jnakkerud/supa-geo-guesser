@@ -39,6 +39,7 @@ export class EditImageComponent implements OnInit {
     theme!: Theme;
     images!: Image[];
     imageProvider!: ImageProvider;
+    loadMap: boolean = false;
 
     editImage: FormGroup = new FormGroup({
         source: new FormControl<string>('', [Validators.required]),
@@ -132,4 +133,11 @@ export class EditImageComponent implements OnInit {
             console.error('Error deleting theme', err);
         });
     }
+
+    onTabChange(event: any): void {
+        if (event.index === 1) {
+            this.loadMap = true;
+        }
+    }
+
 }
