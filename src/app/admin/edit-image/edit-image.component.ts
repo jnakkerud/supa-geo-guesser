@@ -13,6 +13,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { MatInput } from '@angular/material/input';
 import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component';
 import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
     selector: 'edit-image',
@@ -29,6 +30,7 @@ import { MatButtonModule } from '@angular/material/button';
         NgOptimizedImage,
         MatButtonModule,
         ImageMapComponent,
+        MatToolbarModule,
         MatInput
     ]
 })
@@ -122,4 +124,12 @@ export class EditImageComponent implements OnInit {
         });
     }
 
+    deleteTheme(): void {
+        this.themeService.delete(this.theme.id).then(() => {
+            // Navigate back to themes list
+            window.history.back();
+        }).catch(err => {
+            console.error('Error deleting theme', err);
+        });
+    }
 }

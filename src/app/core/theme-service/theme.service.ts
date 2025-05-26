@@ -99,4 +99,13 @@ export class ThemeService {
         return new Promise((resolve) => {resolve(result[0])});
     }
 
+    public async delete(themeId: number): Promise<void | Error> {
+        const { error } = await this.supabaseService.supabase
+            .from('theme')
+            .delete()
+            .eq('id', themeId);
+
+        handleError('Delete Theme Error', error);
+        return new Promise((resolve) => {resolve()});
+    }   
 }
