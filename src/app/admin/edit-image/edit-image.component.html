@@ -8,33 +8,28 @@
     </mat-toolbar>
 }
 <div>
-    <div class="edit-container">
-        <form [formGroup]="editImage" (ngSubmit)="onSubmit()" class="edit-image-form">
+    <div class="edit-container-2">
+        <div class="edit-col-1">
+            <div class="edit-image-form">
             <mat-form-field class="edit-image-full-width">
-                <mat-label>Source</mat-label>
-                <input matInput formControlName="source">
+                <mat-label>Flickr Photo Source ID</mat-label>
+                <input matInput [(ngModel)]="imageSource" >
                 <button mat-icon-button matSuffix (click)="imageInfo()" type="button">
-                    <mat-icon>transform</mat-icon>
+                    <mat-icon>search</mat-icon>
                 </button>
             </mat-form-field>
-            <table class="example-full-width" cellspacing="0">
-                <tr>
-                    <td><mat-form-field class="edit-image-full-width">
-                            <mat-label>Longitude</mat-label>
-                            <input matInput formControlName="longitude">
-                        </mat-form-field></td>
-                    <td><mat-form-field class="edit-image-full-width">
-                            <mat-label>Latitude</mat-label>
-                            <input matInput formControlName="latitude">
-                        </mat-form-field></td>
-                </tr>
-            </table>
             <mat-form-field class="edit-image-full-width">
                 <mat-label>Description</mat-label>
-                <textarea matInput formControlName="description"></textarea>
+                <textarea matInput [(ngModel)]="description"></textarea>
             </mat-form-field>
-            <button type="submit" mat-raised-button color="accent">Create</button>
-        </form>
+            <button mat-raised-button color="accent" [disabled]="!previewImage" (click)="addImage()">Add Image</button>
+            </div>         
+        </div>
+        <div class="edit-col-2">
+            @if (previewImage) {
+                <img [ngSrc]="imgSmallSource(previewImage)" width="320" height="240" alt="No Image">             
+            }            
+        </div>
     </div>
     @if (theme && theme.sourceType != 'flickr-group')  {
         <mat-tab-group (selectedTabChange)="onTabChange($event)">

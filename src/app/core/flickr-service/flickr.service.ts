@@ -14,10 +14,9 @@ export interface FlickrImageSource {
 }
 
 export interface FlickrPhotoInfo extends FlickrImageSource {
-    //description: string; TODO get description?
     longitude?: number;
     latitude?: number;
-    title?: string;
+    description?: string;
     license?: string; // https://www.flickr.com/services/api/flickr.photos.licenses.getInfo.html
 }
 
@@ -40,7 +39,7 @@ export function mapPhoto(photo: any): FlickrPhotoInfo {
         id: photo.id,
         secret: photo.secret,
         serverId: photo.server,
-        title: photo.title,
+        description: photo.title,
         license: photo.license,
         latitude: coerceNumberProperty(photo.latitude),
         longitude: coerceNumberProperty(photo.longitude)
@@ -80,7 +79,7 @@ export class FlickrService {
                         result.latitude = photo.location?.latitude;
                     }
 
-                    // TODO description
+                    result.description = photo.description._content || photo.title._content;
 
                     resolve(result)
                 }

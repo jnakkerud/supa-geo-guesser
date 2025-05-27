@@ -1,4 +1,3 @@
-
 .edit-container {
     display: flex;
     justify-content: center;
@@ -7,50 +6,71 @@
 
     @media (max-width: 720px) {
         width: 100%;
-    }    
+    }
 }
 
 .button-row {
     display: flex;
-    justify-content: flex-end;  
+    justify-content: flex-end;
 }
 
 .edit-image-form {
     min-width: 150px;
     max-width: 500px;
     width: 100%;
-  }
-  
-  .edit-image-full-width {
-    width: 100%;
-  }
-  
-  td {
-    padding-right: 8px;
-  }
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
 
-  .edit-card {
+.edit-image-full-width {
+    width: 320px;
+}
+
+td {
+    padding-right: 8px;
+}
+
+.edit-card {
     display: inline-block;
     margin: 16px;
     vertical-align: top;
     //width: 320px;
-  }
+}
 
-  .image-list {
+.image-list {
     display: flex;
     flex-wrap: wrap;
     padding: 16px;
-  
+
     /*@media (max-width: $small-breakpoint-width) {
       justify-content: center;
     }*/
 }
 
-  .edit-map-container {
+.edit-map-container {
     width: 100%;
     height: 100%;
-  }
+}
 
 .toolbar-spacer {
-  flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+
+.edit-container-2 {
+    display: flex;
+}
+
+.edit-col-1 {
+    flex: 60%;
+    margin: 1.5em;
+    display: flex;
+    justify-content: center;
+}
+
+.edit-col-2 {
+    flex: 40%;
+    display: flex;
+    justify-content: center;
+    margin: 1.5em;
 }

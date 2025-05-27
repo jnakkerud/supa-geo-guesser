@@ -72,7 +72,7 @@ export class FlickrGroupImageProvider extends FlickerImageProvider {
                     source: image,
                     sourceType: SourceType.FLICKR,
                     themeId: theme.id,
-                    description: image.title
+                    description: image.description
                 }
             );
         }

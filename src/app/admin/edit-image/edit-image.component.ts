@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Image, ImageService, ImageSize } from '../../core/image-service/image.service';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { ImageProviderFactoryService } from 'src/app/core/image-provider/image-provider-factory.service';
 import { ImageProvider } from 'src/app/core/image-provider/image-provider';
 import { Theme, ThemeService } from 'src/app/core/theme-service/theme.service';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
-import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { NgOptimizedImage } from '@angular/common';
-import { MatInput } from '@angular/material/input';
+import { MatInputModule } from '@angular/material/input';
 import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -25,13 +25,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
         MatTab,
         MatTabGroup,
         MatCardModule,
-        ReactiveFormsModule,
-        MatIcon,
+        MatIconModule,
         NgOptimizedImage,
         MatButtonModule,
         ImageMapComponent,
         MatToolbarModule,
-        MatInput
+        FormsModule,
+        MatInputModule
     ]
 })
 export class EditImageComponent implements OnInit {
@@ -40,14 +40,9 @@ export class EditImageComponent implements OnInit {
     images!: Image[];
     imageProvider!: ImageProvider;
     loadMap: boolean = false;
-
-    editImage: FormGroup = new FormGroup({
-        source: new FormControl<string>('', [Validators.required]),
-        convertedSource: new FormControl<any>({}),
-        longitude: new FormControl<number>(0, [Validators.required]),
-        latitude: new FormControl<number>(0, [Validators.required]),
-        description: new FormControl<string>('')
-    });
+    imageSource: string = '';
+    description: string | null = null;
+    previewImage: Partial<Image> | null = null;
 
     constructor(private route: ActivatedRoute, 
         private imageService: ImageService, 
@@ -70,50 +65,40 @@ export class EditImageComponent implements OnInit {
         });
     }
 
-    onSubmit() {
-        const image:  Partial<Image> = {
-            sourceType: this.theme.sourceType,
-            themeId: this.theme.id,
-            location: {
-                longitude: this.editImage.value.longitude,
-                latitude: this.editImage.value.latitude
-            },
-            source: this.editImage.value.convertedSource
-        }
+    addImage() {
+        const image = Object.assign({} as Image, this.previewImage);
 
-        // TODO get title or description from image source
-        if (!!this.editImage.value.description) {
-            image.description = this.editImage.value.description;
+        if (!!this.description) {
+            image.description = this.description;
         }        
         this.imageService.insert([image]).then(i => {
             console.log('Images saved', i)
-            // clear form
-            this.editImage.reset();
-            // add markers
-            // ! Note that result image from supabase call is returned with
-            // null location, so we add it here
-            const img: Image =  Object.assign({} as Image, image);
-            // refetch image              
+            this.previewImage = null;
+            this.description = null;
+            this.imageSource = '';
+
+            // refetch images              
             this.imageProvider.loadImages(this.theme).then(r => {
                 this.images = r;
             });
         });
     }
 
-    imageInfo(): void {
-        this.imageProvider.getImageInfo(this.editImage.value.source).then(r =>  {
-            let { longitude, latitude, ...imageSource } = r;
-            this.editImage.patchValue(
-                {
-                    longitude: longitude,
-                    latitude: latitude,
-                    convertedSource:  imageSource
-                }
-            )
-        });
+    async imageInfo() {
+        let { longitude, latitude, description, ...imageSource } = await this.imageProvider.getImageInfo(this.imageSource);
+        this.previewImage = {
+            sourceType: this.theme.sourceType,
+            themeId: this.theme.id,
+            location: {
+                longitude: longitude,
+                latitude: latitude
+            },
+            source: imageSource
+        };
+        this.description = description || null;
     }
 
-    imgSmallSource(image: Image): string {
+    imgSmallSource(image: Partial<Image>): string {
         return this.imageProvider.getImageUrl(image, ImageSize.SMALL);
     }
 
