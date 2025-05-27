@@ -36,24 +36,26 @@
             <button type="submit" mat-raised-button color="accent">Create</button>
         </form>
     </div>
-    <mat-tab-group (selectedTabChange)="onTabChange($event)">
-        <mat-tab label="Image List">
-            <div class="image-list">
-                @for (image of images; track image.id) {
-                    <mat-card class="edit-card">
-                        <img mat-card-image [ngSrc]="imgSmallSource(image)" width="320" height="240" alt="No Image">
-                        <mat-card-content>{{image.description}}</mat-card-content>
-                        <mat-card-actions align="end">
-                            <button mat-button (click)="deleteImage(image)">Delete</button>
-                        </mat-card-actions>
-                    </mat-card>
+    @if (theme && theme.sourceType != 'flickr-group')  {
+        <mat-tab-group (selectedTabChange)="onTabChange($event)">
+            <mat-tab label="Image List">
+                <div class="image-list">
+                    @for (image of images; track image.id) {
+                        <mat-card class="edit-card">
+                            <img mat-card-image [ngSrc]="imgSmallSource(image)" width="320" height="240" alt="No Image">
+                            <mat-card-content>{{image.description}}</mat-card-content>
+                            <mat-card-actions align="end">
+                                <button mat-button (click)="deleteImage(image)">Delete</button>
+                            </mat-card-actions>
+                        </mat-card>
+                    }
+                </div>
+            </mat-tab>
+            <mat-tab label="Map">
+                @defer (when loadMap) {
+                    <image-map class="edit-map-container" [images]="images"></image-map>
                 }
-            </div>
-        </mat-tab>
-        <mat-tab label="Map">
-            @defer (when loadMap) {
-                <image-map class="edit-map-container" [images]="images"></image-map>
-            }
-        </mat-tab>
-    </mat-tab-group>
-</div>
+            </mat-tab>
+        </mat-tab-group>
+    }
+</div> 
