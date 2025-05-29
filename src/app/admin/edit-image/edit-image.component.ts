@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ImageMapComponent } from 'src/app/shared/image-map/image-map.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { GeoService } from 'src/app/core/geo-service/geo.service';
 
 @Component({
     selector: 'edit-image',
@@ -42,11 +43,13 @@ export class EditImageComponent implements OnInit {
     loadMap: boolean = false;
     imageSource: string = '';
     description: string | null = null;
+    metaData: string | null = null;
     previewImage: Partial<Image> | null = null;
 
     constructor(private route: ActivatedRoute, 
         private imageService: ImageService, 
         private themeService: ThemeService,
+        private geoService: GeoService,
         private imageProviderFactory: ImageProviderFactoryService) { }
 
     ngOnInit() {
@@ -75,6 +78,7 @@ export class EditImageComponent implements OnInit {
             console.log('Images saved', i)
             this.previewImage = null;
             this.description = null;
+            this.metaData = null;
             this.imageSource = '';
 
             // refetch images              
@@ -96,6 +100,10 @@ export class EditImageComponent implements OnInit {
             source: imageSource
         };
         this.description = description || null;
+        if (this.previewImage.location) {
+            const {description} = await this.geoService.lookup(this.previewImage.location);
+            this.metaData = description || 'Cannot geo locate this image';
+        }   
     }
 
     imgSmallSource(image: Partial<Image>): string {

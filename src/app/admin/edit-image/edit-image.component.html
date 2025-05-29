@@ -22,12 +22,15 @@
                 <mat-label>Description</mat-label>
                 <textarea matInput [(ngModel)]="description"></textarea>
             </mat-form-field>
+            @if (previewImage) {
+                <p>{{metaData}}</p>
+            }
             <button mat-raised-button color="accent" [disabled]="!previewImage" (click)="addImage()">Add Image</button>
             </div>         
         </div>
         <div class="edit-col-2">
             @if (previewImage) {
-                <img [ngSrc]="imgSmallSource(previewImage)" width="320" height="240" alt="No Image">             
+                <img [ngSrc]="imgSmallSource(previewImage)" width="320" height="240" alt="No Image">   
             }            
         </div>
     </div>
