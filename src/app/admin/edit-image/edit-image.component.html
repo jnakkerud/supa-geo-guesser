@@ -11,21 +11,21 @@
     <div class="edit-container-2">
         <div class="edit-col-1">
             <div class="edit-image-form">
-            <mat-form-field class="edit-image-full-width">
-                <mat-label>Flickr Photo Source ID</mat-label>
-                <input matInput [(ngModel)]="imageSource" >
-                <button mat-icon-button matSuffix (click)="imageInfo()" type="button">
-                    <mat-icon>search</mat-icon>
-                </button>
-            </mat-form-field>
-            <mat-form-field class="edit-image-full-width">
-                <mat-label>Description</mat-label>
-                <textarea matInput [(ngModel)]="description"></textarea>
-            </mat-form-field>
-            @if (previewImage) {
-                <p>{{metaData}}</p>
-            }
-            <button mat-raised-button color="accent" [disabled]="!previewImage" (click)="addImage()">Add Image</button>
+                <mat-form-field class="edit-image-full-width">
+                    <mat-label>Flickr Photo Source ID</mat-label>
+                    <input matInput [(ngModel)]="imageSource" >
+                    <button mat-icon-button matSuffix (click)="imageInfo()" type="button">
+                        <mat-icon>search</mat-icon>
+                    </button>
+                </mat-form-field>
+                <mat-form-field class="edit-image-full-width">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput [(ngModel)]="description"></textarea>
+                </mat-form-field>
+                @if (previewImage) {
+                    <p>{{metaData}}</p>
+                }
+                <button mat-raised-button color="accent" [disabled]="!previewImage" (click)="addImage()">Add Image</button>
             </div>         
         </div>
         <div class="edit-col-2">
