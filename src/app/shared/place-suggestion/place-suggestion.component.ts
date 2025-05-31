@@ -7,6 +7,7 @@ import { MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/inp
 import { MatIcon } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AsyncPipe } from '@angular/common';
+import { GeoService, simpleGeoAddressFormat } from 'src/app/core/geo-service/geo.service';
 
 type MessageIcon = 'cancel' | 'check_circle' | 'do_not_disturb_on';
 
@@ -59,7 +60,7 @@ export class PlaceSuggestionComponent implements OnInit {
     }
     private _suggestionOptions!: PlaceSuggestionOptions;
 
-    constructor(private placeService: PlaceService, private changeDetectorRef: ChangeDetectorRef) { }
+    constructor(private placeService: PlaceService, private geoService: GeoService, private changeDetectorRef: ChangeDetectorRef) { }
 
     ngOnInit() { 
         this.suggestions = this.placeControl.valueChanges.pipe(
@@ -86,8 +87,14 @@ export class PlaceSuggestionComponent implements OnInit {
     }
 
     // Called from user selection on map
-    setSuggestion(suggestion: Partial<PlaceSuggestion>) {
-        // TODO resolve lat lon to actual place name
+    async setSuggestion(suggestion: Partial<PlaceSuggestion>) {
+        // resolve lat lon to actual place name
+        if (suggestion.location) {
+            const geoAddress = await this.geoService.lookup(suggestion.location);
+            // Get a formatted description
+            suggestion.description = simpleGeoAddressFormat(geoAddress) || suggestion.description;            
+        }
+        
         this.placeControl.patchValue(suggestion);
         this.onSelection(suggestion);
     }
