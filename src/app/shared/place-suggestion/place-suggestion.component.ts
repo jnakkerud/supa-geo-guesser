@@ -8,14 +8,15 @@ import { MatIcon } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AsyncPipe } from '@angular/common';
 import { GeoService, simpleGeoAddressFormat } from 'src/app/core/geo-service/geo.service';
+import { TRY_NUMBER } from 'src/app/core/score-service/score.service';
 
 type MessageIcon = 'cancel' | 'check_circle' | 'do_not_disturb_on';
 
 export interface PlaceSuggestionOptions {
     message?: string;
-    active?: boolean;
     iconColor?: ThemePalette | '';
     icon?: MessageIcon;
+    tryIndex?: number;
 }
 
 export class PlaceSuggestionChange {
@@ -24,6 +25,14 @@ export class PlaceSuggestionChange {
       public placeSuggestion: Partial<PlaceSuggestion>
     ) {}
 }
+
+function toPlural(count: number, single: string, plural?: string): string {
+    if (count !== 1 && plural) {
+        return plural;
+    }
+    return `${single}${count === 1 ? "" : "s"}`;
+}
+
 @Component({
     selector: 'place-suggestion',
     templateUrl: 'place-suggestion.component.html',
@@ -101,15 +110,19 @@ export class PlaceSuggestionComponent implements OnInit {
 
     updateSuggestionOptions() {
         if (this._suggestionOptions) {
-            if (this._suggestionOptions?.active !== undefined) {
-                const controlDisabled = this.placeControl.disabled;
-                this._suggestionOptions.active ? this.placeControl.enable() : this.placeControl.disable();
-                if (this._suggestionOptions.active && controlDisabled) {
-                    this.placeControl.reset();
-                } 
+            const tryIndex = this.suggestionOptions?.tryIndex ?? 0;
+            if (!this.suggestionOptions?.message) {
+                this.suggestionOptions.message = `You have ${TRY_NUMBER - tryIndex} tries to guess the location`;
+            } else {
+                this.suggestionOptions.message = (this.suggestionOptions?.message || '') + ` ${TRY_NUMBER - tryIndex} ${toPlural(TRY_NUMBER - tryIndex, 'try', 'tries')} left`;
             }
-            
             this.changeDetectorRef.markForCheck();
+        }
+    }
+
+    onFocus() {
+        if (this.placeControl.value) {
+            this.placeControl.reset();
         }
     }
 

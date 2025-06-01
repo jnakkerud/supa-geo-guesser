@@ -2,7 +2,7 @@
     <mat-form-field class="suggestion-full-width" appearance="outline">
         <mat-label>Guess Location</mat-label>
         <input type="text" matInput [formControl]="placeControl"
-            [matAutocomplete]="auto">
+            [matAutocomplete]="auto" (focus)="onFocus()">
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelection($event.option.value)">
             @for (option of suggestions | async; track option.placeId) {
                 <mat-option [value]="option">

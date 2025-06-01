@@ -23,19 +23,19 @@ const SMALL_IMAGE_SIZE = {
     height: 350
 }
 
-function generateSuggestionOptions(score: Score): PlaceSuggestionOptions {
+function generateSuggestionOptions(score: Score, tryIndex = TRY_NUMBER): PlaceSuggestionOptions {
     let options: PlaceSuggestionOptions;
     switch (score.score) {
         case COUNTRY_SCORE:
             options = {
                 icon: 'do_not_disturb_on',
-                message: `Location is in the correct country. ${score.distance} KM away`
+                message: `Location is in the correct country. ${score.distance} KM away.`
             };
             break;       
         case STATE_SCORE:
             options = {
                 icon: 'do_not_disturb_on',
-                message: `Location is in the correct state/province. ${score.distance} KM away`
+                message: `Location is in the correct state/province. ${score.distance} KM away.`
             };
             break;            
         case LOCALITY_SCORE:
@@ -56,18 +56,14 @@ function generateSuggestionOptions(score: Score): PlaceSuggestionOptions {
             options = {
                 icon: 'cancel',
                 iconColor: 'warn',
-                message: `Wrong guess, location is ${score.distance} KM away`
+                message: `Wrong guess, location is ${score.distance} KM away.`
             };             
     }
-    options.active = false;
+    options.tryIndex = tryIndex;
     return options;
 }
 
-function tryMessage(tryIndex: number): string {
-    return `You get ${TRY_NUMBER-tryIndex} tries to guess the location`;
-}
-
-export type PlayStatus = 'play_end' | 'next_image' | 'next_suggestion' | 'play';
+export type PlayStatus = 'play_end' | 'next_image' | 'play';
 
 export class TryResult {
     options!: PlaceSuggestionOptions;
@@ -157,10 +153,7 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
     async setImage(image: Image) {
         this.playStatus = 'play';
         this.tryIndex = 0;
-        this.placeSuggestionOptions = {
-            message: tryMessage(this.tryIndex),
-            active: true
-        };
+        this.placeSuggestionOptions = {};
         this.selectedImage = image;
         // a scorecard might not exist if playing a timed game
         let sc = await this.scoreService.getScoreCard(this.selectedImage);
@@ -193,7 +186,7 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
         const tryNumber = this.tryIndex++;
 
         this.scoreService.score(this.scoreCard, tryNumber, placeSuggestion).then(s => {
-            this.placeSuggestionOptions = generateSuggestionOptions(s);
+            this.placeSuggestionOptions = generateSuggestionOptions(s, this.tryIndex);
             if (s.score >= LOCALITY_SCORE || tryNumber == (TRY_NUMBER-1)) {
                 if (this.imageProvider.hasMoreImages() == false) {
                     this.scoreService.getTotalResult(this.persistScore).then(ts => {
@@ -203,9 +196,7 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
                 } else {
                     this.playStatus = 'next_image';                    
                 }
-            } else {
-                this.playStatus = 'next_suggestion';
-            }
+            } 
             this.imageMap.zoomToLocation(placeSuggestion.location!, s.distance);
             this.tryResults.push(new TryResult(s, placeSuggestion));
         });
@@ -226,14 +217,6 @@ export class ThemePlayComponent implements OnInit, OnDestroy {
         this.resetMap();
         const nextImage = this.imageProvider.nextImage();
         this.setImage(nextImage);
-    }
-
-    nextSuggestion(): void {
-        this.placeSuggestionOptions = {
-            message:  tryMessage(this.tryIndex),
-            active: true
-        }
-        this.playStatus = 'play';
     }
 
     hasMoreImages(): boolean {
