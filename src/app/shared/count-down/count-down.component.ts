@@ -3,9 +3,15 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 
 @Component({
     selector: 'count-down',
-    template: `<h2>00:{{ secondsLeft | number:'2.0-0' }}&nbsp;{{message}}</h2>`,
+    template: `<span>00:{{ secondsLeft | number:'2.0-0' }}&nbsp;{{message}}</span>`,
     standalone: true,
     imports: [CommonModule],
+    styles: [`
+        :host {
+            font-family: 'PressStart2P', sans-serif;
+            font-size: 30px;
+        }
+    `],
 })
 export class CountDownComponent implements OnInit, OnDestroy {
     @Input() seconds = 10;
