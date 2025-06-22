@@ -9,7 +9,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
     styles: [`
         :host {
             font-family: 'PressStart2P', sans-serif;
-            font-size: 30px;
+            font-size: 1.5em;
         }
     `],
 })
