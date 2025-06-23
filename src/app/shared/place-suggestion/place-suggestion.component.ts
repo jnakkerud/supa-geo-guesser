@@ -9,6 +9,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AsyncPipe } from '@angular/common';
 import { GeoService, simpleGeoAddressFormat } from 'src/app/core/geo-service/geo.service';
 import { TRY_NUMBER } from 'src/app/core/score-service/score.service';
+import { PlayStatus } from 'src/app/home/theme-play/theme-play.component';
 
 type MessageIcon = 'cancel' | 'check_circle' | 'do_not_disturb_on';
 
@@ -58,6 +59,8 @@ export class PlaceSuggestionComponent implements OnInit {
     @Output() selectionChange: EventEmitter<PlaceSuggestionChange> = new EventEmitter<PlaceSuggestionChange>();   
 
     @Input() countryCodeFilter: string | undefined;
+
+    @Input() playStatus: PlayStatus = 'play';
 
     @Input()
     get suggestionOptions(): PlaceSuggestionOptions {
@@ -111,10 +114,11 @@ export class PlaceSuggestionComponent implements OnInit {
     updateSuggestionOptions() {
         if (this._suggestionOptions) {
             const tryIndex = this.suggestionOptions?.tryIndex ?? 0;
+            const triesLeft = TRY_NUMBER - tryIndex;
             if (!this.suggestionOptions?.message) {
-                this.suggestionOptions.message = `You have ${TRY_NUMBER - tryIndex} tries to guess the location`;
+                this.suggestionOptions.message = `You have ${triesLeft} tries to guess the location`;
             } else {
-                this.suggestionOptions.message = (this.suggestionOptions?.message || '') + ` ${TRY_NUMBER - tryIndex} ${toPlural(TRY_NUMBER - tryIndex, 'try', 'tries')} left`;
+                this.suggestionOptions.message = (this.suggestionOptions?.message || '') + ` ${triesLeft} ${toPlural(triesLeft, 'try', 'tries')} left`;
             }
             this.changeDetectorRef.markForCheck();
         }
@@ -129,4 +133,5 @@ export class PlaceSuggestionComponent implements OnInit {
     get message(): string {
         return this.suggestionOptions?.message || '';
     }
+ 
 }

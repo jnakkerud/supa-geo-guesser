@@ -4,7 +4,8 @@
         <div>
             <img [src]="imgSource(selectedImage)" [style.width.px]="width" [style.height.px]="height" alt="No Image" (click)="imageClick()">
         </div>
-        <place-suggestion #placeSuggestion (selectionChange)="onPlaceSelection($event)" [suggestionOptions]="placeSuggestionOptions" [countryCodeFilter]="countryCodes"></place-suggestion>
+        <place-suggestion #placeSuggestion (selectionChange)="onPlaceSelection($event)" 
+        [suggestionOptions]="placeSuggestionOptions" [countryCodeFilter]="countryCodes" [playStatus]="playStatus"></place-suggestion>
         @switch (playStatus) {
             @case ('next_image') { 
                 <div class="button-row">
