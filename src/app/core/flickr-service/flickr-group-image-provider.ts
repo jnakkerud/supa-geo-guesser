@@ -34,6 +34,8 @@ export class FlickrGroupImageProvider extends FlickerImageProvider {
         const groupInfo: FlickrGroupInfo = theme.sourceInfo;
 
         // generate a random page number
+        // TODO to get a page is unreliable, need to implement retry logic if no images are returned
+        // Use 100 perPage? Need an API to get group stats!
         const pages = Math.floor(groupInfo.photoCount / perPage);
         const randomPage = randomNumber(1, pages);
 

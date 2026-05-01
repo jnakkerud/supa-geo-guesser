@@ -100,6 +100,7 @@ export class FlickrService {
         url.searchParams.append('page', String(page));
         url.searchParams.append('per_page', String(perPage));
 
+        console.log(url.href);
         return new Promise<FlickrPhotoInfo[]>((resolve, reject) => {
             this.httpClient.jsonp(url.href, 'jsoncallback')
                 .subscribe((res: any) => {
