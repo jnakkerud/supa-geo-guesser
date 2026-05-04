@@ -8,6 +8,7 @@ import { FlickrPhotoInfo } from "./flickr.service";
 
 const PER_PAGE_GAME = 10;
 const PER_PAGE_DEFAULT = 100;
+const RANDOM_ITEMS = 15;
 
 export interface FlickrGroupInfo {
     groupID: string;
@@ -29,14 +30,12 @@ export class FlickrGroupImageProvider extends FlickerImageProvider {
     queue: Queue<Image> = new Queue<Image>();
 
     public override async loadImages(theme: Theme): Promise<Image[]> {
-        const perPage = theme.storeScore ? 100 : PER_PAGE;
+        const perPage = theme.storeScore ? PER_PAGE_DEFAULT : PER_PAGE_GAME;
 
         const groupInfo: FlickrGroupInfo = theme.sourceInfo;
 
         // generate a random page number
-        // TODO to get a page is unreliable, need to implement retry logic if no images are returned
-        // Use 100 perPage? Need an API to get group stats!
-        const pages = Math.floor(groupInfo.photoCount / perPage);
+        const pages = Math.floor(groupInfo.photoCount / PER_PAGE_DEFAULT); // Flickr does not provide a number of photos per page, so we assume 100
         const randomPage = randomNumber(1, pages);
 
         let photoInfoAry = await this.flickrService.getGroupPhotos(encodeURI(groupInfo.groupID), randomPage, perPage);

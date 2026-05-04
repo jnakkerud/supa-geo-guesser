@@ -122,4 +122,8 @@ export class FlickrService {
         });
     }
 
+
+    // TODO get group info to get total number of photos, then generate a random page number to get random photos from the group. Need to implement retry logic if no photos are returned with geo data
+    // https://www.flickr.com/services/api/explore/flickr.groups.getInfo
+    // See pool_count in response for total number of photos in the group
 }
