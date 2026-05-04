@@ -6,8 +6,8 @@ import { coerceNumberProperty } from "@angular/cdk/coercion";
 import { Queue } from "../queue";
 import { FlickrPhotoInfo } from "./flickr.service";
 
-const PER_PAGE = 10;
-const RANDOM_ITEMS = 15;
+const PER_PAGE_GAME = 10;
+const PER_PAGE_DEFAULT = 100;
 
 export interface FlickrGroupInfo {
     groupID: string;
